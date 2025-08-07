@@ -1,0 +1,255 @@
+🔷 Forex ROI Website Full Structure and Nav items
+1. Home
+2. About us
+3. Investment packages
+4. How it Works
+5. FAQ’s
+6. Legal Pages
+7. Contect Us
+
+
+
+🌐 1. Home Page 
+www.fxbot.co.in
+
+Powerful headline Grow Your Wealth Not just Your Hopes with Trusted Forex Investment platfrom
+Subheadline. Choose a Forex Package with www.fxbot.co.in  That Works While You Sleep — With Full Transparency & Weekly Profits.
+Call-to-action buttons ( “ Start Investing’’, “View Plans”) · Highlight of 4 Investment Packages with returns overview 
+· Benefits Section: 
+Safe and transparent investments o 
+Daily profit tracking o 
+Professional trading team 
+
+Live ROI Calculator widget 
+Testimonials or investor reviews slider 
+Registration & Login Buttons
+ 
+🌐 2. About Us 
+2.1 Company introduction 
+2.2 Mission & vision 
+2.3 Trading and risk management approach 
+2.4 Leadership team profiles (if applicable) 
+2.5 Licensing or registration details (if registered offshore or in any country) 
+📌2.1 > Company Introduction 
+www.fxbot.co.in   is a globally oriented Forex investment and trading solutions provider, dedicated to delivering consistent returns to clients through professionally managed strategies. We combine advanced market analytics, automated algorithmic systems, and experienced fund management to achieve superior risk-adjusted returns in the Forex markets. 
+Established with the vision to simplify Forex investing for individuals and institutions alike, we prioritise transparency, professional execution, and robust risk management in every trade and investment decision. 
+ 
+📌2.2 >Mission & Vision 
+Mission 
+To empower investors globally by providing secure, innovative, and performance-driven Forex investment solutions while upholding the highest standards of transparency and client trust. 
+Vision 
+To be recognised as a leading trusted Forex investment management company, known for consistent results, ethical practices, and technological excellence in global financial markets. 
+ 
+📌2.3 >Trading and Risk Management Approach 
+At www.fxbot.co.in , our trading approach is grounded in: 
+	
+Multi-strategy portfolios combining technical analysis, fundamental insights, and AI-driven algorithmic systems. 
+Strict capital preservation principles, limiting exposure per trade to a small percentage of total managed funds. 
+Diversified currency pair selection, reducing concentration risk and enhancing ROI potential. 
+Automated stop loss and take profit mechanisms to protect client capital in volatile market conditions. 
+Daily and weekly risk assessments conducted by our trading and compliance team to adapt strategies proactively in changing market environments. 
+ 
+📌2.4 > Leadership Team Profiles 
+Mr.– Michael Marcus - Founder & CEO 
+With over 10 years in the Forex trading and investment management industry, Michael brings deep expertise in high-frequency trading, portfolio structuring, and global financial compliance. His vision drives the company’s technological and strategic initiatives to ensure consistent performance and client satisfaction. 
+Ms. Lucy Baldwin – Chief Operations Officer (COO) 
+An operations specialist with extensive experience in financial services administration, KYC compliance, and client relations. She oversees daily business processes, ensuring seamless investment onboarding and client support. 
+Mr. Richards Dennis  – Head of Trading & Risk Management 
+Rohan leads the trading team, specialising in market analytics, algorithmic strategy design, and risk control protocols, ensuring the company’s trading operations align with its capital protection objectives. 
+ 
+📌 2.5 > Licensing or Registration Details 
+Licensing & Registration 
+www.fxbot.co.in  is incorporated under [ St. Vincent & the Grenadines, Seychelles, Marshall Islands, Dubai IFZA, or India ROC  applicable], with registration number [ HE – 543752 ]. We operate as an international investment solutions provider, complying with local and international business regulations, anti-money laundering standards, and KYC policies to maintain client security and operational integrity. 
+ 
+🌐 3. Investment Packages (Plans Page) 
+
+Investment Packages 
+At www.MyForexBro.com , we offer diversified Forex investment plans tailored to suit different risk profiles and return expectations. Explore our structured packages below:  
+📌 1. FS income (FixSix) : 6% Monthly Guaranteed Return until 2x  fix
+Plan Summary: Earn a fixed 6% FIX monthly return on your invested capital until your investment doubles (2x). 
+Minimum Investment Amount: [ $250 ] 
+Contract Duration: Approximately 17 months to achieve 2x (based on 6%). 
+Profit Payout Frequency: Monthly payout, credited directly to your wallet or account. 
+Risk Disclaimer: 
+This is a fixed return contractual plan backed by company reserves and trading 
+profits. However, all investments carry some level of risk. Please read our full terms and conditions before investing. 
+  3> SmartLine Income ( Level income)
+5 Level Income Distribution 
+ Level 1: 1.5%  
+	Level 2:  1%  
+	Level 3:  0.75%  
+	Level 4:  0.50%  
+	Level 5:  0.25% 
+ 
+Eligibility criteria for commissions 
+Withdrawal process for commissions 
+Income calculator for affiliate earnings 
+ SmartLine Income ( Level  income)
+We offer a 5-Level Affiliate Income Distribution Plan to reward partners for expanding our investor community. Affiliates earn commissions based on the investments made by their direct and indirect referrals across 5 levels.
+📌 Affiliate/referral Income Distribution Table 
+Level Commission % 	Description 
+Level 1 – 1.5%	Direct referrals: Earn 1.5% of every investment made by your direct referrals. 
+Level 2 – 1.0% Indirect referrals (2nd level): Earn 1% from 
+investments made by referrals of your direct referrals. 
+Level 3 –0.75%	Indirect referrals (3rd level): Earn 0.75% from this tier. 
+Level 4 - 0.50%	Indirect referrals (4th level): Earn 0.50% from this tier. 
+Level 5 – 0.25% 	Indirect referrals (5th level): Earn 0.25% from this tier. 
+ 
+📌 Eligibility Criteria for Commissions
+Must have an active investment package in any plan to qualify for affiliate commissions.
+Minimum direct referral requirement may apply (1 active referral) to unlock certain levels in each levels
+Affiliates must complete full KYC verification before commission withdrawals.
+    
+📌 Withdrawal Process for Commissions 
+Commission Crediting: Commissions are credited instantly or monthly to your wallet (as per company policy). 
+Withdrawal Request: Submit a withdrawal request via your dashboard. 
+Processing Time: Withdrawals are processed within 24-48 business hours to your registered bank account or wallet. 
+Minimum Withdrawal Amount: [$15].  
+📌  Income Calculator for Affiliate Earnings 
+Our Affiliate Income Calculator helps you estimate your potential commissions based on your network growth. 
+Input: Number of referrals per level and their average investment amount. 
+Output: Total projected affiliate income. 
+Example: If you refer 10 direct investors (Level 1) each investing $1,000: 
+→ Commission = 10 x $1,000 x 1.5% = $150 from Level 1 only 
+(Additional indirect referrals across Levels 2-5 will increase your total affiliate income.)
+
+   3>DRI income (Direct Referral Income)
+A user earns 6% direct referral commission on every investment made by their direct referrals.
+This 6% income is credited every time the referred user makes a new investment—not just once.
+There is no cap on how many referrals a user can have.
+✅ Example:
+If your direct referral invests $1,000, you earn $60.
+If the same referral reinvests $2,000 later, you earn $120 again.
+
+
+Volume must be from active plans only.
+📌 Condition:
+When a user’s investment package reaches 2x returns (i.e., full payout is completed),
+👉 They must re-top-up their ID with a minimum of $250 to:
+Continue receiving future ROI payouts
+Stay eligible for referral rewards and level income
+🧾 Example:
+If a user invested $1,000 in a 2x plan and received $2,000 over time,
+Their ID status becomes inactive until they re-invest at least $250 to activate again.
+
+
+
+4> DAS income (Direct Achiever Salary)
+ Monthly Salary Income  
+
+Terms & Conditions
+FXBOT rewards committed promoters and leaders with fixed monthly salary income based on their direct referral performance and business generation. To qualify, users must meet the following conditions within specified time frames.
+📌 Eligibility Criteria & Benefits
+
+COUNTDOWN WILL BE STARTED AFTER ID ACTIVATION In DECENDING MODE
+🔹 Tier 1: $300 Monthly Salary for 12 Months
+Requirements:
+Minimum 10 Direct Referrals (personally referred)
+Minimum $20,000 Total Business Volume from these direct referrals Achieve target within 60 days of account activation or joining date
+Reward:
+$300/month salary for 12 months
+Paid monthly into the user's FXBOT wallet
+
+🔹 Tier 2:  $1,000 Monthly Salary for 12 Months
+Requirements:
+Minimum 15 Direct Referrals (personally referred)
+
+Minimum $50,000 Business Volume from direct referrals
+Achieve target within 90 days
+Reward: 
+        $1,000/month salary for 12 months
+
+
+🔹 Tier 3:  2% CTO Share 
+(Company Turnover Bonus)
+Requirements:
+Minimum $1,00,000 Business Volume from direct referrals
+Achieve target within 180 days
+Reward:
+Eligible for 2% Share in Monthly Company Turnover (CTO)
+Distributed among all qualified users in this tier, proportional to their business contribution
+🧾 Additional Terms
+Only direct referrals are counted (referrals made personally).
+Package purchases must be active and valid at the time of qualification.
+Business volume is calculated cumulatively from all direct referrals.
+If qualification is missed within the time frame, salary benefits will not be applicable.
+Company reserves the right to audit referral data and disqualify users in case of fraud or manipulation.
+CTO bonus is paid monthly, based on total verified company turnover, and may vary depending on company performance.
+
+NOTE :-  Re-Top-Up Rule After 2x Completion 
+this Condition is apply in all Packages & Services
+
+
+NOTE :-  package are locked for minimum 6 months  
+  
+ 
+🌐 4. How It Works 
+	· 	Simple 3-5 step explanation: 
+o Register and KYC verification 
+o Choose your investment plan 
+o Fund your account 
+o Receive ROI  shared profits 
+o Withdraw anytime as per plan terms 
+📌 4.1 > How It Works 
+Investing with www.fxbot.co.in  is simple and seamless. Follow these easy steps: 
+Register & Complete KYC Verification 
+Sign up on our platform and complete your KYC to activate your account securely. 
+Choose Your Investment Plan 
+Select from our range of tailored Forex investment packages based on your goals and risk profile. 
+Fund Your Account 
+Deposit your investment amount using our secure payments gateways .
+Receive ROI or Shared Profits 
+Start earning returns as per your chosen plan – fixed ROI, lumpsum maturity payouts, or profit sharing. 
+Withdraw Anytime as per Plan Terms 
+Withdraw your profits or matured funds directly to your bank account or wallet as per your plan’s withdrawal policy. 
+ 
+🌐 5. FAQs 
+Include questions such as: 
+How are returns generated? · Is my capital guaranteed? 
+How do withdrawals work? 
+What are the risks involved? 
+5.1 > FAQs Detailed
+📌 Q1. How are returns generated ? 
+Returns are generated through Forex trading activities managed by our professional trading team using a combination of technical analysis, market strategies, and algorithmic systems to achieve consistent performance. 
+📌 Q2. Is my capital guaranteed ? 
+While certain plans offer fixed returns backed by company reserves and trading profits, all investments carry some level of market risk. Please read each plan’s terms and disclaimers carefully before investing. 
+📌 Q3. How do withdrawals work? 
+ 
+Withdrawals can be requested directly through your dashboard. Depending on your chosen plan, profits are either paid out monthly or as a lumpsum at maturity. Processing time is generally within 24-48 business hours. 
+📌 Q4. What are the risks involved? 
+ 
+Forex trading involves market risks including partial or total loss of capital in high-risk plans. Even fixed-return plans carry operational and execution risks. We recommend investing amounts within your risk tolerance and understanding each plan’s structure fully. 
+
+ 
+🌐 6. Legal Pages 
+Terms & Conditions 
+Privacy Policy 
+Risk Disclaimer 
+AML & KYC Policy 
+Refund & Withdrawal Policy 
+6.1 >Terms & Conditions 
+Our Terms & Conditions define the rules, agreements, and responsibilities between www.fxbot.co.in   and its investors. It covers important aspects such as account registration, investment procedures, profit distribution, withdrawal policies, and proper usage of our platform and services. By using our website and investing with us, you agree to abide by these terms to ensure a secure, transparent, and professional relationship. 
+ 
+📌 6.2 > Privacy Policy 
+Explains how we collect, store, use, and protect your personal and financial information to ensure your privacy and data security. 
+📌 6.3 > Risk Disclaimer 
+Details the risks involved in Forex trading and investing, clarifying that returns are subject to market conditions and may not be guaranteed. 
+🔹 AML & KYC Policy 
+Describes our Anti-Money Laundering and Know Your Customer procedures to verify client identities and prevent illegal financial activities.  
+📌 6.4 > Refund & Withdrawal Policy 
+Specifies the terms under which withdrawals and refunds are processed, including timelines, conditions, and eligibility criteria for investors.  
+Let me know if you want full drafts for these legal pages tailored to your brand, jurisdiction, and website compliance standards this week for integration with your upcoming Forex website build. 
+ 
+🌐 7. Contact Us 
+Contact form 
+WhatsApp / Telegram direct link buttons 
+Email and support timings 
+Office address (physical or virtual) 
+7.1 > Contact Us Detailed
+Our Contact Us page allows investors to reach us easily for support and inquiries. It includes: 
+Contact Form: Submit your queries directly through our website form for quick assistance.  
+WhatsApp / Telegram Buttons: Connect instantly with our support team via direct messaging links.  
+Email & Support Timings: Reach us at [fxbot.co.in.support ] with support available from [Monday to Friday , 9 AM – 6 PM IST]. 
+ 
+Office Address: [Registered Address: Bonovo Road, Fomboni Island of Mohéli, Comoros].[ Physical Address: Bay View Tower, Business Bay, Dubai, UAE ] 
+ 
