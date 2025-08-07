@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 94%);
+  --card: hsl(0, 0%, 10%);
+  --card-foreground: hsl(0, 0%, 94%);
+  --popover: hsl(0, 0%, 4%);
+  --popover-foreground: hsl(0, 0%, 94%);
+  --primary: hsl(51, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 4%);
+  --secondary: hsl(213, 70%, 55%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 16%);
+  --muted-foreground: hsl(0, 0%, 64%);
+  --accent: hsl(0, 0%, 16%);
+  --accent-foreground: hsl(51, 100%, 50%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(51, 100%, 50%, 0.2);
+  --input: hsl(0, 0%, 16%);
+  --ring: hsl(51, 100%, 50%);
+  --chart-1: hsl(51, 100%, 50%);
+  --chart-2: hsl(213, 70%, 55%);
+  --chart-3: hsl(142, 76%, 36%);
+  --chart-4: hsl(280, 87%, 65%);
+  --chart-5: hsl(346, 87%, 43%);
+  
+  /* Custom FXBOT colors */
+  --gold: hsl(51, 100%, 50%);
+  --gold-dark: hsl(43, 89%, 56%);
+  --blue-custom: hsl(213, 70%, 55%);
+  --blue-dark: hsl(221, 83%, 53%);
+  --dark-bg: hsl(0, 0%, 4%);
+  --dark-card: hsl(0, 0%, 10%);
+  --dark-secondary: hsl(215, 25%, 17%);
+  
+  --font-inter: 'Inter', sans-serif;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 94%);
+  --card: hsl(0, 0%, 10%);
+  --card-foreground: hsl(0, 0%, 94%);
+  --popover: hsl(0, 0%, 4%);
+  --popover-foreground: hsl(0, 0%, 94%);
+  --primary: hsl(51, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 4%);
+  --secondary: hsl(213, 70%, 55%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 16%);
+  --muted-foreground: hsl(0, 0%, 64%);
+  --accent: hsl(0, 0%, 16%);
+  --accent-foreground: hsl(51, 100%, 50%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(51, 100%, 50%, 0.2);
+  --input: hsl(0, 0%, 16%);
+  --ring: hsl(51, 100%, 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-inter antialiased bg-background text-foreground;
+    font-family: var(--font-inter);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-gold {
+    color: var(--gold);
+  }
+  
+  .text-gold-dark {
+    color: var(--gold-dark);
+  }
+  
+  .text-blue-custom {
+    color: var(--blue-custom);
+  }
+  
+  .text-blue-dark {
+    color: var(--blue-dark);
+  }
+  
+  .bg-gold {
+    background-color: var(--gold);
+  }
+  
+  .bg-gold-dark {
+    background-color: var(--gold-dark);
+  }
+  
+  .bg-blue-custom {
+    background-color: var(--blue-custom);
+  }
+  
+  .bg-blue-dark {
+    background-color: var(--blue-dark);
+  }
+  
+  .bg-dark-bg {
+    background-color: var(--dark-bg);
+  }
+  
+  .bg-dark-card {
+    background-color: var(--dark-card);
+  }
+  
+  .bg-dark-secondary {
+    background-color: var(--dark-secondary);
+  }
+  
+  .border-gold {
+    border-color: var(--gold);
+  }
+  
+  .border-blue-custom {
+    border-color: var(--blue-custom);
+  }
+  
+  .hover\:bg-gold:hover {
+    background-color: var(--gold);
+  }
+  
+  .hover\:text-gold:hover {
+    color: var(--gold);
+  }
+  
+  .focus\:border-gold:focus {
+    border-color: var(--gold);
+  }
+  
+  .gradient-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  }
+  
+  .gradient-blue {
+    background: linear-gradient(135deg, var(--blue-custom), var(--blue-dark));
+  }
+}
