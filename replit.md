@@ -7,6 +7,7 @@ FXBOT is a modern full-stack web application for a Forex investment platform. Th
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Preferred language: JavaScript/JSX (not TypeScript) - all components and server files converted to JavaScript.
 
 ## System Architecture
 
