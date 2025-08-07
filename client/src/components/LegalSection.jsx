@@ -41,26 +41,36 @@ export default function LegalSection() {
   ];
 
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section className="section">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Legal <span className="text-gold">Information</span></h2>
-          <p className="text-xl text-gray-300">Important legal documents and policies</p>
+          <p className="text-xl text-secondary">Important legal documents and policies</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 gap-6 legal-grid" style={{ maxWidth: '64rem', margin: '0 auto' }}>
           {legalPages.map((page, index) => {
             const IconComponent = page.icon;
             return (
               <a 
                 key={index}
                 href={page.href} 
-                className="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center group animate-fadeIn"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="card p-6 text-center legal-link animate-fadeIn"
+                style={{ 
+                  animationDelay: `${index * 0.1}s`,
+                  border: '1px solid rgba(255, 215, 0, 0.1)',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  display: 'block',
+                  transition: 'all 0.3s ease'
+                }}
               >
-                <IconComponent className="w-12 h-12 text-gold mb-4 mx-auto group-hover:scale-110 transition-transform" />
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-gold transition-colors">{page.title}</h3>
-                <p className="text-gray-300 text-sm">{page.description}</p>
+                <IconComponent 
+                  className="legal-icon mb-4 mx-auto text-gold transition-transform" 
+                  style={{ width: '3rem', height: '3rem' }}
+                />
+                <h3 className="text-lg font-semibold mb-2 transition-colors">{page.title}</h3>
+                <p className="text-secondary text-sm">{page.description}</p>
               </a>
             );
           })}

@@ -36,34 +36,42 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section id="faq" className="section">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Frequently Asked <span className="text-gold">Questions</span></h2>
-          <p className="text-xl text-gray-300">Get answers to common questions about FXBOT</p>
+          <p className="text-xl text-secondary">Get answers to common questions about FXBOT</p>
         </div>
 
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="faq-container" style={{ maxWidth: '64rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {faqs.map((faq, index) => (
             <div 
               key={index}
-              className="bg-dark-card border border-gold/10 rounded-xl animate-fadeIn"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="card border animate-fadeIn"
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+                borderColor: 'rgba(255, 215, 0, 0.1)' 
+              }}
             >
               <button 
-                className="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors"
+                className="faq-button w-full p-6 text-left flex justify-between items-center transition-colors"
                 onClick={() => toggleFAQ(index)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'inherit'
+                }}
               >
                 <h3 className="text-lg font-semibold">{faq.question}</h3>
                 {openFAQ === index ? (
-                  <ChevronUp className="w-5 h-5 text-gold" />
+                  <ChevronUp style={{ width: '1.25rem', height: '1.25rem', color: 'var(--primary-gold)' }} />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gold" />
+                  <ChevronDown style={{ width: '1.25rem', height: '1.25rem', color: 'var(--primary-gold)' }} />
                 )}
               </button>
               {openFAQ === index && (
-                <div className="p-6 pt-0 border-t border-gray-600">
-                  <p className="text-gray-300">{faq.answer}</p>
+                <div className="p-6 pt-0 border-t" style={{ borderTopColor: '#555' }}>
+                  <p className="text-secondary">{faq.answer}</p>
                 </div>
               )}
             </div>

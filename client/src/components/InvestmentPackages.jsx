@@ -57,63 +57,101 @@ export default function InvestmentPackages() {
   ];
 
   return (
-    <section id="packages" className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section id="packages" className="section">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Investment <span className="text-gold">Packages</span></h2>
-          <p className="text-xl text-gray-300">Diversified Forex investment plans tailored to different risk profiles</p>
+          <p className="text-xl text-secondary">Diversified Forex investment plans tailored to different risk profiles</p>
         </div>
         
         {/* Package Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 gap-8 mb-16 package-grid">
           {packages.map((pkg, index) => (
             <div 
               key={index}
-              className={`bg-dark-card p-8 rounded-2xl border border-${pkg.color}/20 hover:border-${pkg.color}/40 transition-colors animate-fadeIn`}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="package-card animate-fadeIn"
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+                borderColor: pkg.color === 'gold' ? 'rgba(255, 215, 0, 0.2)' : 
+                            pkg.color === 'blue-custom' ? 'rgba(59, 130, 246, 0.2)' :
+                            pkg.color === 'green-400' ? 'rgba(34, 197, 94, 0.2)' :
+                            'rgba(168, 85, 247, 0.2)'
+              }}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className={`text-2xl font-bold text-${pkg.color}`}>{pkg.name}</h3>
-                <span className={`bg-${pkg.color}/10 text-${pkg.color} px-3 py-1 rounded-full text-sm font-semibold`}>
+                <h3 className="text-2xl font-bold" style={{
+                  color: pkg.color === 'gold' ? 'var(--primary-gold)' : 
+                        pkg.color === 'blue-custom' ? '#3b82f6' :
+                        pkg.color === 'green-400' ? '#22c55e' :
+                        '#a855f7'
+                }}>{pkg.name}</h3>
+                <span className="px-3 py-1 rounded-full text-sm font-semibold" style={{
+                  backgroundColor: pkg.color === 'gold' ? 'rgba(255, 215, 0, 0.1)' : 
+                                  pkg.color === 'blue-custom' ? 'rgba(59, 130, 246, 0.1)' :
+                                  pkg.color === 'green-400' ? 'rgba(34, 197, 94, 0.1)' :
+                                  'rgba(168, 85, 247, 0.1)',
+                  color: pkg.color === 'gold' ? 'var(--primary-gold)' : 
+                        pkg.color === 'blue-custom' ? '#3b82f6' :
+                        pkg.color === 'green-400' ? '#22c55e' :
+                        '#a855f7'
+                }}>
                   {pkg.badge}
                 </span>
               </div>
               
-              <div className="space-y-4 mb-6">
+              <div className="package-details mb-6" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {pkg.details && Object.entries(pkg.details).map(([key, value]) => (
                   <div key={key} className="flex justify-between">
-                    <span className="text-gray-300 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                    <span className={`font-semibold ${key === 'return' ? `text-${pkg.color}` : ''}`}>{value}</span>
+                    <span className="text-secondary capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                    <span className="font-semibold" style={{
+                      color: key === 'return' && pkg.color === 'gold' ? 'var(--primary-gold)' : 'inherit'
+                    }}>{value}</span>
                   </div>
                 ))}
                 
                 {pkg.levels && pkg.levels.map((level) => (
                   <div key={level.level} className="flex justify-between">
-                    <span className="text-gray-300">Level {level.level}:</span>
-                    <span className={`font-semibold ${level.level === 1 ? `text-${pkg.color}` : ''}`}>
+                    <span className="text-secondary">Level {level.level}:</span>
+                    <span className="font-semibold" style={{
+                      color: level.level === 1 && pkg.color === 'blue-custom' ? '#3b82f6' : 'inherit'
+                    }}>
                       {level.percentage}
                     </span>
                   </div>
                 ))}
                 
                 {pkg.tiers && pkg.tiers.map((tier, tierIndex) => (
-                  <div key={tierIndex} className={`bg-${pkg.color}/10 p-3 rounded-lg`}>
-                    <div className={`font-semibold text-${pkg.color}`}>{tier.name}: {tier.amount}</div>
-                    <div className="text-sm text-gray-300">{tier.requirements}</div>
+                  <div key={tierIndex} className="p-3 rounded" style={{
+                    backgroundColor: pkg.color === 'purple-400' ? 'rgba(168, 85, 247, 0.1)' : 'rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <div className="font-semibold" style={{
+                      color: pkg.color === 'purple-400' ? '#a855f7' : 'var(--primary-gold)'
+                    }}>{tier.name}: {tier.amount}</div>
+                    <div className="text-sm text-secondary">{tier.requirements}</div>
                   </div>
                 ))}
                 
                 {pkg.example && (
-                  <div className={`bg-${pkg.color}/10 p-3 rounded-lg`}>
-                    <div className="text-sm text-gray-300">Example:</div>
-                    <div className={`text-${pkg.color} font-semibold`}>{pkg.example}</div>
+                  <div className="p-3 rounded" style={{
+                    backgroundColor: pkg.color === 'green-400' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.05)'
+                  }}>
+                    <div className="text-sm text-secondary">Example:</div>
+                    <div className="font-semibold" style={{
+                      color: pkg.color === 'green-400' ? '#22c55e' : 'var(--primary-gold)'
+                    }}>{pkg.example}</div>
                   </div>
                 )}
               </div>
               
-              <p className="text-gray-300 mb-6">{pkg.description}</p>
+              <p className="text-secondary mb-6">{pkg.description}</p>
               
-              <button className={`w-full py-3 ${pkg.buttonClass} font-semibold rounded-lg hover:opacity-90 transition-opacity`}>
+              <button className="btn w-full font-semibold" style={{
+                background: pkg.color === 'gold' ? 'linear-gradient(135deg, var(--primary-gold), var(--hover-gold))' :
+                           pkg.color === 'blue-custom' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' :
+                           pkg.color === 'green-400' ? 'linear-gradient(135deg, #22c55e, #16a34a)' :
+                           'linear-gradient(135deg, #a855f7, #7c3aed)',
+                color: pkg.color === 'gold' ? 'var(--dark-bg)' : 'white'
+              }}>
                 Choose Plan
               </button>
             </div>
@@ -121,9 +159,9 @@ export default function InvestmentPackages() {
         </div>
 
         {/* Re-Top-Up Rule Note */}
-        <div className="bg-dark-card p-6 rounded-2xl border border-gold/20 mb-8">
+        <div className="card p-6 mb-8" style={{ borderColor: 'rgba(255, 215, 0, 0.2)' }}>
           <h3 className="text-xl font-bold text-gold mb-4">Important Notice</h3>
-          <div className="space-y-2 text-gray-300">
+          <div className="notice-content text-secondary" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <p><strong>Re-Top-Up Rule:</strong> When a user's investment package reaches 2x returns (full payout completed), they must re-top-up their account with a minimum of $250 to continue receiving future ROI payouts and stay eligible for referral rewards.</p>
             <p><strong>Lock Period:</strong> All packages are locked for a minimum of 6 months to ensure optimal trading strategies.</p>
           </div>

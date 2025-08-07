@@ -20,27 +20,36 @@ export default function BenefitsSection() {
   ];
 
   return (
-    <section className="py-20 bg-dark-secondary">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section className="section bg-secondary">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Why Choose <span className="text-gold">FXBOT</span>?</h2>
-          <p className="text-xl text-gray-300">Professional trading solutions with complete transparency</p>
+          <p className="text-xl text-secondary">Professional trading solutions with complete transparency</p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 benefits-grid">
           {benefits.map((benefit, index) => {
             const IconComponent = benefit.icon;
             return (
               <div 
                 key={index}
-                className="text-center p-8 bg-dark-card rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors animate-fadeIn"
+                className="card text-center p-8 animate-fadeIn hover-lift"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
-                <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <IconComponent className="w-8 h-8 text-gold" />
+                <div className="benefit-icon" style={{
+                  width: '4rem',
+                  height: '4rem',
+                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1.5rem'
+                }}>
+                  <IconComponent style={{ width: '2rem', height: '2rem', color: 'var(--primary-gold)' }} />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{benefit.title}</h3>
-                <p className="text-gray-300">{benefit.description}</p>
+                <p className="text-secondary">{benefit.description}</p>
               </div>
             );
           })}

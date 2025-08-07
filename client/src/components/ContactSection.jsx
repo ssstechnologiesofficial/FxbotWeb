@@ -56,27 +56,35 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-dark-secondary">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section id="contact" className="section bg-secondary">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">Contact <span className="text-gold">Us</span></h2>
-          <p className="text-xl text-gray-300">Get in touch with our team for any inquiries</p>
+          <p className="text-xl text-secondary">Get in touch with our team for any inquiries</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 gap-8 contact-grid">
           <div className="animate-slideIn">
             <h3 className="text-2xl font-bold mb-8">Get In Touch</h3>
-            <div className="space-y-6">
+            <div className="contact-info" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {contactInfo.map((info, index) => {
                 const IconComponent = info.icon;
                 return (
-                  <div key={index} className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
-                      <IconComponent className="w-6 h-6 text-gold" />
+                  <div key={index} className="flex items-center" style={{ gap: '1rem' }}>
+                    <div className="contact-icon-wrapper" style={{
+                      width: '3rem',
+                      height: '3rem',
+                      backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                      borderRadius: 'var(--border-radius)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <IconComponent style={{ width: '1.5rem', height: '1.5rem', color: 'var(--primary-gold)' }} />
                     </div>
                     <div>
                       <h4 className="font-semibold">{info.title}</h4>
-                      <p className="text-gray-300">{info.details}</p>
+                      <p className="text-secondary">{info.details}</p>
                     </div>
                   </div>
                 );
@@ -84,50 +92,50 @@ export default function ContactSection() {
             </div>
           </div>
 
-          <div className="bg-dark-card p-8 rounded-2xl border border-gold/20 animate-fadeIn">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+          <div className="card p-8 animate-fadeIn" style={{ borderColor: 'rgba(255, 215, 0, 0.2)' }}>
+            <form onSubmit={handleSubmit} className="contact-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="grid grid-cols-1 gap-6 form-row">
                 <div>
-                  <label className="block text-sm font-medium mb-2">First Name</label>
+                  <label className="form-label">First Name</label>
                   <input 
                     type="text" 
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+                    className="form-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Last Name</label>
+                  <label className="form-label">Last Name</label>
                   <input 
                     type="text" 
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+                    className="form-input"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
+                <label className="form-label">Email</label>
                 <input 
                   type="email" 
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+                  className="form-input"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Subject</label>
+                <label className="form-label">Subject</label>
                 <select 
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+                  className="form-input"
                 >
                   <option value="General Inquiry">General Inquiry</option>
                   <option value="Investment Support">Investment Support</option>
@@ -136,19 +144,24 @@ export default function ContactSection() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Message</label>
+                <label className="form-label">Message</label>
                 <textarea 
                   rows="4" 
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   required
-                  className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+                  className="form-input"
+                  style={{ resize: 'vertical' }}
                 ></textarea>
               </div>
               <button 
                 type="submit" 
-                className="w-full py-3 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                className="btn w-full font-semibold"
+                style={{
+                  background: 'linear-gradient(135deg, var(--primary-gold), var(--hover-gold))',
+                  color: 'var(--dark-bg)'
+                }}
               >
                 Send Message
               </button>

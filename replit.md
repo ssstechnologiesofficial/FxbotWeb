@@ -8,6 +8,7 @@ FXBOT is a modern full-stack web application for a Forex investment platform. Th
 
 Preferred communication style: Simple, everyday language.
 Preferred language: JavaScript/JSX (not TypeScript) - all components and server files converted to JavaScript.
+Preferred styling: Regular CSS (not Tailwind CSS) - all components converted to use custom CSS classes and inline styles.
 
 ## System Architecture
 
@@ -15,8 +16,8 @@ Preferred language: JavaScript/JSX (not TypeScript) - all components and server 
 - **Framework**: React 18 with JavaScript (ES6+) and Vite for fast development and hot module replacement
 - **Routing**: Wouter for lightweight client-side routing
 - **State Management**: TanStack Query (React Query) for server state management and caching
-- **UI Framework**: Custom components with Tailwind CSS and Radix UI patterns
-- **Styling**: Tailwind CSS with custom CSS variables for theming, dark mode support, and Inter font
+- **UI Framework**: Custom components with regular CSS classes and inline styles
+- **Styling**: Regular CSS with custom CSS variables for theming, responsive design, and Inter font
 - **Form Handling**: React Hook Form with Zod validation for forms and API requests
 
 ### Backend Architecture
@@ -52,10 +53,10 @@ Preferred language: JavaScript/JSX (not TypeScript) - all components and server 
 - **Connect-pg-Simple**: PostgreSQL session store for Express sessions
 
 ### UI & Styling
-- **Radix UI**: Complete set of accessible UI primitives (@radix-ui/react-*)
-- **Tailwind CSS**: Utility-first CSS framework with PostCSS integration
+- **Custom CSS**: Regular CSS classes with CSS variables for consistent theming
 - **Lucide React**: Modern icon library for React components
-- **Embla Carousel**: Touch-friendly carousel component library
+- **Responsive Design**: Mobile-first approach with media queries
+- **CSS Grid & Flexbox**: Modern layout techniques for responsive design
 
 ### Development Tools
 - **Vite**: Next-generation frontend build tool with plugin ecosystem

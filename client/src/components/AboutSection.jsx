@@ -29,21 +29,21 @@ export default function AboutSection() {
   ];
 
   return (
-    <section id="about" className="py-20 bg-dark-secondary">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section id="about" className="section bg-secondary">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">About <span className="text-gold">FXBOT</span></h2>
-          <p className="text-xl text-gray-300">Professional Forex Investment Solutions Provider</p>
+          <p className="text-xl text-secondary">Professional Forex Investment Solutions Provider</p>
         </div>
 
         {/* Company Introduction */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+        <div className="grid grid-cols-1 gap-8 items-center mb-16 about-intro">
           <div className="animate-slideIn">
             <h3 className="text-3xl font-bold mb-6">Company Introduction</h3>
-            <p className="text-gray-300 mb-6 leading-relaxed">
+            <p className="text-secondary mb-6" style={{ lineHeight: '1.6' }}>
               FXBOT is a globally oriented Forex investment and trading solutions provider, dedicated to delivering consistent returns to clients through professionally managed strategies. We combine advanced market analytics, automated algorithmic systems, and experienced fund management to achieve superior risk-adjusted returns in the Forex markets.
             </p>
-            <p className="text-gray-300 leading-relaxed">
+            <p className="text-secondary" style={{ lineHeight: '1.6' }}>
               Established with the vision to simplify Forex investing for individuals and institutions alike, we prioritise transparency, professional execution, and robust risk management in every trade and investment decision.
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function AboutSection() {
             <img 
               src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
               alt="Modern professional office environment" 
-              className="rounded-2xl shadow-2xl"
+              className="rounded shadow-lg w-full"
             />
           </div>
         </div>

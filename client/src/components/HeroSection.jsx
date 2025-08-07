@@ -9,37 +9,42 @@ export default function HeroSection() {
   };
 
   return (
-    <section id="home" className="pt-16 min-h-screen flex items-center relative overflow-hidden">
+    <section id="home" className="section min-h-screen flex items-center relative overflow-hidden" style={{ paddingTop: '4rem' }}>
       {/* Background Image */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute" style={{ 
+        top: 0, left: 0, right: 0, bottom: 0, 
+        opacity: 0.2, zIndex: 1 
+      }}>
         <img 
           src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
           alt="Financial charts and trading screens" 
-          className="w-full h-full object-cover"
+          className="w-full h-full"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
       
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="text-center lg:text-left animate-fadeIn">
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-white">Grow Your</span>
+      <div className="container relative" style={{ zIndex: 10 }}>
+        <div className="grid grid-cols-1 gap-8 items-center hero-grid">
+          <div className="text-center hero-text animate-fadeIn">
+            <h1 className="text-5xl font-bold mb-6 hero-title">
+              <span className="text-primary">Grow Your</span>
               <span className="text-gold block">Wealth</span>
-              <span className="text-white">Not Just Your Hopes</span>
+              <span className="text-primary">Not Just Your Hopes</span>
             </h1>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+            <p className="text-xl text-secondary mb-8 hero-subtitle">
               Choose a Forex Package with <span className="text-gold font-semibold">FXBOT</span> That Works While You Sleep — With Full Transparency & Weekly Profits.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="hero-buttons flex flex-col gap-4 justify-center">
               <button 
                 onClick={scrollToPackages}
-                className="px-8 py-4 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity text-lg"
+                className="btn btn-primary btn-lg gradient-gold font-semibold"
               >
                 Start Investing
               </button>
               <button 
                 onClick={scrollToPackages}
-                className="px-8 py-4 border-2 border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-dark-bg transition-colors text-lg"
+                className="btn btn-secondary btn-lg font-semibold"
+                style={{ borderColor: 'var(--primary-gold)', color: 'var(--primary-gold)' }}
               >
                 View Plans
               </button>

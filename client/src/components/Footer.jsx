@@ -33,25 +33,34 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-dark-bg border-t border-gold/20 py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-2">
+    <footer className="bg-dark border-t py-16" style={{ borderTopColor: 'rgba(255, 215, 0, 0.2)' }}>
+      <div className="container">
+        <div className="grid grid-cols-1 gap-8 footer-grid">
+          <div className="footer-main">
             <div className="flex items-center mb-6">
-              <img src="/logo.png" alt="FXBOT Logo" className="h-8 w-auto mr-3" />
+              <img src="/logo.png" alt="FXBOT Logo" style={{ height: '2rem', width: 'auto', marginRight: '0.75rem' }} />
               <span className="text-2xl font-bold text-gold">FXBOT</span>
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed">
+            <p className="text-secondary mb-6" style={{ lineHeight: '1.6' }}>
               Professional Forex investment solutions provider dedicated to delivering consistent returns through advanced market analytics and experienced fund management.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex" style={{ gap: '1rem' }}>
               {socialLinks.map((social, index) => {
                 const IconComponent = social.icon;
                 return (
                   <a 
                     key={index}
                     href={social.href} 
-                    className="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center text-gold hover:bg-gold/20 transition-colors"
+                    className="social-link rounded transition-colors"
+                    style={{
+                      width: '2.5rem',
+                      height: '2.5rem',
+                      backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--primary-gold)'
+                    }}
                   >
                     <IconComponent className="w-5 h-5" />
                   </a>

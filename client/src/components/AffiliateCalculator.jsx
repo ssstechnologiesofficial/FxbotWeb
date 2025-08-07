@@ -28,34 +28,34 @@ export default function AffiliateCalculator() {
   }, [referralCount, averageInvestment, commissionType]);
 
   return (
-    <div className="bg-dark-card p-8 rounded-2xl border border-gold/20">
+    <div className="card p-8" style={{ borderColor: 'rgba(255, 215, 0, 0.2)' }}>
       <h3 className="text-2xl font-bold text-gold mb-6 text-center">Affiliate Income Calculator</h3>
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-8 affiliate-grid">
+        <div className="form-section" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="block text-sm font-medium mb-2">Number of Direct Referrals</label>
+            <label className="form-label">Number of Direct Referrals</label>
             <input 
               type="number" 
               value={referralCount}
               onChange={(e) => setReferralCount(Number(e.target.value) || 0)}
-              className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+              className="form-input"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Average Investment Amount ($)</label>
+            <label className="form-label">Average Investment Amount ($)</label>
             <input 
               type="number" 
               value={averageInvestment}
               onChange={(e) => setAverageInvestment(Number(e.target.value) || 0)}
-              className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+              className="form-input"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Commission Type</label>
+            <label className="form-label">Commission Type</label>
             <select 
               value={commissionType}
               onChange={(e) => setCommissionType(e.target.value)}
-              className="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none"
+              className="form-input"
             >
               {Object.entries(commissionTypes).map(([key, type]) => (
                 <option key={key} value={key}>
@@ -66,17 +66,25 @@ export default function AffiliateCalculator() {
           </div>
         </div>
         <div className="flex items-center justify-center">
-          <div className="bg-dark-secondary p-6 rounded-lg border border-gold/20 text-center">
-            <div className="text-sm text-gray-400 mb-2">Projected Commission</div>
+          <div className="card p-6 text-center" style={{ 
+            backgroundColor: 'var(--card-secondary)',
+            borderColor: 'rgba(255, 215, 0, 0.2)'
+          }}>
+            <div className="text-sm text-secondary mb-2">Projected Commission</div>
             <div className="text-4xl font-bold text-gold mb-2">
               ${projectedCommission.toFixed(2)}
             </div>
-            <div className="text-sm text-gray-400 mb-4">
+            <div className="text-sm text-secondary mb-4">
               Based on {referralCount} referrals × ${averageInvestment} × {(commissionTypes[commissionType].rate * 100).toFixed(2)}%
             </div>
             <button 
               onClick={calculateCommission}
-              className="px-6 py-2 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity"
+              className="btn"
+              style={{
+                padding: '0.5rem 1.5rem',
+                background: 'linear-gradient(135deg, var(--primary-gold), var(--hover-gold))',
+                color: 'var(--dark-bg)'
+              }}
             >
               Calculate
             </button>

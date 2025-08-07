@@ -28,29 +28,42 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section id="how-it-works" className="section">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">How It <span className="text-gold">Works</span></h2>
-          <p className="text-xl text-gray-300">Simple steps to start your Forex investment journey</p>
+          <p className="text-xl text-secondary">Simple steps to start your Forex investment journey</p>
         </div>
         
-        <div className="grid md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 gap-8 how-it-works-grid">
           {steps.map((step, index) => (
             <div 
               key={index}
-              className="text-center relative animate-fadeIn"
+              className="text-center relative animate-fadeIn step-card"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center mx-auto mb-6 text-dark-bg text-2xl font-bold">
+              <div className="step-number gradient-gold rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold" style={{
+                width: '5rem',
+                height: '5rem',
+                color: 'var(--dark-bg)'
+              }}>
                 {step.number}
               </div>
               <h3 className="text-xl font-bold mb-4">{step.title}</h3>
-              <p className="text-gray-300">{step.description}</p>
+              <p className="text-secondary">{step.description}</p>
               
               {/* Connector line (hidden on mobile, shown on desktop except for last step) */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-gold transform translate-x-full"></div>
+                <div className="step-connector" style={{
+                  display: 'none',
+                  position: 'absolute',
+                  top: '2.5rem',
+                  right: '-1rem',
+                  width: '2rem',
+                  height: '2px',
+                  backgroundColor: 'var(--primary-gold)',
+                  transform: 'translateX(100%)'
+                }}></div>
               )}
             </div>
           ))}

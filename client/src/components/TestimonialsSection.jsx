@@ -20,36 +20,44 @@ export default function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-20 bg-dark-secondary">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+    <section className="section bg-secondary">
+      <div className="container">
+        <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">What Our <span className="text-gold">Investors</span> Say</h2>
-          <p className="text-xl text-gray-300">Real experiences from our satisfied clients</p>
+          <p className="text-xl text-secondary">Real experiences from our satisfied clients</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 testimonials-grid">
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="bg-dark-card p-8 rounded-2xl border border-gold/10 animate-fadeIn"
-              style={{ animationDelay: `${index * 0.2}s` }}
+              className="card p-8 border animate-fadeIn"
+              style={{ 
+                animationDelay: `${index * 0.2}s`,
+                borderColor: 'rgba(255, 215, 0, 0.1)' 
+              }}
             >
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-6" style={{ gap: '1rem' }}>
                 <img 
                   src={testimonial.image} 
                   alt={`${testimonial.name} testimonial`} 
-                  className="w-16 h-16 rounded-full mr-4 object-cover"
+                  className="rounded-full"
+                  style={{ 
+                    width: '4rem', 
+                    height: '4rem', 
+                    objectFit: 'cover' 
+                  }}
                 />
                 <div>
                   <h4 className="font-bold">{testimonial.name}</h4>
                   <div className="flex text-gold">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
+                      <Star key={i} style={{ width: '1rem', height: '1rem', fill: 'currentColor' }} />
                     ))}
                   </div>
                 </div>
               </div>
-              <p className="text-gray-300 italic">"{testimonial.review}"</p>
+              <p className="text-secondary" style={{ fontStyle: 'italic' }}>"{testimonial.review}"</p>
             </div>
           ))}
         </div>
