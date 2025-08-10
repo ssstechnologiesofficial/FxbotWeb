@@ -54,6 +54,18 @@ In VS Code terminal (Terminal → New Terminal):
 npm install
 ```
 
+**If you get the "Cannot find package 'express'" error:**
+```bash
+# First, fix npm vulnerabilities (safe to run)
+npm audit fix
+
+# Install missing backend dependencies
+npm install express
+
+# Verify all dependencies are installed
+npm list --depth=0
+```
+
 ### Step 4: Run the Project
 ```bash
 node start.js
@@ -167,18 +179,33 @@ git pull                  # Download latest changes
 
 ## Troubleshooting
 
+### "Cannot find package 'express'" Error
+This happens when dependencies aren't fully installed:
+```bash
+# Fix vulnerabilities first
+npm audit fix
+
+# Install missing express dependency
+npm install express
+
+# If still having issues, clean reinstall
+rm -rf node_modules
+npm install
+npm install express
+```
+
 ### Port Already in Use
 ```bash
 # Kill process on port 5000
 lsof -ti:5000 | xargs kill -9
 ```
 
-### Node Modules Issues
+### npm Vulnerabilities Warning
+The vulnerabilities shown are mostly minor and safe to fix:
 ```bash
-# Delete and reinstall dependencies
-rm -rf node_modules
-npm install
+npm audit fix
 ```
+Avoid using `--force` unless specifically needed.
 
 ### Git Permission Issues
 ```bash
