@@ -1,61 +1,33 @@
 # FXBOT - Professional Forex Investment Platform
 
-A modern, fully responsive React application for a forex investment platform featuring investment packages, ROI calculators, and professional design.
+A modern full-stack web application for Forex investment management with real-time data capabilities and professional trading solutions.
 
 ## 🚀 Features
 
-- **Responsive Design** - Fully responsive across all devices
-- **Professional Theme** - Dark theme with gold/blue colors matching the FXBOT brand
-- **Investment Packages** - Display of various investment plans and returns
-- **ROI Calculator** - Interactive calculator for investment returns
-- **Affiliate Income Calculator** - Calculate potential affiliate earnings
-- **Contact Forms** - Professional contact and newsletter signup forms
-- **FAQ Section** - Comprehensive frequently asked questions
-- **Legal Pages** - Terms of service and privacy policy
+- **Investment Packages**: Multiple diversified Forex investment plans
+- **ROI Calculator**: Real-time return calculations
+- **Affiliate System**: Multi-level referral program with commission tracking
+- **Professional UI**: Modern dark theme with gold accents
+- **Responsive Design**: Mobile-first approach with CSS Grid and Flexbox
+- **Contact System**: Professional contact forms and information
 
-## 🛠 Technology Stack
+## 🛠 Tech Stack
 
-- **Frontend**: React 18, JavaScript (ES6+), Vite
-- **Backend**: Node.js, Express.js
-- **Styling**: Tailwind CSS with custom design system
-- **Icons**: Lucide React
-- **Routing**: Wouter
-- **State Management**: TanStack Query (React Query)
-- **Forms**: React Hook Form with Zod validation
+### Frontend
+- **React 18** with JavaScript (ES6+)
+- **Vite** for fast development and hot module replacement
+- **Custom CSS** with CSS variables for consistent theming
+- **Lucide React** for modern icons
+- **Responsive Design** with mobile-first approach
 
-## 📁 Project Structure
+### Backend
+- **Node.js** with Express.js framework
+- **JavaScript** with ES modules
+- **In-memory storage** (ready for database integration)
+- **RESTful API** endpoints
+- **Centralized error handling**
 
-```
-├── client/
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── pages/         # Page components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── lib/          # Utility functions
-│   │   ├── App.jsx       # Main app component
-│   │   └── main.jsx      # App entry point
-│   └── index.html        # HTML template
-├── server/
-│   ├── index.js          # Express server
-│   ├── routes.js         # API routes
-│   ├── storage.js        # Data storage layer
-│   └── vite.js          # Vite development server
-├── shared/
-│   └── schema.js         # Shared validation schemas
-├── attached_assets/      # Logo and asset files
-├── vite.config.js        # Vite configuration
-├── tailwind.config.js    # Tailwind CSS configuration
-└── start.js             # JavaScript server startup script
-```
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Installation
+## 📦 Installation
 
 1. Clone the repository:
 ```bash
@@ -70,82 +42,84 @@ npm install
 
 3. Start the development server:
 ```bash
-npm run dev
-```
-
-Or manually start the JavaScript server:
-```bash
 node start.js
 ```
 
 The application will be available at `http://localhost:5000`
 
-### Production Build
+## 🏗 Project Structure
 
-1. Build the application:
-```bash
-npm run build
+```
+fxbot/
+├── client/                 # Frontend React application
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── pages/         # Page components
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── lib/           # Utility libraries
+│   │   └── index.css      # Global styles
+│   ├── public/            # Static assets
+│   └── index.html         # Main HTML template
+├── server/                # Backend Express server
+│   ├── index.js          # Main server file
+│   ├── routes.js         # API routes
+│   ├── storage.js        # Storage interface
+│   └── vite.js           # Vite integration
+├── shared/               # Shared schemas and types
+└── attached_assets/      # Project assets
 ```
 
-2. Start the production server:
-```bash
-npm start
-```
+## 🎯 Investment Packages
 
-## 🎨 Design System
-
-The application uses a custom design system with:
-- **Primary Colors**: Gold (#F59E0B) and Blue (#3B82F6)
-- **Typography**: Inter font family
-- **Dark Theme**: Professional dark background with golden accents
-- **Components**: Custom UI components built with Tailwind CSS
-
-## 📱 Responsive Features
-
-- Mobile-first design approach
-- Touch-friendly navigation
-- Responsive grid layouts
-- Optimized images and assets
-- Progressive enhancement
+- **FS Income**: $100-$999 with 6% monthly returns
+- **FS Premium**: $1000-$4999 with 7% monthly returns  
+- **FS Elite**: $5000-$24999 with 8% monthly returns
+- **SmartLine Affiliate**: Multi-level commission system
 
 ## 🔧 Development
 
 ### Available Scripts
 
-- `npm run dev` - Start development server (currently uses TypeScript, use `node start.js` for JavaScript)
+- `npm run dev` - Start Vite development server
 - `npm run build` - Build for production
-- `npm start` - Start production server
-- `node start.js` - Start JavaScript development server
+- `npm run preview` - Preview production build
+- `node start.js` - Start full-stack application
 
-### Project Conversion
+### Backend Development
 
-This project has been converted from TypeScript to pure JavaScript:
-- All `.ts` and `.tsx` files have been removed
-- JavaScript equivalents created for all components
-- Server runs on pure Node.js without TypeScript compilation
-- Maintained all functionality and features
+The backend is ready for database integration:
 
-## 🌐 Deployment
+1. **Storage Interface**: Abstract storage layer in `server/storage.js`
+2. **API Routes**: RESTful endpoints in `server/routes.js`
+3. **Schema Management**: Centralized schemas in `shared/schema.js`
 
-The project is ready for deployment on any Node.js hosting platform:
+### Adding Database
 
-1. **Replit**: Ready to deploy using Replit's deployment system
-2. **Vercel**: Configure build commands in `vercel.json`
-3. **Netlify**: Set up build and start commands
-4. **Heroku**: Add `Procfile` with `web: node server/index.js`
+To integrate a database:
 
-## 📄 License
+1. Install your preferred database driver
+2. Implement the storage interface in `server/storage.js`
+3. Update environment variables for database connection
+4. Run migrations if needed
 
-This project is licensed under the MIT License.
+## 🚀 Deployment
+
+### Production Build
+
+```bash
+npm run build
+NODE_ENV=production node start.js
+```
+
+### Environment Variables
+
+- `NODE_ENV` - Environment (development/production)
+- `PORT` - Server port (default: 5000)
+
+## 📝 License
+
+This project is proprietary software for FXBOT investment platform.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## 📞 Support
-
-For support and questions, please use the contact form on the website or reach out through the provided channels.
+This is a private project. For internal development only.
