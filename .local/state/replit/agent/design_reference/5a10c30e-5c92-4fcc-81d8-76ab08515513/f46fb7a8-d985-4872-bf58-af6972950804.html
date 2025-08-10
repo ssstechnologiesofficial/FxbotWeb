@@ -1,0 +1,978 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FXBOT - Professional Forex Investment Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#FFD700',
+                        'gold-dark': '#F1C40F',
+                        'blue-custom': '#2E86DE',
+                        'blue-dark': '#1E40AF',
+                        'dark-bg': '#0A0A0A',
+                        'dark-card': '#1A1A1A',
+                        'dark-secondary': '#2D3748'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-dark-bg text-white font-inter">
+    <!-- Navigation -->
+    <!-- @COMPONENT: Navigation [sticky header with logo and navigation links] -->
+    <nav class="fixed top-0 w-full z-50 bg-dark-bg/95 backdrop-blur-sm border-b border-gold/20">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABkCAMAAAC4R2xhAAADAFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOGSIQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAXRJREFUeNrt3dGNgzAQBFBScgpIKSmFlpAKUgEpgRIoISWklMC+2Pf/jfaycyedLGfJyLOjOTnn1/f9+/1+fwCARqZbAWCASQuwCrASrASrASYtwCqw/gWsrlcrSZJtfb5r27ZzWWdZ5nE8n7+bLOu6vmu6run6rmu7/tP3H+MwPMdxHKfp+Z6m62vYvNYEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrASrAbcAVgJWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVgJVoKVYCVYCVaClWAlWAlWgpVgJVj9O17C8A8KAAAAABJRU5ErkJggg==" 
+                         alt="FXBOT Logo" class="h-10 w-auto" data-mock="true" data-implementation="Use actual FXBOT logo from uploaded file">
+                    <span class="ml-3 text-xl font-bold text-gold">FXBOT</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-300 hover:text-gold transition-colors">Home</a>
+                    <a href="#about" class="text-gray-300 hover:text-gold transition-colors">About Us</a>
+                    <a href="#packages" class="text-gray-300 hover:text-gold transition-colors">Investment Packages</a>
+                    <a href="#how-it-works" class="text-gray-300 hover:text-gold transition-colors">How It Works</a>
+                    <a href="#faq" class="text-gray-300 hover:text-gold transition-colors">FAQs</a>
+                    <a href="#contact" class="text-gray-300 hover:text-gold transition-colors">Contact</a>
+                </div>
+                <div class="flex space-x-4">
+                    <button class="px-4 py-2 text-white border border-gold rounded-lg hover:bg-gold hover:text-dark-bg transition-colors" data-event="click:handleLogin">Login</button>
+                    <button class="px-4 py-2 bg-gradient-to-r from-gold to-gold-dark text-dark-bg rounded-lg hover:opacity-90 transition-opacity" data-event="click:handleRegister">Register</button>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-white" data-event="click:toggleMobileMenu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- Hero Section -->
+    <!-- @COMPONENT: HeroSection [main landing area with headline and CTA] -->
+    <section id="home" class="pt-16 min-h-screen flex items-center relative overflow-hidden">
+        <!-- Professional forex trading background -->
+        <div class="absolute inset-0 opacity-20">
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 alt="Financial charts and trading screens" class="w-full h-full object-cover">
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-left">
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+                        <span class="text-white">Grow Your</span>
+                        <span class="text-gold block">Wealth</span>
+                        <span class="text-white">Not Just Your Hopes</span>
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        Choose a Forex Package with <span class="text-gold font-semibold">FXBOT</span> That Works While You Sleep — With Full Transparency & Weekly Profits.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <button class="px-8 py-4 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity text-lg" data-event="click:startInvesting">
+                            Start Investing
+                        </button>
+                        <button class="px-8 py-4 border-2 border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-dark-bg transition-colors text-lg" data-event="click:viewPlans">
+                            View Plans
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <!-- Live ROI Calculator Widget -->
+                    <div class="bg-dark-card/80 backdrop-blur-sm p-8 rounded-2xl border border-gold/20 w-full max-w-md">
+                        <h3 class="text-2xl font-bold text-gold mb-6 text-center">Live ROI Calculator</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Investment Amount ($)</label>
+                                <input type="number" placeholder="1000" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="calculatorAmount">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Plan</label>
+                                <select class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none">
+                                    <option value="fs">FS Income (6% Monthly)</option>
+                                    <option value="smart">SmartLine Income</option>
+                                    <option value="dri">Direct Referral Income</option>
+                                    <option value="das">Direct Achiever Salary</option>
+                                </select>
+                            </div>
+                            <div class="bg-dark-secondary p-4 rounded-lg border border-gold/20">
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-400">Monthly Returns</div>
+                                    <div class="text-2xl font-bold text-gold" data-bind="calculatedReturns">$60</div>
+                                    <div class="text-sm text-gray-400 mt-1">Based on FS Income Plan</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HeroSection -->
+
+    <!-- Benefits Section -->
+    <!-- @COMPONENT: BenefitsSection [key selling points] -->
+    <section class="py-20 bg-dark-secondary">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Why Choose <span class="text-gold">FXBOT</span>?</h2>
+                <p class="text-xl text-gray-300">Professional trading solutions with complete transparency</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-8 bg-dark-card rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors">
+                    <div class="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-shield-alt text-2xl text-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Safe & Transparent</h3>
+                    <p class="text-gray-300">All investments backed by professional trading strategies with full transparency and regular reporting.</p>
+                </div>
+                <div class="text-center p-8 bg-dark-card rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors">
+                    <div class="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-chart-line text-2xl text-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Daily Profit Tracking</h3>
+                    <p class="text-gray-300">Real-time monitoring of your investments with detailed analytics and performance metrics.</p>
+                </div>
+                <div class="text-center p-8 bg-dark-card rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors">
+                    <div class="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-users text-2xl text-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Professional Team</h3>
+                    <p class="text-gray-300">Experienced trading professionals with over 10 years of forex market expertise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: BenefitsSection -->
+
+    <!-- Investment Packages -->
+    <!-- @COMPONENT: InvestmentPackages [detailed package showcase] -->
+    <section id="packages" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Investment <span class="text-gold">Packages</span></h2>
+                <p class="text-xl text-gray-300">Diversified Forex investment plans tailored to different risk profiles</p>
+            </div>
+            
+            <!-- Package Grid -->
+            <div class="grid lg:grid-cols-2 gap-8 mb-16">
+                <!-- FS Income Package -->
+                <div class="bg-dark-card p-8 rounded-2xl border border-gold/20 hover:border-gold/40 transition-colors">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-gold">FS Income (FixSix)</h3>
+                        <span class="bg-gold/10 text-gold px-3 py-1 rounded-full text-sm font-semibold">6% Monthly</span>
+                    </div>
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Minimum Investment:</span>
+                            <span class="font-semibold">$250</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Return:</span>
+                            <span class="font-semibold text-gold">6% Monthly until 2x</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Duration:</span>
+                            <span class="font-semibold">~17 months</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Payout:</span>
+                            <span class="font-semibold">Monthly</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6">Earn a fixed 6% monthly return on your invested capital until your investment doubles (2x). Backed by company reserves and trading profits.</p>
+                    <button class="w-full py-3 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                        Choose Plan
+                    </button>
+                </div>
+
+                <!-- SmartLine Income Package -->
+                <div class="bg-dark-card p-8 rounded-2xl border border-blue-custom/20 hover:border-blue-custom/40 transition-colors">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-blue-custom">SmartLine Income</h3>
+                        <span class="bg-blue-custom/10 text-blue-custom px-3 py-1 rounded-full text-sm font-semibold">5 Levels</span>
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Level 1:</span>
+                            <span class="font-semibold text-blue-custom">1.5%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Level 2:</span>
+                            <span class="font-semibold">1.0%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Level 3:</span>
+                            <span class="font-semibold">0.75%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Level 4:</span>
+                            <span class="font-semibold">0.50%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Level 5:</span>
+                            <span class="font-semibold">0.25%</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6">Multi-level affiliate income distribution plan to reward partners for expanding our investor community across 5 levels.</p>
+                    <button class="w-full py-3 bg-gradient-to-r from-blue-custom to-blue-dark text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                        Choose Plan
+                    </button>
+                </div>
+
+                <!-- DRI Income Package -->
+                <div class="bg-dark-card p-8 rounded-2xl border border-green-400/20 hover:border-green-400/40 transition-colors">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-green-400">DRI Income</h3>
+                        <span class="bg-green-400/10 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">6% Direct</span>
+                    </div>
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Commission:</span>
+                            <span class="font-semibold text-green-400">6% Direct Referral</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Frequency:</span>
+                            <span class="font-semibold">Every Investment</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-300">Cap:</span>
+                            <span class="font-semibold">Unlimited</span>
+                        </div>
+                        <div class="bg-green-400/10 p-3 rounded-lg">
+                            <div class="text-sm text-gray-300">Example:</div>
+                            <div class="text-green-400 font-semibold">$1,000 referral = $60 commission</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6">Earn 6% commission on every investment made by your direct referrals. Commission credited for each new investment, no limit on referrals.</p>
+                    <button class="w-full py-3 bg-gradient-to-r from-green-400 to-green-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                        Choose Plan
+                    </button>
+                </div>
+
+                <!-- DAS Income Package -->
+                <div class="bg-dark-card p-8 rounded-2xl border border-purple-400/20 hover:border-purple-400/40 transition-colors">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-purple-400">DAS Income</h3>
+                        <span class="bg-purple-400/10 text-purple-400 px-3 py-1 rounded-full text-sm font-semibold">Monthly Salary</span>
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <div class="bg-purple-400/10 p-3 rounded-lg">
+                            <div class="font-semibold text-purple-400">Tier 1: $300/month</div>
+                            <div class="text-sm text-gray-300">10 referrals, $20K volume, 60 days</div>
+                        </div>
+                        <div class="bg-purple-400/10 p-3 rounded-lg">
+                            <div class="font-semibold text-purple-400">Tier 2: $1,000/month</div>
+                            <div class="text-sm text-gray-300">15 referrals, $50K volume, 90 days</div>
+                        </div>
+                        <div class="bg-purple-400/10 p-3 rounded-lg">
+                            <div class="font-semibold text-purple-400">Tier 3: 2% CTO Share</div>
+                            <div class="text-sm text-gray-300">$100K volume, 180 days</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6">Monthly salary income based on direct referral performance and business generation. Fixed rewards for committed promoters.</p>
+                    <button class="w-full py-3 bg-gradient-to-r from-purple-400 to-purple-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                        Choose Plan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Affiliate Income Calculator -->
+            <div class="bg-dark-card p-8 rounded-2xl border border-gold/20">
+                <h3 class="text-2xl font-bold text-gold mb-6 text-center">Affiliate Income Calculator</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Number of Direct Referrals</label>
+                            <input type="number" placeholder="10" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="referralCount">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Average Investment Amount ($)</label>
+                            <input type="number" placeholder="1000" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="averageInvestment">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Commission Type</label>
+                            <select class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none">
+                                <option value="dri">DRI Income (6%)</option>
+                                <option value="level1">SmartLine Level 1 (1.5%)</option>
+                                <option value="level2">SmartLine Level 2 (1.0%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <div class="bg-dark-secondary p-6 rounded-lg border border-gold/20 text-center">
+                            <div class="text-sm text-gray-400 mb-2">Projected Monthly Commission</div>
+                            <div class="text-4xl font-bold text-gold mb-2" data-bind="projectedCommission">$600</div>
+                            <div class="text-sm text-gray-400">Based on 10 referrals × $1,000 × 6%</div>
+                            <button class="mt-4 px-6 py-2 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity" data-event="click:calculateCommission">
+                                Calculate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: InvestmentPackages -->
+
+    <!-- About Us Section -->
+    <!-- @COMPONENT: AboutSection [company information and team] -->
+    <section id="about" class="py-20 bg-dark-secondary">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">About <span class="text-gold">FXBOT</span></h2>
+                <p class="text-xl text-gray-300">Professional Forex Investment Solutions Provider</p>
+            </div>
+
+            <!-- Company Introduction -->
+            <div class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+                <div>
+                    <h3 class="text-3xl font-bold mb-6">Company Introduction</h3>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        FXBOT is a globally oriented Forex investment and trading solutions provider, dedicated to delivering consistent returns to clients through professionally managed strategies. We combine advanced market analytics, automated algorithmic systems, and experienced fund management to achieve superior risk-adjusted returns in the Forex markets.
+                    </p>
+                    <p class="text-gray-300 leading-relaxed">
+                        Established with the vision to simplify Forex investing for individuals and institutions alike, we prioritise transparency, professional execution, and robust risk management in every trade and investment decision.
+                    </p>
+                </div>
+                <div>
+                    <!-- Modern office business environment -->
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                         alt="Modern professional office environment with city skyline" class="rounded-2xl shadow-2xl">
+                </div>
+            </div>
+
+            <!-- Mission & Vision -->
+            <div class="grid md:grid-cols-2 gap-8 mb-20">
+                <div class="bg-dark-card p-8 rounded-2xl border border-gold/20">
+                    <h3 class="text-2xl font-bold text-gold mb-4">Our Mission</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        To empower investors globally by providing secure, innovative, and performance-driven Forex investment solutions while upholding the highest standards of transparency and client trust.
+                    </p>
+                </div>
+                <div class="bg-dark-card p-8 rounded-2xl border border-blue-custom/20">
+                    <h3 class="text-2xl font-bold text-blue-custom mb-4">Our Vision</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        To be recognised as a leading trusted Forex investment management company, known for consistent results, ethical practices, and technological excellence in global financial markets.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Trading Approach -->
+            <div class="bg-dark-card p-8 rounded-2xl border border-gold/20 mb-20">
+                <h3 class="text-3xl font-bold text-gold mb-6">Trading & Risk Management Approach</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
+                            <p class="text-gray-300">Multi-strategy portfolios combining technical analysis, fundamental insights, and AI-driven algorithmic systems.</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
+                            <p class="text-gray-300">Strict capital preservation principles, limiting exposure per trade to a small percentage of total managed funds.</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
+                            <p class="text-gray-300">Diversified currency pair selection, reducing concentration risk and enhancing ROI potential.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
+                            <p class="text-gray-300">Automated stop loss and take profit mechanisms to protect client capital in volatile market conditions.</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-gold rounded-full mt-2 flex-shrink-0"></div>
+                            <p class="text-gray-300">Daily and weekly risk assessments conducted by our trading and compliance team to adapt strategies proactively.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leadership Team -->
+            <div>
+                <h3 class="text-3xl font-bold text-center mb-12">Leadership <span class="text-gold">Team</span></h3>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- @MAP: teamMembers.map(member => ( -->
+                    <div class="bg-dark-card p-8 rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                        <!-- Professional business leader headshot -->
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400" 
+                             alt="Michael Marcus - Professional CEO headshot" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover" data-mock="true">
+                        <h4 class="text-xl font-bold mb-2" data-bind="member.name">Michael Marcus</h4>
+                        <p class="text-gold font-semibold mb-4" data-bind="member.position">Founder & CEO</p>
+                        <p class="text-gray-300 text-sm leading-relaxed" data-bind="member.description">
+                            With over 10 years in the Forex trading and investment management industry, Michael brings deep expertise in high-frequency trading, portfolio structuring, and global financial compliance.
+                        </p>
+                    </div>
+
+                    <div class="bg-dark-card p-8 rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                        <!-- Professional business woman headshot -->
+                        <img src="https://pixabay.com/get/ga82f1e4a275d15813c91c49656d747e8935a2e5d167d1fdf0f50ad191c16c519d4682cefbc87f5b5fc18db0c21cfdf31e8fb37eb4b0d8406bcefd89dc20764f2_1280.jpg" 
+                             alt="Lucy Baldwin - Professional COO headshot" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover" data-mock="true">
+                        <h4 class="text-xl font-bold mb-2">Lucy Baldwin</h4>
+                        <p class="text-gold font-semibold mb-4">Chief Operations Officer</p>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            An operations specialist with extensive experience in financial services administration, KYC compliance, and client relations. She oversees daily business processes.
+                        </p>
+                    </div>
+
+                    <div class="bg-dark-card p-8 rounded-2xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                        <!-- Professional business man headshot -->
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400" 
+                             alt="Richards Dennis - Professional trading head headshot" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover" data-mock="true">
+                        <h4 class="text-xl font-bold mb-2">Richards Dennis</h4>
+                        <p class="text-gold font-semibold mb-4">Head of Trading & Risk Management</p>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Leads the trading team, specialising in market analytics, algorithmic strategy design, and risk control protocols, ensuring capital protection objectives.
+                        </p>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+
+            <!-- Licensing -->
+            <div class="mt-20 bg-dark-card p-8 rounded-2xl border border-gold/20 text-center">
+                <h3 class="text-2xl font-bold text-gold mb-4">Licensing & Registration</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    FXBOT is incorporated under St. Vincent & the Grenadines, with registration number HE-543752. We operate as an international investment solutions provider, complying with local and international business regulations, anti-money laundering standards, and KYC policies to maintain client security and operational integrity.
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: AboutSection -->
+
+    <!-- How It Works Section -->
+    <!-- @COMPONENT: HowItWorks [step-by-step process] -->
+    <section id="how-it-works" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">How It <span class="text-gold">Works</span></h2>
+                <p class="text-xl text-gray-300">Simple steps to start your Forex investment journey</p>
+            </div>
+            
+            <div class="grid md:grid-cols-5 gap-8">
+                <!-- @MAP: steps.map((step, index) => ( -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center mx-auto mb-6 text-dark-bg text-2xl font-bold">
+                        1
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Register & KYC</h3>
+                    <p class="text-gray-300">Sign up on our platform and complete your KYC verification to activate your account securely.</p>
+                    <div class="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-gold transform translate-x-full" data-mock="true" data-implementation="Show connector line except for last step"></div>
+                </div>
+
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center mx-auto mb-6 text-dark-bg text-2xl font-bold">
+                        2
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Choose Plan</h3>
+                    <p class="text-gray-300">Select from our range of tailored Forex investment packages based on your goals and risk profile.</p>
+                    <div class="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-gold transform translate-x-full"></div>
+                </div>
+
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center mx-auto mb-6 text-dark-bg text-2xl font-bold">
+                        3
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Fund Account</h3>
+                    <p class="text-gray-300">Deposit your investment amount using our secure payment gateways with multiple options.</p>
+                    <div class="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-gold transform translate-x-full"></div>
+                </div>
+
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center mx-auto mb-6 text-dark-bg text-2xl font-bold">
+                        4
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Receive ROI</h3>
+                    <p class="text-gray-300">Start earning returns as per your chosen plan with fixed ROI or profit sharing distributions.</p>
+                    <div class="hidden md:block absolute top-10 -right-4 w-8 h-0.5 bg-gold transform translate-x-full"></div>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center mx-auto mb-6 text-dark-bg text-2xl font-bold">
+                        5
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Withdraw</h3>
+                    <p class="text-gray-300">Withdraw your profits or matured funds directly to your bank account as per your plan's policy.</p>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HowItWorks -->
+
+    <!-- Testimonials Section -->
+    <!-- @COMPONENT: TestimonialsSection [customer reviews slider] -->
+    <section class="py-20 bg-dark-secondary">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">What Our <span class="text-gold">Investors</span> Say</h2>
+                <p class="text-xl text-gray-300">Real experiences from our satisfied clients</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- @MAP: testimonials.map(testimonial => ( -->
+                <div class="bg-dark-card p-8 rounded-2xl border border-gold/10">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100" 
+                             alt="Happy investor testimonial" class="w-16 h-16 rounded-full mr-4 object-cover" data-mock="true">
+                        <div>
+                            <h4 class="font-bold" data-bind="testimonial.name">John Smith</h4>
+                            <div class="flex text-gold">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 italic" data-bind="testimonial.review" data-mock="true">
+                        "FXBOT has been delivering consistent returns for over 8 months. Their transparency and professional approach gives me complete confidence in my investments."
+                    </p>
+                </div>
+
+                <div class="bg-dark-card p-8 rounded-2xl border border-gold/10">
+                    <div class="flex items-center mb-6">
+                        <img src="https://pixabay.com/get/g2cf479d261385660f86ffff94e335cb9abc0811693463dd059acb2bfe4de5e1df43ef35e2d31d6d16cc2ddd01742405d2632cac03a2c2592355ec313ddeac7ec_1280.jpg" 
+                             alt="Satisfied female investor" class="w-16 h-16 rounded-full mr-4 object-cover" data-mock="true">
+                        <div>
+                            <h4 class="font-bold">Sarah Johnson</h4>
+                            <div class="flex text-gold">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 italic" data-mock="true">
+                        "The FS Income plan is exactly what I needed - reliable 6% monthly returns. The team's expertise in forex trading really shows in the results."
+                    </p>
+                </div>
+
+                <div class="bg-dark-card p-8 rounded-2xl border border-gold/10">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100" 
+                             alt="Professional investor testimonial" class="w-16 h-16 rounded-full mr-4 object-cover" data-mock="true">
+                        <div>
+                            <h4 class="font-bold">Michael Brown</h4>
+                            <div class="flex text-gold">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 italic" data-mock="true">
+                        "I've tried many investment platforms, but FXBOT stands out with their professional approach and consistent performance. Highly recommended!"
+                    </p>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: TestimonialsSection -->
+
+    <!-- FAQ Section -->
+    <!-- @COMPONENT: FAQSection [expandable question answers] -->
+    <section id="faq" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Frequently Asked <span class="text-gold">Questions</span></h2>
+                <p class="text-xl text-gray-300">Get answers to common questions about FXBOT</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-4">
+                <!-- @MAP: faqs.map(faq => ( -->
+                <div class="bg-dark-card border border-gold/10 rounded-xl">
+                    <button class="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors" data-event="click:toggleFAQ">
+                        <h3 class="text-lg font-semibold">How are returns generated?</h3>
+                        <i class="fas fa-chevron-down text-gold"></i>
+                    </button>
+                    <div class="p-6 pt-0 border-t border-gray-600" data-mock="true" data-implementation="Initially hidden, toggle on question click">
+                        <p class="text-gray-300">Returns are generated through Forex trading activities managed by our professional trading team using a combination of technical analysis, market strategies, and algorithmic systems to achieve consistent performance.</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card border border-gold/10 rounded-xl">
+                    <button class="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors">
+                        <h3 class="text-lg font-semibold">Is my capital guaranteed?</h3>
+                        <i class="fas fa-chevron-down text-gold"></i>
+                    </button>
+                    <div class="p-6 pt-0 border-t border-gray-600 hidden">
+                        <p class="text-gray-300">While certain plans offer fixed returns backed by company reserves and trading profits, all investments carry some level of market risk. Please read each plan's terms and disclaimers carefully before investing.</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card border border-gold/10 rounded-xl">
+                    <button class="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors">
+                        <h3 class="text-lg font-semibold">How do withdrawals work?</h3>
+                        <i class="fas fa-chevron-down text-gold"></i>
+                    </button>
+                    <div class="p-6 pt-0 border-t border-gray-600 hidden">
+                        <p class="text-gray-300">Withdrawals can be requested directly through your dashboard. Depending on your chosen plan, profits are either paid out monthly or as a lumpsum at maturity. Processing time is generally within 24-48 business hours.</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card border border-gold/10 rounded-xl">
+                    <button class="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors">
+                        <h3 class="text-lg font-semibold">What are the risks involved?</h3>
+                        <i class="fas fa-chevron-down text-gold"></i>
+                    </button>
+                    <div class="p-6 pt-0 border-t border-gray-600 hidden">
+                        <p class="text-gray-300">Forex trading involves market risks including partial or total loss of capital in high-risk plans. Even fixed-return plans carry operational and execution risks. We recommend investing amounts within your risk tolerance and understanding each plan's structure fully.</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card border border-gold/10 rounded-xl">
+                    <button class="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors">
+                        <h3 class="text-lg font-semibold">What is the re-top-up rule after 2x completion?</h3>
+                        <i class="fas fa-chevron-down text-gold"></i>
+                    </button>
+                    <div class="p-6 pt-0 border-t border-gray-600 hidden">
+                        <p class="text-gray-300">When a user's investment package reaches 2x returns (full payout completed), they must re-top-up their account with a minimum of $250 to continue receiving future ROI payouts and stay eligible for referral rewards and level income.</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card border border-gold/10 rounded-xl">
+                    <button class="w-full p-6 text-left flex justify-between items-center hover:bg-dark-secondary transition-colors">
+                        <h3 class="text-lg font-semibold">Are packages locked for a minimum period?</h3>
+                        <i class="fas fa-chevron-down text-gold"></i>
+                    </button>
+                    <div class="p-6 pt-0 border-t border-gray-600 hidden">
+                        <p class="text-gray-300">Yes, all investment packages are locked for a minimum period of 6 months to ensure optimal trading strategies and consistent returns for our investors.</p>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: FAQSection -->
+
+    <!-- Contact Section -->
+    <!-- @COMPONENT: ContactSection [contact information and form] -->
+    <section id="contact" class="py-20 bg-dark-secondary">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Contact <span class="text-gold">Us</span></h2>
+                <p class="text-xl text-gray-300">Get in touch with our team for any inquiries</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-8">Get In Touch</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-envelope text-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Email</h4>
+                                <p class="text-gray-300">support@fxbot.co.in</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-phone text-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Phone</h4>
+                                <p class="text-gray-300">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Business Hours</h4>
+                                <p class="text-gray-300">Mon - Fri: 9:00 AM - 6:00 PM</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Address</h4>
+                                <p class="text-gray-300">St. Vincent & the Grenadines</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card p-8 rounded-2xl border border-gold/20">
+                    <form class="space-y-6" data-event="submit:handleContactForm">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">First Name</label>
+                                <input type="text" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="form.firstName">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Last Name</label>
+                                <input type="text" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="form.lastName">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="form.email">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Subject</label>
+                            <select class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none">
+                                <option>General Inquiry</option>
+                                <option>Investment Support</option>
+                                <option>Technical Support</option>
+                                <option>Partnership</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Message</label>
+                            <textarea rows="4" class="w-full p-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-gold focus:outline-none" data-bind="form.message"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-gold to-gold-dark text-dark-bg font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: ContactSection -->
+
+    <!-- Legal Pages Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Legal <span class="text-gold">Information</span></h2>
+                <p class="text-xl text-gray-300">Important legal documents and policies</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <a href="#terms" class="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                    <i class="fas fa-file-contract text-3xl text-gold mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Terms & Conditions</h3>
+                    <p class="text-gray-300 text-sm">Complete terms of service</p>
+                </a>
+                <a href="#privacy" class="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                    <i class="fas fa-shield-alt text-3xl text-gold mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Privacy Policy</h3>
+                    <p class="text-gray-300 text-sm">How we protect your data</p>
+                </a>
+                <a href="#risk" class="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                    <i class="fas fa-exclamation-triangle text-3xl text-gold mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Risk Disclaimer</h3>
+                    <p class="text-gray-300 text-sm">Investment risk information</p>
+                </a>
+                <a href="#aml" class="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                    <i class="fas fa-user-shield text-3xl text-gold mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">AML & KYC Policy</h3>
+                    <p class="text-gray-300 text-sm">Compliance procedures</p>
+                </a>
+                <a href="#refund" class="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                    <i class="fas fa-money-bill-wave text-3xl text-gold mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Refund Policy</h3>
+                    <p class="text-gray-300 text-sm">Withdrawal procedures</p>
+                </a>
+                <a href="#compliance" class="bg-dark-card p-6 rounded-xl border border-gold/10 hover:border-gold/30 transition-colors text-center">
+                    <i class="fas fa-balance-scale text-3xl text-gold mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Compliance</h3>
+                    <p class="text-gray-300 text-sm">Regulatory information</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <!-- @COMPONENT: Footer [site footer with links and information] -->
+    <footer class="bg-dark-bg border-t border-gold/20 py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center mb-6">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABkCAMAAAC4R2xhAAADAFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOGSIQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAXRJREFUeNrt3dGNgzAQBFBScgpIKSmFlpAKUgEpgRIoISWklMC+2Pf/jfaycyedLGfJyLOjOTnn1/f9+/1+fwCARqZbAWCASQuwCrASrASrASYtwCqw/gWsrlcrSZJtfb5r27ZzWWdZ5nE8n7+bLOu6vmu6run6rmu7/tP3H+MwPMdxHKfp+Z6m62vYvNYEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqwEqwEK8FKsBKsBCvBSrASrAQrwUqw+ne8hOEfFAAAABJRU5ErkJggg==" 
+                             alt="FXBOT Logo" class="h-8 w-auto mr-3" data-mock="true">
+                        <span class="text-2xl font-bold text-gold">FXBOT</span>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        Professional Forex investment solutions provider dedicated to delivering consistent returns through advanced market analytics and experienced fund management.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center text-gold hover:bg-gold/20 transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center text-gold hover:bg-gold/20 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center text-gold hover:bg-gold/20 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center text-gold hover:bg-gold/20 transition-colors">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-300 hover:text-gold transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-gold transition-colors">About Us</a></li>
+                        <li><a href="#packages" class="text-gray-300 hover:text-gold transition-colors">Investment Packages</a></li>
+                        <li><a href="#how-it-works" class="text-gray-300 hover:text-gold transition-colors">How It Works</a></li>
+                        <li><a href="#faq" class="text-gray-300 hover:text-gold transition-colors">FAQs</a></li>
+                        <li><a href="#contact" class="text-gray-300 hover:text-gold transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Legal</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#terms" class="text-gray-300 hover:text-gold transition-colors">Terms & Conditions</a></li>
+                        <li><a href="#privacy" class="text-gray-300 hover:text-gold transition-colors">Privacy Policy</a></li>
+                        <li><a href="#risk" class="text-gray-300 hover:text-gold transition-colors">Risk Disclaimer</a></li>
+                        <li><a href="#aml" class="text-gray-300 hover:text-gold transition-colors">AML & KYC Policy</a></li>
+                        <li><a href="#refund" class="text-gray-300 hover:text-gold transition-colors">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-600 mt-12 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2024 FXBOT. All rights reserved. | Registered in St. Vincent & the Grenadines (HE-543752)
+                </p>
+                <p class="text-sm text-gray-500 mt-2">
+                    Risk Warning: Trading Forex involves substantial risk and may not be suitable for all investors.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <!-- JavaScript -->
+    <script>
+        (function() {
+            'use strict';
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // FAQ Toggle functionality
+            document.querySelectorAll('[data-event*="toggleFAQ"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    if (answer.classList.contains('hidden')) {
+                        answer.classList.remove('hidden');
+                        icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                    } else {
+                        answer.classList.add('hidden');
+                        icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    }
+                });
+            });
+
+            // Simple ROI Calculator
+            const calculatorAmount = document.querySelector('[data-bind="calculatorAmount"]');
+            const calculatedReturns = document.querySelector('[data-bind="calculatedReturns"]');
+            
+            if (calculatorAmount && calculatedReturns) {
+                calculatorAmount.addEventListener('input', function() {
+                    const amount = parseFloat(this.value) || 0;
+                    const returns = amount * 0.06; // 6% monthly for FS Income
+                    calculatedReturns.textContent = `$${returns.toFixed(2)}`;
+                });
+            }
+
+            // Affiliate Income Calculator
+            const referralCount = document.querySelector('[data-bind="referralCount"]');
+            const averageInvestment = document.querySelector('[data-bind="averageInvestment"]');
+            const projectedCommission = document.querySelector('[data-bind="projectedCommission"]');
+            
+            function updateAffiliateCalculation() {
+                if (referralCount && averageInvestment && projectedCommission) {
+                    const count = parseFloat(referralCount.value) || 0;
+                    const investment = parseFloat(averageInvestment.value) || 0;
+                    const commission = count * investment * 0.06; // 6% DRI
+                    projectedCommission.textContent = `$${commission.toFixed(2)}`;
+                }
+            }
+
+            if (referralCount) referralCount.addEventListener('input', updateAffiliateCalculation);
+            if (averageInvestment) averageInvestment.addEventListener('input', updateAffiliateCalculation);
+
+            // Mobile menu toggle (placeholder)
+            document.querySelectorAll('[data-event*="toggleMobileMenu"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // TODO: Implement mobile menu toggle functionality
+                    console.log('Mobile menu toggle clicked');
+                });
+            });
+
+            // Form submissions (placeholder)
+            document.querySelectorAll('[data-event*="handleContactForm"]').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // TODO: Implement form submission logic
+                    console.log('Contact form submitted');
+                });
+            });
+
+            // Button click handlers (placeholder)
+            document.querySelectorAll('[data-event*="handleLogin"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // TODO: Implement login functionality
+                    console.log('Login clicked');
+                });
+            });
+
+            document.querySelectorAll('[data-event*="handleRegister"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // TODO: Implement registration functionality
+                    console.log('Register clicked');
+                });
+            });
+
+            // Navbar background on scroll
+            window.addEventListener('scroll', function() {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 100) {
+                    nav.classList.add('bg-dark-bg');
+                    nav.classList.remove('bg-dark-bg/95');
+                } else {
+                    nav.classList.remove('bg-dark-bg');
+                    nav.classList.add('bg-dark-bg/95');
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>

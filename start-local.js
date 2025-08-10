@@ -23,7 +23,7 @@ async function startServer() {
   app.use(vite.ssrFixStacktrace);
   app.use(vite.middlewares);
 
-  const port = process.env.PORT || 5000;
+  const port = process.env.PORT || 5001;
   
   app.listen(port, '0.0.0.0', () => {
     console.log(`✅ FXBOT is running on http://localhost:${port}`);
