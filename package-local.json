@@ -20,7 +20,8 @@
     "swiper": "^11.2.10",
     "react-select": "^5.10.2",
     "react-slick": "^0.30.3",
-    "react-modal": "^3.16.3"
+    "react-modal": "^3.16.3",
+    "lucide-react": "^0.263.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.7.0",

@@ -12,6 +12,11 @@ cp package-local.json package.json
 npm install
 ```
 
+## Step 1.5: Install Missing Lucide Icons
+```bash
+npm install lucide-react
+```
+
 ## Step 2: Start with Local Config
 ```bash
 node start-local.js

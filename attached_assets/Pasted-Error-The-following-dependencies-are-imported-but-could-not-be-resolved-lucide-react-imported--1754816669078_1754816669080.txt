@@ -1,0 +1,146 @@
+Error: The following dependencies are imported but could not be resolved:
+
+  lucide-react (imported by /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/ContactSection.jsx)
+
+Are they installed?
+    at file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:50669:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:50174:26
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/Navigation.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/Navigation.jsx:2:24
+  17 |  var _s = $RefreshSig$();
+  18 |  import { useState, useEffect } from "react";
+  19 |  import { Menu, X } from "lucide-react";
+     |                           ^
+  20 |  export default function Navigation() {
+  21 |    _s();
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 4)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/BenefitsSection.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/BenefitsSection.jsx:1:42
+  15 |    window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+  16 |  }
+  17 |  import { Shield, TrendingUp, Users } from "lucide-react";
+     |                                             ^
+  18 |  export default function BenefitsSection() {
+  19 |    const benefits = [
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/Navigation.jsx". Does the file exist?
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/BenefitsSection.jsx". Does the file exist?
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/FAQSection.jsx". Does the file exist?
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/TestimonialsSection.jsx". Does the file exist?
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/ContactSection.jsx". Does the file exist?
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/LegalSection.jsx". Does the file exist?
+2:27:56 PM [vite] Pre-transform error: Failed to resolve import "lucide-react" from "client/src/components/Footer.jsx". Does the file exist?
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/FAQSection.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/FAQSection.jsx:2:39
+  17 |  var _s = $RefreshSig$();
+  18 |  import { useState } from "react";
+  19 |  import { ChevronDown, ChevronUp } from "lucide-react";
+     |                                          ^
+  20 |  export default function FAQSection() {
+  21 |    _s();
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 4)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+      at async viteTransformMiddleware (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:62105:24)
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/TestimonialsSection.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/TestimonialsSection.jsx:1:21
+  15 |    window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+  16 |  }
+  17 |  import { Star } from "lucide-react";
+     |                        ^
+  18 |  export default function TestimonialsSection() {
+  19 |    const testimonials = [
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+      at async viteTransformMiddleware (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:62105:24)
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/ContactSection.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/ContactSection.jsx:2:43
+  17 |  var _s = $RefreshSig$();
+  18 |  import { useState } from "react";
+  19 |  import { Mail, Phone, Clock, MapPin } from "lucide-react";
+     |                                              ^
+  20 |  export default function ContactSection() {
+  21 |    _s();
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 4)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+      at async viteTransformMiddleware (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:62105:24)
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/LegalSection.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/LegalSection.jsx:1:78
+  15 |    window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+  16 |  }
+  17 |  import { FileText, Shield, AlertTriangle, UserCheck, CreditCard, Scale } from "lucide-react";
+     |                                                                                 ^
+  18 |  export default function LegalSection() {
+  19 |    const legalPages = [
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+      at async viteTransformMiddleware (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:62105:24)
+2:27:56 PM [vite] Internal server error: Failed to resolve import "lucide-react" from "client/src/components/Footer.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/ritikashrivastava/Downloads/FxBotSite/client/src/components/Footer.jsx:1:50
+  15 |    window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+  16 |  }
+  17 |  import { Facebook, Twitter, Linkedin, Send } from "lucide-react";
+     |                                                     ^
+  18 |  export default function Footer() {
+  19 |    const scrollToSection = (sectionId) => {
+      at TransformPluginContext._formatError (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49258:41)
+      at TransformPluginContext.error (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49253:16)
+      at normalizeUrl (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64291:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64423:39
+      at async Promise.all (index 3)
+      at async TransformPluginContext.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:64350:7)
+      at async PluginContainer.transform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:49099:18)
+      at async loadAndTransform (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:51977:27)
+      at async viteTransformMiddleware (file:///Users/ritikashrivastava/Downloads/FxBotSite/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:62105:24)
