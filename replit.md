@@ -17,6 +17,7 @@ FXBOT is a modern full-stack web application for a Forex investment platform. Th
 Preferred communication style: Simple, everyday language.
 Preferred language: JavaScript/JSX (not TypeScript) - all components and server files converted to JavaScript.
 Preferred styling: Regular CSS (not Tailwind CSS) - all components converted to use custom CSS classes and inline styles.
+Developer level: Beginner - needs detailed step-by-step instructions for local setup and Git workflow.
 
 ## System Architecture
 
