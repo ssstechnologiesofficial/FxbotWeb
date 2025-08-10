@@ -1,21 +1,28 @@
-# Quick Fix for Express Error
+# Quick Fix for Replit Dependencies Error
 
-You're getting this error because the Express dependency wasn't properly installed. Here's how to fix it:
+You're getting this error because the project has Replit-specific dependencies that don't work on local Mac. Here's the fix:
 
-## Step 1: Fix npm vulnerabilities (safe)
+## Step 1: Use Local Configuration Files
+I've created local versions of the config files. Use these commands:
+
 ```bash
-npm audit fix
+# Install clean dependencies
+rm -rf node_modules
+cp package-local.json package.json
+npm install
 ```
 
-## Step 2: Install missing Express dependency
+## Step 2: Start with Local Config
 ```bash
-npm install express
+node start-local.js
 ```
 
-## Step 3: Start the project
+## Alternative: Frontend Only Development
+If you just want to work on the frontend:
 ```bash
-node start.js
+npm run dev
 ```
+This starts only the frontend at http://localhost:5173
 
 ## If Still Having Issues
 
