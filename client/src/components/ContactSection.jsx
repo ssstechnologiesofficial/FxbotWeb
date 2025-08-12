@@ -38,11 +38,11 @@ export default function ContactSection() {
       title: "Email",
       details: "support@fxbot.co.in"
     },
-    {
-      icon: Phone,
-      title: "Phone",
-      details: "+1 (555) 123-4567"
-    },
+    //{
+     // icon: Phone,
+     // title: "Phone",
+     // details: "+1 (555) 123-4567"
+   // },
     {
       icon: Clock,
       title: "Business Hours",
