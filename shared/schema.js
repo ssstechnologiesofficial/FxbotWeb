@@ -14,14 +14,26 @@ export const newsletterSchema = z.object({
   email: z.string().email("Valid email is required")
 });
 
-// User registration schema (for future use)
+// User login schema
+export const loginSchema = z.object({
+  email: z.string().email("Valid email is required"),
+  password: z.string().min(1, "Password is required")
+});
+
+// User registration schema
 export const userRegistrationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Valid email is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   phone: z.string().optional(),
-  country: z.string().optional()
+  country: z.string().optional(),
+  role: z.enum(["user", "admin"]).default("user")
+});
+
+// Forgot password schema
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Valid email is required")
 });
 
 // Investment package schema

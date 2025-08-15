@@ -1,60 +1,67 @@
-// Simple in-memory storage for development
-class MemStorage {
+import connectDB, { User, Contact, Newsletter } from './database.js';
+import bcrypt from 'bcryptjs';
+
+// MongoDB Storage implementation
+class MongoStorage {
   constructor() {
-    this.data = {
-      contacts: [],
-      subscribers: [],
-      users: []
-    };
+    // Initialize database connection
+    connectDB();
   }
 
   // Contact form submissions
   async createContact(contactData) {
-    const contact = {
-      id: Date.now().toString(),
-      ...contactData,
-      createdAt: new Date().toISOString()
-    };
-    this.data.contacts.push(contact);
+    const contact = new Contact(contactData);
+    await contact.save();
     return contact;
   }
 
   async getContacts() {
-    return this.data.contacts;
+    return await Contact.find().sort({ createdAt: -1 });
   }
 
   // Newsletter subscriptions
   async createSubscriber(email) {
-    const subscriber = {
-      id: Date.now().toString(),
-      email,
-      createdAt: new Date().toISOString()
-    };
-    this.data.subscribers.push(subscriber);
+    const subscriber = new Newsletter({ email });
+    await subscriber.save();
     return subscriber;
   }
 
   async getSubscribers() {
-    return this.data.subscribers;
+    return await Newsletter.find().sort({ createdAt: -1 });
   }
 
-  // Users (for future authentication)
+  // User management
   async createUser(userData) {
-    const user = {
-      id: Date.now().toString(),
+    // Hash password before saving
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+    
+    const user = new User({
       ...userData,
-      createdAt: new Date().toISOString()
-    };
-    this.data.users.push(user);
-    return user;
+      password: hashedPassword
+    });
+    
+    await user.save();
+    
+    // Return user without password
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword;
   }
 
   async getUserByEmail(email) {
-    return this.data.users.find(user => user.email === email);
+    return await User.findOne({ email: email.toLowerCase() });
+  }
+
+  async getUserById(id) {
+    return await User.findById(id).select('-password');
   }
 
   async getUsers() {
-    return this.data.users;
+    return await User.find().select('-password').sort({ createdAt: -1 });
+  }
+
+  async verifyPassword(plainPassword, hashedPassword) {
+    return await bcrypt.compare(plainPassword, hashedPassword);
   }
 }
 
@@ -62,7 +69,7 @@ let storage = null;
 
 export function getStorage() {
   if (!storage) {
-    storage = new MemStorage();
+    storage = new MongoStorage();
   }
   return storage;
 }

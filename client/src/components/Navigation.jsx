@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'wouter';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,9 +49,9 @@ export default function Navigation() {
           
           {/* Desktop Auth Buttons */}
           <div className="auth-buttons" style={{ display: 'flex', gap: '1rem' }}>
-            <button className="btn btn-secondary">
+            <Link href="/login" className="btn btn-secondary">
               Login
-            </button>
+            </Link>
             <button className="btn btn-primary">
               Register
             </button>
@@ -79,9 +80,9 @@ export default function Navigation() {
               <button onClick={() => scrollToSection('faq')} className="mobile-nav-link block w-full text-left px-4 py-2 text-secondary transition-colors">FAQs</button>
               <button onClick={() => scrollToSection('contact')} className="mobile-nav-link block w-full text-left px-4 py-2 text-secondary transition-colors">Contact</button>
               <div className="pt-4" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <button className="btn btn-secondary w-full">
+                <Link href="/login" className="btn btn-secondary w-full">
                   Login
-                </button>
+                </Link>
                 <button className="btn btn-primary w-full">
                   Register
                 </button>

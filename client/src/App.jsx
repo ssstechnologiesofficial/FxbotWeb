@@ -1,29 +1,16 @@
-import Navigation from "./components/Navigation";
-import HeroSection from "./components/HeroSection";
-import BenefitsSection from "./components/BenefitsSection";
-import InvestmentPackages from "./components/InvestmentPackages";
-import AboutSection from "./components/AboutSection";
-import HowItWorks from "./components/HowItWorks";
-import TestimonialsSection from "./components/TestimonialsSection";
-import FAQSection from "./components/FAQSection";
-import ContactSection from "./components/ContactSection";
-import LegalSection from "./components/LegalSection";
-import Footer from "./components/Footer";
+import { Switch, Route } from "wouter";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
-    <div className="min-h-screen bg-dark text-primary">
-      <Navigation />
-      <HeroSection />
-      <BenefitsSection />
-      <InvestmentPackages />
-      <AboutSection />
-      <HowItWorks />
-      <TestimonialsSection />
-      <FAQSection />
-      <ContactSection />
-      <LegalSection />
-      <Footer />
+    <div className="app">
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/login" component={Login} />
+        <Route path="/forgot-password" component={ForgotPassword} />
+      </Switch>
     </div>
   );
 }
