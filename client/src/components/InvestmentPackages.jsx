@@ -47,9 +47,9 @@ export default function InvestmentPackages() {
       badge: "Monthly Salary",
       color: "purple-400",
       tiers: [
-        { name: "Tier 1", amount: "$300/month", requirements: "10 referrals, $20K volume, 60 days" },
-        { name: "Tier 2", amount: "$1,000/month", requirements: "15 referrals, $50K volume, 90 days" },
-        { name: "Tier 3", amount: "2% CTO Share", requirements: "$100K volume, 180 days" }
+        { name: "Tier 1", amount: "$100/month", requirements: "5 referrals, $10K volume, 30 days" },
+        { name: "Tier 2", amount: "$300/month", requirements: "10 referrals, $20K volume, 60 days" },
+        { name: "Tier 3", amount: "$1000/month", requirements: "15 referrals, $50K volume, 90 days" }
       ],
       description: "Monthly salary income based on direct referral performance and business generation. Fixed rewards for committed promoters.",
       buttonClass: "bg-gradient-to-r from-purple-400 to-purple-500 text-white"
