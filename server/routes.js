@@ -107,8 +107,14 @@ export async function registerRoutes(app) {
         return res.status(400).json({ error: "User with this email already exists" });
       }
 
+      // Validate sponsor ID format (FX + 6 digits)
+      const sponsorIdPattern = /^FX\d{6}$/;
+      if (!sponsorIdPattern.test(sponsorId)) {
+        return res.status(400).json({ error: "Sponsor ID must be in format FX123456 (FX followed by 6 digits)" });
+      }
+
       // TODO: In the future, verify sponsor ID exists in the system
-      // For now, we'll accept any sponsor ID as valid
+      // For now, we'll accept any sponsor ID with correct format as valid
 
       // Create new user
       const userData = {

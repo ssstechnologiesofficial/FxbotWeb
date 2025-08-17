@@ -141,10 +141,13 @@ export default function Register() {
               value={formData.sponsorId}
               onChange={handleInputChange}
               className={`form-input ${errors.sponsorId ? 'error' : ''}`}
-              placeholder="Enter sponsor ID"
+              placeholder="Enter sponsor ID (e.g., FX123456)"
               data-testid="input-sponsor-id"
             />
             {errors.sponsorId && <span className="error-message">{errors.sponsorId}</span>}
+            <small style={{ color: '#718096', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+              For testing, you can use: <strong style={{ color: '#667eea' }}>FX123456</strong>
+            </small>
           </div>
 
           <div className="form-row">

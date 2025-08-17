@@ -48,7 +48,6 @@ export default function Login() {
       <div className="login-card">
         <div className="login-logo">
           <img src="/logo.png" alt="FXBOT" />
-          <h1>FXBOT</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
