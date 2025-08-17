@@ -96,7 +96,8 @@ export async function registerRoutes(app) {
     try {
       const result = userRegistrationSchema.safeParse(req.body);
       if (!result.success) {
-        return res.status(400).json({ error: result.error.errors[0].message });
+        const errorMessage = result.error.errors?.[0]?.message || 'Validation failed';
+        return res.status(400).json({ error: errorMessage });
       }
 
       const { sponsorId, firstName, lastName, mobile, email, password } = result.data;
