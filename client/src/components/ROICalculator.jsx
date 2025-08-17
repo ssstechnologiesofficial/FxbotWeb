@@ -8,8 +8,8 @@ export default function ROICalculator() {
   const plans = {
     fs: { name: "FS Income (6% Monthly)", rate: 0.06 },
     smart: { name: "SmartLine Income", rate: 0.015 },
-    dri: { name: "Direct Referral Income", rate: 0.06 },
-    das: { name: "Direct Achiever Salary", rate: 0.0 }
+    dri: { name: "Direct Referral Income", rate: 0.06 }
+    //das: { name: "Direct Achiever Salary", rate: 0.0 }
   };
 
   useEffect(() => {

@@ -12,6 +12,10 @@ const connectDB = async () => {
 
 // User Schema
 const userSchema = new mongoose.Schema({
+  sponsorId: {
+    type: String,
+    required: true
+  },
   firstName: {
     type: String,
     required: true
@@ -19,6 +23,16 @@ const userSchema = new mongoose.Schema({
   lastName: {
     type: String,
     required: true
+  },
+  mobile: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^\d{10}$/.test(v);
+      },
+      message: 'Mobile number must be exactly 10 digits'
+    }
   },
   email: {
     type: String,
@@ -29,14 +43,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  },
-  phone: {
-    type: String,
-    default: null
-  },
-  country: {
-    type: String,
-    default: null
   },
   role: {
     type: String,

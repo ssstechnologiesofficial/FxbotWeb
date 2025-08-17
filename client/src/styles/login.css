@@ -210,6 +210,142 @@
   line-height: 1.5;
 }
 
+/* Registration form specific styles */
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+/* Required field indicator */
+.required {
+  color: #ef4444;
+}
+
+/* Form labels */
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+/* Form inputs */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+/* Error messages */
+.error-message {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Checkbox styling */
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 8px;
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #667eea;
+  margin-top: 2px;
+}
+
+.checkbox-label {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.4;
+  cursor: pointer;
+  margin: 0;
+}
+
+.checkbox-label .link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.checkbox-label .link:hover {
+  text-decoration: underline;
+}
+
+/* Login/register page headers */
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.login-logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.login-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.login-subtitle {
+  color: #718096;
+  margin: 0;
+  font-size: 16px;
+}
+
+.login-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.login-footer .link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-footer .link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .login-container, .forgot-password-container {
     padding: 10px;
@@ -217,13 +353,27 @@
   
   .login-card, .forgot-password-card {
     padding: 40px 30px;
+    max-width: 500px;
   }
 
-  .login-logo h1, .logo h1 {
+  .login-logo h1, .logo h1, .login-title {
     font-size: 28px;
   }
 
   .login-form h2, .forgot-password-form h2 {
     font-size: 22px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .checkbox-container {
+    align-items: flex-start;
+  }
+  
+  .checkbox-label {
+    font-size: 13px;
   }
 }

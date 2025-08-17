@@ -12,6 +12,8 @@
   "dependencies": {
     "@replit/vite-plugin-cartographer": "^0.2.8",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
+    "@sendgrid/mail": "^8.1.5",
+    "@tanstack/react-query": "^5.85.3",
     "@types/memoizee": "^0.4.12",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",

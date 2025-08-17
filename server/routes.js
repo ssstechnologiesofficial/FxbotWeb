@@ -1,7 +1,7 @@
 import { createServer } from "http";
 import { getStorage } from "./storage.js";
 import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
-import { loginSchema, forgotPasswordSchema } from "../shared/schema.js";
+import { loginSchema, forgotPasswordSchema, userRegistrationSchema } from "../shared/schema.js";
 
 export async function registerRoutes(app) {
   const storage = getStorage();
@@ -92,6 +92,56 @@ export async function registerRoutes(app) {
   });
 
   // Authentication endpoints
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const result = userRegistrationSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: result.error.errors[0].message });
+      }
+
+      const { sponsorId, firstName, lastName, mobile, email, password } = result.data;
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ error: "User with this email already exists" });
+      }
+
+      // TODO: In the future, verify sponsor ID exists in the system
+      // For now, we'll accept any sponsor ID as valid
+
+      // Create new user
+      const userData = {
+        sponsorId,
+        firstName,
+        lastName,
+        mobile,
+        email,
+        password,
+        role: 'user'
+      };
+
+      const newUser = await storage.createUser(userData);
+      
+      res.status(201).json({ 
+        success: true, 
+        message: "Account created successfully! Please login to continue.",
+        user: newUser
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      if (error.code === 11000) {
+        if (error.message.includes('email')) {
+          res.status(400).json({ error: "Email already exists" });
+        } else {
+          res.status(400).json({ error: "Registration failed - duplicate entry" });
+        }
+      } else {
+        res.status(500).json({ error: "Registration failed" });
+      }
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     try {
       const result = loginSchema.safeParse(req.body);

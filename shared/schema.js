@@ -22,13 +22,18 @@ export const loginSchema = z.object({
 
 // User registration schema
 export const userRegistrationSchema = z.object({
+  sponsorId: z.string().min(1, "Sponsor ID is required"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
+  mobile: z.string().regex(/^\d{10}$/, "Mobile number must be exactly 10 digits"),
   email: z.string().email("Valid email is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  phone: z.string().optional(),
-  country: z.string().optional(),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+  acceptTerms: z.boolean().refine(val => val === true, "You must accept the terms and conditions"),
   role: z.enum(["user", "admin"]).default("user")
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
 });
 
 // Forgot password schema

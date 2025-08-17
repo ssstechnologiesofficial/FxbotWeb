@@ -104,6 +104,15 @@ export default function Login() {
           </button>
         </form>
 
+        <div className="login-footer">
+          <p>
+            Don't have an account?{' '}
+            <Link href="/register" className="link" data-testid="link-register">
+              Create account here
+            </Link>
+          </p>
+        </div>
+        
         <div className="back-to-home">
           <Link href="/" data-testid="link-home">
             ← Back to Home
