@@ -61,24 +61,10 @@ function ModernDashboard() {
   // Show loading state
   if (userLoading || (!user && !userError)) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        minHeight: '100vh', 
-        backgroundColor: '#f8fafc' 
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '3rem',
-            height: '3rem',
-            border: '2px solid #e5e7eb',
-            borderTop: '2px solid #3b82f6',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 1rem'
-          }}></div>
-          <div style={{ fontSize: '1.125rem', color: '#374151' }}>Loading dashboard...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="text-lg text-gray-700">Loading dashboard...</div>
         </div>
       </div>
     );
@@ -124,83 +110,40 @@ function ModernDashboard() {
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+    <div className="flex min-h-screen bg-gray-50">
       <ModernSidebar user={user} onLogout={handleLogout} />
       
-      <main style={{ flex: 1, padding: '2rem' }}>
+      <main className="flex-1 p-8">
         {/* Header */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ 
-            fontSize: '1.875rem', 
-            fontWeight: 'bold', 
-            color: '#111827', 
-            margin: '0 0 0.5rem 0' 
-          }}>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back, {user?.firstName}!
           </h1>
-          <p style={{ color: '#6b7280', margin: 0 }}>
+          <p className="text-gray-600">
             Track your FXBOT investments and referral earnings
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-          gap: '1.5rem', 
-          marginBottom: '2rem' 
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => {
             const IconComponent = stat.icon;
             return (
               <div
                 key={index}
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: '0.75rem',
-                  padding: '1.5rem',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                  border: '1px solid rgba(229, 231, 235, 0.5)',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                  e.target.style.transform = 'none';
-                }}
+                className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md hover:-translate-y-1 transition-all duration-200"
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p style={{ 
-                      color: '#6b7280', 
-                      fontSize: '0.875rem', 
-                      margin: '0 0 0.5rem 0',
-                      fontWeight: '500'
-                    }}>
+                    <p className="text-gray-600 text-sm font-medium mb-2">
                       {stat.title}
                     </p>
-                    <p style={{ 
-                      fontSize: '1.875rem', 
-                      fontWeight: 'bold', 
-                      color: '#111827',
-                      margin: 0
-                    }}>
+                    <p className="text-3xl font-bold text-gray-900">
                       {stat.value}
                     </p>
                   </div>
-                  <div style={{
-                    width: '3rem',
-                    height: '3rem',
-                    background: stat.bgColor,
-                    borderRadius: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <IconComponent style={{ width: '1.5rem', height: '1.5rem', color: '#3b82f6' }} />
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <IconComponent className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
               </div>
@@ -209,52 +152,20 @@ function ModernDashboard() {
         </div>
 
         {/* Main Content Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 400px', 
-          gap: '2rem',
-          '@media (max-width: 1024px)': {
-            gridTemplateColumns: '1fr'
-          }
-        }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Referral Program Card */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '0.75rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(229, 231, 235, 0.5)'
-          }}>
+          <div className="lg:col-span-2 bg-white rounded-xl p-8 shadow-sm border border-gray-200">
             {/* Header */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between', 
-              marginBottom: '2rem' 
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{
-                  width: '2.5rem',
-                  height: '2.5rem',
-                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-                  borderRadius: '0.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '0.75rem'
-                }}>
-                  <Users style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} />
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                  <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 style={{ 
-                    fontSize: '1.25rem', 
-                    fontWeight: 'bold', 
-                    color: '#111827', 
-                    margin: 0 
-                  }}>
+                  <h3 className="text-xl font-bold text-gray-900">
                     Referral Program
                   </h3>
-                  <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: 0 }}>
+                  <p className="text-gray-600 text-sm">
                     SmartLine Income - 5 Level Commission
                   </p>
                 </div>
@@ -262,61 +173,24 @@ function ModernDashboard() {
             </div>
 
             {/* Sponsor ID Section */}
-            <div style={{
-              background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-              borderRadius: '0.75rem',
-              padding: '1.5rem',
-              marginBottom: '2rem',
-              color: 'white'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 mb-8 text-white">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p style={{ 
-                    color: 'rgba(255, 255, 255, 0.8)', 
-                    fontSize: '0.875rem', 
-                    margin: '0 0 0.5rem 0',
-                    fontWeight: '500'
-                  }}>
+                  <p className="text-blue-100 text-sm font-medium mb-2">
                     Your Sponsor ID
                   </p>
-                  <p style={{ 
-                    fontSize: '1.5rem', 
-                    fontWeight: 'bold', 
-                    margin: '0 0 0.25rem 0' 
-                  }}>
+                  <p className="text-2xl font-bold mb-1">
                     {user?.ownSponsorId}
                   </p>
-                  <p style={{ 
-                    color: 'rgba(255, 255, 255, 0.7)', 
-                    fontSize: '0.75rem',
-                    margin: 0
-                  }}>
+                  <p className="text-blue-200 text-xs">
                     Share this ID to earn commissions
                   </p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(user?.ownSponsorId)}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    color: 'white',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '0.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  }}
+                  className="bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-3 rounded-lg flex items-center text-sm font-medium transition-all duration-200"
                 >
-                  <Copy style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                  <Copy className="w-4 h-4 mr-2" />
                   Copy ID
                 </button>
               </div>
@@ -324,75 +198,45 @@ function ModernDashboard() {
 
             {/* Commission Structure */}
             <div>
-              <h4 style={{ 
-                fontSize: '1.125rem', 
-                fontWeight: 'bold', 
-                color: '#111827', 
-                margin: '0 0 1rem 0' 
-              }}>
+              <h4 className="text-lg font-bold text-gray-900 mb-4">
                 Commission Structure
               </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div className="space-y-3">
                 {referralTiers.map((tier, index) => {
-                  const colors = [
-                    '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'
+                  const colorClasses = [
+                    'border-l-red-500 bg-red-50 text-red-700',
+                    'border-l-orange-500 bg-orange-50 text-orange-700',
+                    'border-l-yellow-500 bg-yellow-50 text-yellow-700',
+                    'border-l-green-500 bg-green-50 text-green-700',
+                    'border-l-blue-500 bg-blue-50 text-blue-700'
+                  ];
+                  const badgeColors = [
+                    'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500', 'bg-blue-500'
                   ];
                   
                   return (
                     <div
                       key={tier.level}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '1rem',
-                        backgroundColor: '#f8fafc',
-                        borderRadius: '0.5rem',
-                        border: `2px solid ${colors[index]}20`,
-                        borderLeft: `4px solid ${colors[index]}`
-                      }}
+                      className={`flex items-center justify-between p-4 ${colorClasses[index]} border-l-4 rounded-lg`}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{
-                          width: '2rem',
-                          height: '2rem',
-                          backgroundColor: colors[index],
-                          color: 'white',
-                          borderRadius: '0.375rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginRight: '0.75rem',
-                          fontSize: '0.875rem',
-                          fontWeight: 'bold'
-                        }}>
+                      <div className="flex items-center">
+                        <div className={`w-8 h-8 ${badgeColors[index]} text-white rounded-md flex items-center justify-center mr-3 text-sm font-bold`}>
                           {tier.level}
                         </div>
                         <div>
-                          <span style={{ fontWeight: '600', color: '#111827' }}>
+                          <span className="font-semibold text-gray-900">
                             Level {tier.level}
                           </span>
-                          <p style={{ 
-                            color: '#6b7280', 
-                            fontSize: '0.75rem', 
-                            margin: 0 
-                          }}>
+                          <p className="text-gray-600 text-xs">
                             {tier.rate} commission
                           </p>
                         </div>
                       </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <div style={{ 
-                          fontSize: '1.25rem', 
-                          fontWeight: 'bold', 
-                          color: '#111827' 
-                        }}>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900">
                           {tier.count}
                         </div>
-                        <div style={{ 
-                          fontSize: '0.75rem', 
-                          color: '#6b7280' 
-                        }}>
+                        <div className="text-xs text-gray-600">
                           referrals
                         </div>
                       </div>
@@ -404,134 +248,37 @@ function ModernDashboard() {
           </div>
 
           {/* Quick Actions Card */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '0.75rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(229, 231, 235, 0.5)',
-            height: 'fit-content'
-          }}>
-            <h3 style={{ 
-              fontSize: '1.25rem', 
-              fontWeight: 'bold', 
-              color: '#111827', 
-              margin: '0 0 1.5rem 0' 
-            }}>
+          <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 h-fit">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">
               Quick Actions
             </h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <button style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-                color: 'white',
-                fontWeight: '600',
-                padding: '0.875rem 1rem',
-                borderRadius: '0.5rem',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'none';
-                e.target.style.boxShadow = 'none';
-              }}
-              >
-                <DollarSign style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
+            <div className="space-y-3">
+              <button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center hover:-translate-y-0.5 hover:shadow-lg">
+                <DollarSign className="w-5 h-5 mr-2" />
                 Invest Now
               </button>
               
-              <button style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                color: 'white',
-                fontWeight: '600',
-                padding: '0.875rem 1rem',
-                borderRadius: '0.5rem',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'none';
-                e.target.style.boxShadow = 'none';
-              }}
-              >
-                <Wallet style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
+              <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center hover:-translate-y-0.5 hover:shadow-lg">
+                <Wallet className="w-5 h-5 mr-2" />
                 View Portfolio
               </button>
               
-              <button style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                color: 'white',
-                fontWeight: '600',
-                padding: '0.875rem 1rem',
-                borderRadius: '0.5rem',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'none';
-                e.target.style.boxShadow = 'none';
-              }}
-              >
-                <Users style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
+              <button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center hover:-translate-y-0.5 hover:shadow-lg">
+                <Users className="w-5 h-5 mr-2" />
                 Referral Tree
               </button>
             </div>
 
             {/* Package Info */}
-            <div style={{
-              marginTop: '2rem',
-              padding: '1rem',
-              backgroundColor: '#f8fafc',
-              borderRadius: '0.5rem',
-              border: '1px solid #e5e7eb'
-            }}>
-              <h4 style={{ 
-                fontSize: '0.875rem', 
-                fontWeight: '600', 
-                color: '#111827', 
-                margin: '0 0 0.5rem 0' 
-              }}>
+            <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h4 className="text-sm font-semibold text-gray-900 mb-2">
                 FS Income Package
               </h4>
-              <p style={{ 
-                fontSize: '0.75rem', 
-                color: '#6b7280', 
-                margin: '0 0 0.5rem 0' 
-              }}>
+              <p className="text-xs text-gray-600 mb-2">
                 6% Monthly ROI until 2x returns
               </p>
-              <div style={{ 
-                fontSize: '0.75rem', 
-                color: '#059669',
-                fontWeight: '600'
-              }}>
+              <div className="text-xs text-green-600 font-semibold">
                 Minimum: $250 • Duration: ~17 months
               </div>
             </div>
