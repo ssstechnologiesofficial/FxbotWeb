@@ -70,7 +70,18 @@ const userSchema = new mongoose.Schema({
   children: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }]
+  }],
+  level1Count: { type: Number, default: 0 },
+  level2Count: { type: Number, default: 0 },
+  level3Count: { type: Number, default: 0 },
+  level4Count: { type: Number, default: 0 },
+  level5Count: { type: Number, default: 0 },
+  totalEarnings: { type: Number, default: 0 },
+  level1Earnings: { type: Number, default: 0 },
+  level2Earnings: { type: Number, default: 0 },
+  level3Earnings: { type: Number, default: 0 },
+  level4Earnings: { type: Number, default: 0 },
+  level5Earnings: { type: Number, default: 0 }
 }, {
   timestamps: true
 });

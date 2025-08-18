@@ -86,6 +86,10 @@ class MongoStorage {
         $inc: { referralCount: 1 }
       });
     }
+
+    // Update multi-level referral counts
+    const { referralService } = await import('./referralService.js');
+    await referralService.updateReferralCounts(user._id);
     
     // Return user without password
     const { password, ...userWithoutPassword } = user.toObject();

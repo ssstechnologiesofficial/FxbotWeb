@@ -14,6 +14,10 @@ FXBOT is a modern full-stack web application for a Forex investment platform. Th
 - ✅ **Registration system with referral structure** - Users get unique sponsor IDs and parent-child relationships
 - ✅ **User dashboard** - Shows own sponsor ID, referral count, and referred users list
 - ✅ **MongoDB Atlas integration** - Live database with user authentication and referral tracking
+- ✅ **Multi-level referral tracking** - 5-tier system with parent-child relationships up to 5 levels deep
+- ✅ **Reward distribution system** - Automated percentage-based rewards (1.5%, 1.0%, 0.75%, 0.50%, 0.25%)
+- ✅ **Enhanced dashboard UI** - Modern card-based interface showing multi-level stats and earnings
+- ✅ **Investment simulation** - Testing tool for reward distribution validation
 
 ## User Preferences
 

@@ -214,6 +214,10 @@ export async function registerRoutes(app) {
       // Get children (referred users)
       const children = await storage.getUserReferrals(req.userId);
       
+      // Get detailed referral statistics
+      const { referralService } = await import('./referralService.js');
+      const referralStats = await referralService.getReferralStats(req.userId);
+      
       res.json({
         ownSponsorId: user.ownSponsorId,
         referralCount: user.referralCount || 0,
@@ -222,10 +226,43 @@ export async function registerRoutes(app) {
           name: `${child.firstName} ${child.lastName}`,
           email: child.email,
           registeredAt: child.createdAt
-        }))
+        })),
+        stats: referralStats
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to get referral information" });
+    }
+  });
+
+  // Get referral tree
+  app.get("/api/user/referral-tree", authenticateToken, async (req, res) => {
+    try {
+      const { referralService } = await import('./referralService.js');
+      const tree = await referralService.getReferralTree(req.userId);
+      res.json(tree);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get referral tree" });
+    }
+  });
+
+  // Simulate investment for testing rewards (remove in production)
+  app.post("/api/user/simulate-investment", authenticateToken, async (req, res) => {
+    try {
+      const { amount } = req.body;
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Invalid investment amount" });
+      }
+
+      const { referralService } = await import('./referralService.js');
+      const rewards = await referralService.distributeRewards(req.userId, amount);
+      
+      res.json({
+        message: "Investment processed and rewards distributed",
+        amount: amount,
+        rewards: rewards
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process investment" });
     }
   });
 
