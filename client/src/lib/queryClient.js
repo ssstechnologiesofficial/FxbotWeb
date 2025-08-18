@@ -5,10 +5,23 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
-        const res = await fetch(queryKey[0]);
+        const token = localStorage.getItem('token');
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+        
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        
+        const res = await fetch(queryKey[0], {
+          headers,
+          credentials: 'include'
+        });
+        
         if (!res.ok) {
           const error = await res.text();
-          throw new Error(error || "An error occurred");
+          throw new Error(`${res.status}: ${error || "An error occurred"}`);
         }
         return res.json();
       },

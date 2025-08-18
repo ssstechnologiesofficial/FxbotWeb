@@ -7,13 +7,13 @@ function DashboardNew() {
   const [referralData, setReferralData] = useState(null);
 
   // Fetch user data
-  const { data: userData } = useQuery({
+  const { data: userData, isLoading: userLoading, error: userError } = useQuery({
     queryKey: ['/api/auth/me'],
     retry: false,
   });
 
   // Fetch referral data
-  const { data: referralInfo } = useQuery({
+  const { data: referralInfo, isLoading: referralLoading } = useQuery({
     queryKey: ['/api/user/referrals'],
     retry: false,
     enabled: !!userData,
@@ -60,10 +60,34 @@ function DashboardNew() {
     }
   };
 
+  // Handle authentication errors
+  if (userError) {
+    console.error('User authentication error:', userError);
+    // If not authenticated, redirect to login
+    if (userError.message.includes('401')) {
+      window.location.href = '/login';
+      return null;
+    }
+  }
+
+  // Show loading state
+  if (userLoading || (!user && !userError)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="text-lg text-gray-700">Loading dashboard...</div>
+        </div>
+      </div>
+    );
+  }
+
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="text-lg text-gray-700">Redirecting to login...</div>
+        </div>
       </div>
     );
   }
