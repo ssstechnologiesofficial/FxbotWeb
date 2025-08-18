@@ -73,21 +73,33 @@ function DashboardEnhanced() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="flex h-screen">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+    }}>
+      <div style={{ display: 'flex', height: '100vh' }}>
         {/* Sidebar */}
         <Sidebar user={user} onLogout={handleLogout} />
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {/* Header with gradient */}
-          <header className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg px-6 py-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold text-white">Enhanced Dashboard</h1>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <span className="text-blue-100">Welcome,</span>
-                  <span className="text-white font-semibold">
+          <header style={{
+            background: 'linear-gradient(90deg, #2563eb 0%, #7c3aed 100%)',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+            padding: '1rem 1.5rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h1 style={{ 
+                fontSize: '1.875rem', 
+                fontWeight: 'bold', 
+                color: 'white',
+                margin: 0
+              }}>Enhanced Dashboard</h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ color: '#bfdbfe' }}>Welcome,</span>
+                  <span style={{ color: 'white', fontWeight: '600' }}>
                     {user?.firstName} {user?.lastName}
                   </span>
                 </div>
@@ -96,73 +108,259 @@ function DashboardEnhanced() {
           </header>
 
           {/* Dashboard Content */}
-          <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+          <main style={{
+            flex: 1,
+            overflowY: 'auto',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+            padding: '1.5rem'
+          }}>
             {/* Top Stats Row - Enhanced with gradients and animations */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '1.5rem',
+              marginBottom: '2rem'
+            }}>
               
               {/* Total Balance Card */}
-              <div className="bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{
+                background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #7c3aed 100%)',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                transform: 'translateY(0)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-4px) scale(1.02)';
+                e.target.style.boxShadow = '0 32px 64px -12px rgba(0, 0, 0, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <div style={{
+                    width: '3rem',
+                    height: '3rem',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <svg style={{ width: '1.5rem', height: '1.5rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                     </svg>
                   </div>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-white mb-2">$0.00</p>
-                  <p className="text-blue-100 text-sm mb-3">Total Balance</p>
-                  <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-white/30">
+                  <p style={{ 
+                    fontSize: '1.875rem', 
+                    fontWeight: 'bold', 
+                    color: 'white', 
+                    marginBottom: '0.5rem',
+                    margin: 0
+                  }}>$0.00</p>
+                  <p style={{ 
+                    color: '#bfdbfe', 
+                    fontSize: '0.875rem', 
+                    marginBottom: '0.75rem',
+                    margin: '0.5rem 0 0.75rem 0'
+                  }}>Total Balance</p>
+                  <button style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    color: 'white',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                  }}>
                     Deposit Now! →
                   </button>
                 </div>
               </div>
 
               {/* Wallet Balance Card */}
-              <div className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%)',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                transform: 'translateY(0)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-4px) scale(1.02)';
+                e.target.style.boxShadow = '0 32px 64px -12px rgba(0, 0, 0, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <div style={{
+                    width: '3rem',
+                    height: '3rem',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <svg style={{ width: '1.5rem', height: '1.5rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
                   </div>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-white mb-2">$0.00</p>
-                  <p className="text-emerald-100 text-sm mb-3">Wallet Balance</p>
-                  <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-white/30">
+                  <p style={{ 
+                    fontSize: '1.875rem', 
+                    fontWeight: 'bold', 
+                    color: 'white', 
+                    marginBottom: '0.5rem',
+                    margin: 0
+                  }}>$0.00</p>
+                  <p style={{ 
+                    color: '#a7f3d0', 
+                    fontSize: '0.875rem', 
+                    marginBottom: '0.75rem',
+                    margin: '0.5rem 0 0.75rem 0'
+                  }}>Wallet Balance</p>
+                  <button style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    color: 'white',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                  }}>
                     Deposit Now! →
                   </button>
                 </div>
               </div>
 
               {/* Today's Referral Commission Card */}
-              <div className="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{
+                background: 'linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                transform: 'translateY(0)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-4px) scale(1.02)';
+                e.target.style.boxShadow = '0 32px 64px -12px rgba(0, 0, 0, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <div style={{
+                    width: '3rem',
+                    height: '3rem',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <svg style={{ width: '1.5rem', height: '1.5rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </div>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-white mb-2">${(referralData?.stats?.totalEarnings || 0).toFixed(2)}</p>
-                  <p className="text-orange-100 text-sm">Today's Referral Commission</p>
+                  <p style={{ 
+                    fontSize: '1.875rem', 
+                    fontWeight: 'bold', 
+                    color: 'white', 
+                    marginBottom: '0.5rem',
+                    margin: 0
+                  }}>${(referralData?.stats?.totalEarnings || 0).toFixed(2)}</p>
+                  <p style={{ 
+                    color: '#fed7aa', 
+                    fontSize: '0.875rem',
+                    margin: '0.5rem 0 0 0'
+                  }}>Today's Referral Commission</p>
                 </div>
               </div>
 
               {/* Document Status Card */}
-              <div className="bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{
+                background: 'linear-gradient(135deg, #22c55e 0%, #10b981 50%, #14b8a6 100%)',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                transform: 'translateY(0)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-4px) scale(1.02)';
+                e.target.style.boxShadow = '0 32px 64px -12px rgba(0, 0, 0, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <div style={{
+                    width: '3rem',
+                    height: '3rem',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <svg style={{ width: '1.5rem', height: '1.5rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-white mb-2">Verified</p>
-                  <p className="text-green-100 text-sm">Document Status</p>
+                  <p style={{ 
+                    fontSize: '1.875rem', 
+                    fontWeight: 'bold', 
+                    color: 'white', 
+                    marginBottom: '0.5rem',
+                    margin: 0
+                  }}>Verified</p>
+                  <p style={{ 
+                    color: '#bbf7d0', 
+                    fontSize: '0.875rem',
+                    margin: '0.5rem 0 0 0'
+                  }}>Document Status</p>
                 </div>
               </div>
 
