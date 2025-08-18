@@ -64,35 +64,88 @@ const ModernSidebar = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="w-64 bg-gray-900 text-white flex flex-col h-full">
+    <div style={{
+      width: '256px',
+      background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      boxShadow: '4px 0 20px rgba(0, 0, 0, 0.15)'
+    }}>
       {/* Logo Section */}
-      <div className="p-6 border-b border-gray-700">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-            <span className="text-white font-bold text-sm">FX</span>
+      <div style={{
+        padding: '1.5rem',
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        background: 'rgba(59, 130, 246, 0.05)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{
+            width: '2rem',
+            height: '2rem',
+            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            borderRadius: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '0.75rem',
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
+          }}>
+            <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.875rem' }}>FX</span>
           </div>
-          <span className="text-xl font-bold">FXBOT</span>
+          <span style={{ fontSize: '1.25rem', fontWeight: 'bold', letterSpacing: '0.05em' }}>FXBOT</span>
         </div>
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav style={{ flex: 1, padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {menuItems.map((item) => {
           const IconComponent = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => handleNavigation(item.path)}
-              className={`w-full flex items-center px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
-                item.active
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-              }`}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.75rem 1rem',
+                borderRadius: '0.75rem',
+                textAlign: 'left',
+                transition: 'all 0.2s ease',
+                border: 'none',
+                cursor: 'pointer',
+                background: item.active 
+                  ? 'linear-gradient(135deg, #3b82f6, #8b5cf6)' 
+                  : 'transparent',
+                color: item.active ? 'white' : '#d1d5db',
+                boxShadow: item.active ? '0 4px 12px rgba(59, 130, 246, 0.4)' : 'none',
+                transform: item.active ? 'translateX(4px)' : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (!item.active) {
+                  e.target.style.background = 'rgba(55, 65, 81, 0.6)';
+                  e.target.style.color = 'white';
+                  e.target.style.transform = 'translateX(2px)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!item.active) {
+                  e.target.style.background = 'transparent';
+                  e.target.style.color = '#d1d5db';
+                  e.target.style.transform = 'none';
+                }
+              }}
             >
-              <IconComponent className={`w-5 h-5 mr-3 ${item.active ? 'text-white' : 'text-gray-400 group-hover:text-white'}`} />
-              <span className="font-medium">{item.label}</span>
+              <IconComponent style={{
+                width: '1.25rem',
+                height: '1.25rem',
+                marginRight: '0.75rem',
+                color: item.active ? 'white' : '#9ca3af'
+              }} />
+              <span style={{ fontWeight: '500', fontSize: '0.875rem' }}>{item.label}</span>
               {item.active && (
-                <ChevronRight className="w-4 h-4 ml-auto text-white" />
+                <ChevronRight style={{ width: '1rem', height: '1rem', marginLeft: 'auto', color: 'white' }} />
               )}
             </button>
           );
@@ -100,18 +153,32 @@ const ModernSidebar = ({ user, onLogout }) => {
       </nav>
 
       {/* User Profile Section */}
-      <div className="p-4 border-t border-gray-700">
-        <div className="flex items-center mb-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
-            <span className="text-white font-semibold text-sm">
+      <div style={{
+        padding: '1rem',
+        borderTop: '1px solid rgba(55, 65, 81, 0.5)',
+        background: 'rgba(0, 0, 0, 0.2)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.75rem' }}>
+          <div style={{
+            width: '2.5rem',
+            height: '2.5rem',
+            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '0.75rem',
+            boxShadow: '0 2px 8px rgba(59, 130, 246, 0.4)'
+          }}>
+            <span style={{ color: 'white', fontWeight: '600', fontSize: '0.875rem' }}>
               {user?.firstName?.[0]}{user?.lastName?.[0]}
             </span>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: '500', color: 'white', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {user?.firstName} {user?.lastName}
             </p>
-            <p className="text-xs text-gray-400 truncate">
+            <p style={{ fontSize: '0.75rem', color: '#9ca3af', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {user?.email}
             </p>
           </div>
@@ -119,10 +186,30 @@ const ModernSidebar = ({ user, onLogout }) => {
         
         <button
           onClick={onLogout}
-          className="w-full flex items-center px-4 py-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-lg transition-all duration-200"
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0.5rem 1rem',
+            color: '#d1d5db',
+            background: 'transparent',
+            border: 'none',
+            borderRadius: '0.5rem',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+            fontSize: '0.875rem'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = '#dc2626';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'transparent';
+            e.target.style.color = '#d1d5db';
+          }}
         >
-          <LogOut className="w-4 h-4 mr-3" />
-          <span className="text-sm font-medium">Logout</span>
+          <LogOut style={{ width: '1rem', height: '1rem', marginRight: '0.75rem' }} />
+          <span style={{ fontWeight: '500' }}>Logout</span>
         </button>
       </div>
     </div>
