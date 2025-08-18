@@ -10,7 +10,7 @@ export default function AboutSection() {
       name: "Lucy Baldwin",
       position: "Chief Operations Officer",
       description: "An operations specialist with extensive experience in financial services administration, KYC compliance, and client relations. She oversees daily business processes.",
-      image: "https://images.unsplash.com/photo-1494790108755-2616c5e94cfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400"
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400"
     },
     {
       name: "Richards Dennis",
