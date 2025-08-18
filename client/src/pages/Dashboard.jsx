@@ -29,6 +29,10 @@ export default function Dashboard() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setReferralData(referralResponse.data);
+        
+        // Debug: log the data to console
+        console.log('User data:', userResponse.data);
+        console.log('Referral data:', referralResponse.data);
 
       } catch (error) {
         if (error.response?.status === 401) {
@@ -53,8 +57,15 @@ export default function Dashboard() {
   };
 
   const copyToClipboard = (text) => {
+    if (!text || text === 'undefined') {
+      alert('Sponsor ID not available yet. Please refresh the page.');
+      return;
+    }
     navigator.clipboard.writeText(text).then(() => {
       alert('Sponsor ID copied to clipboard!');
+    }).catch(() => {
+      // Fallback for browsers that don't support clipboard API
+      prompt('Copy this sponsor ID:', text);
     });
   };
 
@@ -155,9 +166,9 @@ export default function Dashboard() {
                     <span className="text-white font-bold">ID</span>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">Your Sponsor ID</h3>
-                  <p className="text-2xl font-bold text-green-600 mb-2">{referralData?.ownSponsorId}</p>
+                  <p className="text-2xl font-bold text-green-600 mb-2">{referralData?.ownSponsorId || user?.ownSponsorId || 'Loading...'}</p>
                   <button
-                    onClick={() => copyToClipboard(referralData?.ownSponsorId)}
+                    onClick={() => copyToClipboard(referralData?.ownSponsorId || user?.ownSponsorId)}
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                     data-testid="button-copy-sponsor-id"
                   >
@@ -306,7 +317,7 @@ export default function Dashboard() {
                     Share your sponsor ID <strong>{referralData?.ownSponsorId}</strong> with others to start building your network
                   </p>
                   <button
-                    onClick={() => copyToClipboard(referralData?.ownSponsorId)}
+                    onClick={() => copyToClipboard(referralData?.ownSponsorId || user?.ownSponsorId)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
                   >
                     Copy Your Sponsor ID
