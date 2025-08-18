@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, TrendingUp } from 'lucide-react';
 import { Link } from 'wouter';
+import ThemeToggle from './ThemeToggle';
 
 export default function FXBOTNavigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,9 +32,11 @@ export default function FXBOTNavigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-gold rounded-fxbot-sm flex items-center justify-center shadow-fxbot-gold">
-              <TrendingUp className="w-6 h-6 text-white" />
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="FXBOT Logo" 
+              className="w-10 h-10 object-contain"
+            />
             <span className="text-2xl font-bold fxbot-text-blue">FXBOT</span>
           </div>
           
@@ -79,6 +82,7 @@ export default function FXBOTNavigation() {
           
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Link href="/login">
               <button className="fxbot-btn fxbot-btn-outline fxbot-btn-sm px-6">
                 Login
@@ -149,6 +153,9 @@ export default function FXBOTNavigation() {
               </button>
               
               <div className="pt-4 space-y-3 border-t border-gray-200">
+                <div className="flex justify-center mb-3">
+                  <ThemeToggle />
+                </div>
                 <Link href="/login">
                   <button className="w-full fxbot-btn fxbot-btn-outline">
                     Login

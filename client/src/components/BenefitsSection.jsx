@@ -20,36 +20,27 @@ export default function BenefitsSection() {
   ];
 
   return (
-    <section className="section bg-secondary">
-      <div className="container">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Why Choose <span className="text-gold">FXBOT</span>?</h2>
-          <p className="text-xl text-secondary">Professional trading solutions with complete transparency</p>
+    <section className="py-20 fxbot-bg-secondary">
+      <div className="fxbot-container">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-6">Why Choose <span className="fxbot-text-gold">FXBOT</span>?</h2>
+          <p className="text-xl fxbot-text-secondary">Professional trading solutions with complete transparency</p>
         </div>
         
-        <div className="grid grid-cols-1 gap-8 benefits-grid">
+        <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => {
             const IconComponent = benefit.icon;
             return (
               <div 
                 key={index}
-                className="card text-center p-8 animate-fadeIn hover-lift"
+                className="fxbot-card text-center fxbot-animate-fadeInUp hover:fxbot-card-gold transition-all duration-300"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
-                <div className="benefit-icon" style={{
-                  width: '4rem',
-                  height: '4rem',
-                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 1.5rem'
-                }}>
-                  <IconComponent style={{ width: '2rem', height: '2rem', color: 'var(--primary-gold)' }} />
+                <div className="fxbot-stat-icon fxbot-stat-icon-gold mx-auto mb-6">
+                  <IconComponent className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">{benefit.title}</h3>
-                <p className="text-secondary">{benefit.description}</p>
+                <h3 className="text-xl font-bold mb-4 fxbot-text-blue">{benefit.title}</h3>
+                <p className="fxbot-text-secondary leading-relaxed">{benefit.description}</p>
               </div>
             );
           })}

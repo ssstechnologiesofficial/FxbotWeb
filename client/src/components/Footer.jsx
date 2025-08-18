@@ -33,15 +33,15 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-dark border-t py-16" style={{ borderTopColor: 'rgba(255, 215, 0, 0.2)' }}>
-      <div className="container">
-        <div className="grid grid-cols-1 gap-8 footer-grid">
-          <div className="footer-main">
+    <footer className="bg-gray-900 border-t border-gray-800 py-16">
+      <div className="fxbot-container">
+        <div className="grid md:grid-cols-4 gap-8">
+          <div className="md:col-span-2">
             <div className="flex items-center mb-6">
-              <img src="/logo.png" alt="FXBOT Logo" style={{ height: '2rem', width: 'auto', marginRight: '0.75rem' }} />
-              <span className="text-2xl font-bold text-gold">FXBOT</span>
+              <img src="/logo.png" alt="FXBOT Logo" className="h-8 w-auto mr-3" />
+              <span className="text-2xl font-bold fxbot-text-gold">FXBOT</span>
             </div>
-            <p className="text-secondary mb-6" style={{ lineHeight: '1.6' }}>
+            <p className="text-gray-300 mb-6 leading-relaxed">
               Professional Forex investment solutions provider dedicated to delivering consistent returns through advanced market analytics and experienced fund management.
             </p>
             <div className="flex" style={{ gap: '1rem' }}>
