@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  ownSponsorId: {
+    type: String,
+    unique: true,
+    required: true
+  },
   firstName: {
     type: String,
     required: true
@@ -52,7 +57,20 @@ const userSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+  referralCount: {
+    type: Number,
+    default: 0
+  },
+  parent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  children: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 }, {
   timestamps: true
 });

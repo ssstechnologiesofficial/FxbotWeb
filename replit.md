@@ -11,6 +11,9 @@ FXBOT is a modern full-stack web application for a Forex investment platform. Th
 - ✅ **Fixed server configuration** - Application now properly runs on port 5000
 - ✅ **Git-ready project structure** - Project prepared for version control and deployment
 - ✅ **Backend foundation** - Storage interface and API routes ready for database integration
+- ✅ **Registration system with referral structure** - Users get unique sponsor IDs and parent-child relationships
+- ✅ **User dashboard** - Shows own sponsor ID, referral count, and referred users list
+- ✅ **MongoDB Atlas integration** - Live database with user authentication and referral tracking
 
 ## User Preferences
 

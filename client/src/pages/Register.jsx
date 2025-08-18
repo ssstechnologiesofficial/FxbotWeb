@@ -146,7 +146,7 @@ export default function Register() {
             />
             {errors.sponsorId && <span className="error-message">{errors.sponsorId}</span>}
             <small style={{ color: '#718096', fontSize: '12px', marginTop: '4px', display: 'block' }}>
-              For testing, you can use: <strong style={{ color: '#667eea' }}>FX123456</strong>
+              Ask your referrer for their sponsor ID. For testing: <strong style={{ color: '#667eea' }}>FX123456</strong>
             </small>
           </div>
 

@@ -114,8 +114,11 @@ export async function registerRoutes(app) {
         return res.status(400).json({ error: "Sponsor ID must be in format FX123456 (FX followed by 6 digits)" });
       }
 
-      // TODO: In the future, verify sponsor ID exists in the system
-      // For now, we'll accept any sponsor ID with correct format as valid
+      // Verify sponsor ID exists in the system
+      const sponsor = await storage.findSponsor(sponsorId);
+      if (!sponsor) {
+        return res.status(400).json({ error: "Invalid sponsor ID. Please check the sponsor ID and try again." });
+      }
 
       // Create new user
       const userData = {
@@ -197,6 +200,32 @@ export async function registerRoutes(app) {
       res.json(user);
     } catch (error) {
       res.status(500).json({ error: "Failed to get user data" });
+    }
+  });
+
+  // Get user referral information
+  app.get("/api/user/referrals", authenticateToken, async (req, res) => {
+    try {
+      const user = await storage.getUserById(req.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Get children (referred users)
+      const children = await storage.getUserReferrals(req.userId);
+      
+      res.json({
+        ownSponsorId: user.ownSponsorId,
+        referralCount: user.referralCount || 0,
+        children: children.map(child => ({
+          id: child._id,
+          name: `${child.firstName} ${child.lastName}`,
+          email: child.email,
+          registeredAt: child.createdAt
+        }))
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get referral information" });
     }
   });
 

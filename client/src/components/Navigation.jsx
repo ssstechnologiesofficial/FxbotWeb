@@ -52,9 +52,9 @@ export default function Navigation() {
             <Link href="/login" className="btn btn-secondary">
               Login
             </Link>
-            <button className="btn btn-primary">
+            <Link href="/register" className="btn btn-primary">
               Register
-            </button>
+            </Link>
           </div>
           
           {/* Mobile Menu Button */}
@@ -83,9 +83,9 @@ export default function Navigation() {
                 <Link href="/login" className="btn btn-secondary w-full">
                   Login
                 </Link>
-                <button className="btn btn-primary w-full">
+                <Link href="/register" className="btn btn-primary w-full">
                   Register
-                </button>
+                </Link>
               </div>
             </div>
           </div>
