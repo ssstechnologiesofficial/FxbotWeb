@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Sidebar from '../components/Sidebar';
 
+// Enhanced Dashboard with Modern UI - Force Cache Refresh
+
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [referralData, setReferralData] = useState(null);
@@ -424,4 +426,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Dashboard;/* Cache buster: Mon Aug 18 06:51:30 PM UTC 2025 */
