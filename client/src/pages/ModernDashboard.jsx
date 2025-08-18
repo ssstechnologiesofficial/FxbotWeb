@@ -124,10 +124,10 @@ function ModernDashboard() {
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+    <div className="flex min-h-screen bg-gradient-bg">
       <ModernSidebar user={user} onLogout={handleLogout} />
       
-      <main style={{ flex: 1, padding: '2rem' }}>
+      <main className="flex-1 p-8">
         {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ 
