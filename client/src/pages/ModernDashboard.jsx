@@ -135,59 +135,153 @@ function ModernDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f3f4f6 0%, #dbeafe 50%, #e0e7ff 100%)',
+      display: 'flex'
+    }}>
       {/* Sidebar */}
       <ModernSidebar user={user} onLogout={handleLogout} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-8 py-6">
-          <div className="flex items-center justify-between">
+        <header style={{
+          background: 'white',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          borderBottom: '1px solid #e5e7eb',
+          padding: '2rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600 mt-1">Welcome back, {user?.firstName}!</p>
+              <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>Dashboard</h1>
+              <p style={{ color: '#6b7280', marginTop: '0.25rem', margin: 0 }}>Welcome back, {user?.firstName}!</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg">
-                <span className="text-sm font-medium">Pro Account</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{
+                background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.5rem'
+              }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Pro Account</span>
               </div>
             </div>
           </div>
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
           {/* Enhanced Stats Cards with Gradients and Animations */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1.5rem',
+            marginBottom: '2rem'
+          }}>
             {statsCards.map((card, index) => {
               const IconComponent = card.icon;
+              const gradients = {
+                'from-blue-500 to-blue-600': 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                'from-purple-500 to-purple-600': 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                'from-orange-500 to-orange-600': 'linear-gradient(135deg, #f97316, #ea580c)',
+                'from-green-500 to-green-600': 'linear-gradient(135deg, #10b981, #059669)'
+              };
+              
               return (
                 <div 
                   key={index} 
-                  className={`relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-2 transition-all duration-300 cursor-pointer bg-gradient-to-br ${card.gradient}`}
+                  style={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    borderRadius: '1rem',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                    background: gradients[card.gradient] || 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    transform: 'scale(1)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.05) translateY(-8px)';
+                    e.target.style.boxShadow = '0 25px 25px -5px rgba(0, 0, 0, 0.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1) translateY(0)';
+                    e.target.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+                  }}
                 >
                   {/* Animated Background Pattern */}
-                  <div className="absolute inset-0 opacity-20">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-white rounded-full blur-2xl transform translate-x-8 -translate-y-8"></div>
-                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl transform -translate-x-8 translate-y-8"></div>
+                  <div style={{ position: 'absolute', inset: 0, opacity: 0.2 }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      width: '6rem',
+                      height: '6rem',
+                      background: 'white',
+                      borderRadius: '50%',
+                      filter: 'blur(2rem)',
+                      transform: 'translate(2rem, -2rem)'
+                    }}></div>
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      width: '8rem',
+                      height: '8rem',
+                      background: 'white',
+                      borderRadius: '50%',
+                      filter: 'blur(3rem)',
+                      transform: 'translate(-2rem, 2rem)'
+                    }}></div>
                   </div>
                   
-                  <div className="relative p-6 text-white">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
-                        <IconComponent className="w-7 h-7 text-white" />
+                  <div style={{ position: 'relative', padding: '1.5rem', color: 'white' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                      <div style={{
+                        width: '3.5rem',
+                        height: '3.5rem',
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '0.75rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                      }}>
+                        <IconComponent style={{ width: '1.75rem', height: '1.75rem', color: 'white' }} />
                       </div>
-                      <div className="text-right">
-                        <span className="text-xs bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/30">
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{
+                          fontSize: '0.75rem',
+                          background: 'rgba(255, 255, 255, 0.2)',
+                          backdropFilter: 'blur(10px)',
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '9999px',
+                          border: '1px solid rgba(255, 255, 255, 0.3)'
+                        }}>
                           {card.change}
                         </span>
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-3xl font-bold mb-2 drop-shadow-sm">{card.value}</h3>
-                      <p className="text-white/90 text-sm font-medium">{card.title}</p>
-                      <button className="mt-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-all duration-200 border border-white/30">
+                      <h3 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '0.5rem', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))' }}>{card.value}</h3>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.875rem', fontWeight: '500' }}>{card.title}</p>
+                      <button style={{
+                        marginTop: '0.75rem',
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        fontSize: '0.75rem',
+                        fontWeight: '500',
+                        padding: '0.375rem 0.75rem',
+                        borderRadius: '0.5rem',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.3)'}
+                      onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                      >
                         View Details →
                       </button>
                     </div>
