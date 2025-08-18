@@ -1,147 +1,102 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'wouter';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Sidebar from '../components/Sidebar';
 
-export default function Dashboard() {
+function DashboardNew() {
   const [user, setUser] = useState(null);
   const [referralData, setReferralData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [simulateAmount, setSimulateAmount] = useState('1000');
+
+  // Fetch user data
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/me'],
+    retry: false,
+  });
+
+  // Fetch referral data
+  const { data: referralInfo } = useQuery({
+    queryKey: ['/api/user/referrals'],
+    retry: false,
+    enabled: !!userData,
+  });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          window.location.href = '/login';
-          return;
-        }
+    if (userData) {
+      console.log('User data:', userData);
+      setUser(userData);
+    }
+  }, [userData]);
 
-        // Get user data
-        const userResponse = await axios.get('/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUser(userResponse.data);
+  useEffect(() => {
+    if (referralInfo) {
+      console.log('Referral data:', referralInfo);
+      setReferralData(referralInfo);
+    }
+  }, [referralInfo]);
 
-        // Get referral data
-        const referralResponse = await axios.get('/api/user/referrals', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setReferralData(referralResponse.data);
-        
-        // Debug: log the data to console
-        console.log('User data:', userResponse.data);
-        console.log('Referral data:', referralResponse.data);
-
-      } catch (error) {
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
-        } else {
-          setError('Failed to load dashboard data');
-        }
-      } finally {
-        setLoading(false);
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (response.ok) {
+        window.location.href = '/';
       }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const copyToClipboard = (text) => {
-    if (!text || text === 'undefined') {
-      alert('Sponsor ID not available yet. Please refresh the page.');
-      return;
-    }
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Sponsor ID copied to clipboard!');
-    }).catch(() => {
-      // Fallback for browsers that don't support clipboard API
-      prompt('Copy this sponsor ID:', text);
-    });
-  };
-
-  const simulateInvestment = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('/api/user/simulate-investment', 
-        { amount: parseFloat(simulateAmount) },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      alert(`Investment of $${simulateAmount} processed! Rewards distributed to ${response.data.rewards.length} levels.`);
-      
-      // Refresh data
-      const referralResponse = await axios.get('/api/user/referrals', {
-        headers: { Authorization: `Bearer ${token}` }
+    if (text && typeof text === 'string') {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
       });
-      setReferralData(referralResponse.data);
-    } catch (error) {
-      alert('Failed to process investment simulation');
+    } else {
+      console.error('Invalid text to copy:', text);
+      alert('Unable to copy - invalid text');
     }
   };
 
-  if (loading) {
+  if (!user) {
     return (
-      <div className="flex h-screen bg-gray-100">
-        <div className="w-64 bg-gray-900"></div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading dashboard...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-screen bg-gray-100">
-        <div className="w-64 bg-gray-900"></div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600 mb-4">{error}</p>
-            <Link href="/" className="text-blue-600 hover:underline">Go Home</Link>
-          </div>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar user={user} onLogout={handleLogout} />
-      
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">Welcome, {user?.firstName}</span>
-            </div>
-          </div>
-        </header>
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex h-screen">
+        {/* Sidebar */}
+        <Sidebar user={user} onLogout={handleLogout} />
 
-        {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-100">
-          <div className="p-6">
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-500">Welcome,</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {user?.firstName} {user?.lastName}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Dashboard Content */}
+          <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
             {/* Top Stats Row - Match reference design */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               
-              {/* Total Balance Card - Simplified design matching reference */}
+              {/* Total Balance Card */}
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -157,7 +112,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Wallet Balance Card - Simplified design matching reference */}
+              {/* Wallet Balance Card */}
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -173,7 +128,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Today's Referral Commission Card - Simplified design matching reference */}
+              {/* Today's Referral Commission Card */}
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
@@ -186,7 +141,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Document Status Card - Simplified design matching reference */}
+              {/* Document Status Card */}
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
@@ -256,12 +211,12 @@ export default function Dashboard() {
                   <div className="flex">
                     <input
                       type="text"
-                      value={`https://login.fxstrade.com/affiliate/reg?l4f89388472`}
+                      value={`https://login.fxbot.com/affiliate/reg?id=${referralData?.ownSponsorId || user?.ownSponsorId || ''}`}
                       readOnly
                       className="flex-1 bg-gray-700 border border-gray-600 rounded-l px-3 py-2 text-xs text-gray-300"
                     />
                     <button
-                      onClick={() => copyToClipboard(`https://login.fxstrade.com/affiliate/reg?l4f89388472`)}
+                      onClick={() => copyToClipboard(`https://login.fxbot.com/affiliate/reg?id=${referralData?.ownSponsorId || user?.ownSponsorId}`)}
                       className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-r text-xs"
                       data-testid="button-copy-referral-link"
                     >
@@ -300,49 +255,11 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-
-
-
-
-
-
-
-
-
-            {/* Empty State - Enhanced */}
-            {referralData?.children && referralData.children.length === 0 && (
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 shadow-lg border border-blue-200 text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Start Building Your Network</h3>
-                <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Share your sponsor ID <span className="font-bold text-blue-600">{referralData?.ownSponsorId}</span> with others to start earning commissions on 5 levels
-                </p>
-                <div className="flex justify-center space-x-3">
-                  <button
-                    onClick={() => copyToClipboard(referralData?.ownSponsorId || user?.ownSponsorId)}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center"
-                  >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    Copy Sponsor ID
-                  </button>
-                  <button className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                    </svg>
-                    Share Link
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
     </div>
   );
 }
+
+export default DashboardNew;

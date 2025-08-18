@@ -2,7 +2,7 @@ import { Switch, Route } from "wouter";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/DashboardNew";
 import Profile from "./pages/Profile";
 import Fund from "./pages/Fund";
 import ReferralTree from "./pages/ReferralTree";

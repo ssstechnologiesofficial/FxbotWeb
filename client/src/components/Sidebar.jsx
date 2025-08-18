@@ -78,7 +78,7 @@ const Sidebar = ({ user, onLogout }) => {
           <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center mr-3">
             <span className="text-white font-bold text-sm">FX</span>
           </div>
-          <span className="text-xl font-semibold">FcX Trade</span>
+          <span className="text-xl font-semibold">FXBOT</span>
         </div>
       </div>
 
