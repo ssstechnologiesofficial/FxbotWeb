@@ -229,6 +229,30 @@ class EmailService {
     `;
   }
 
+  async sendPasswordResetEmail(toEmail, resetToken, userName) {
+    try {
+      // Create the reset link
+      const resetLink = `${process.env.BASE_URL || 'https://fxbot.co.in'}/reset-password?token=${resetToken}`;
+      
+      const msg = {
+        to: toEmail,
+        from: {
+          email: this.fromEmail,
+          name: 'FXBOT Security Team'
+        },
+        subject: 'Reset Your FXBOT Password',
+        html: this.generatePasswordResetEmailTemplate(resetLink, userName)
+      };
+
+      const result = await sgMail.send(msg);
+      console.log('Password reset email sent successfully to:', toEmail);
+      return { success: true, messageId: result[0].headers['x-message-id'] };
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   async sendTestEmail(toEmail) {
     try {
       const msg = {

@@ -294,36 +294,7 @@ export async function registerRoutes(app) {
     }
   });
 
-  // Forgot password (placeholder for now)
-  app.post("/api/auth/forgot-password", async (req, res) => {
-    try {
-      const { email } = req.body;
-      
-      // Basic validation
-      if (!email) {
-        return res.status(400).json({ error: "Email is required" });
-      }
-      const user = await storage.getUserByEmail(email);
-      
-      if (!user) {
-        // Don't reveal if email exists or not for security
-        return res.json({ 
-          success: true, 
-          message: "If an account with that email exists, we've sent password reset instructions." 
-        });
-      }
 
-      // TODO: Implement actual password reset logic with email
-      console.log('Password reset requested for:', email);
-      
-      res.json({ 
-        success: true, 
-        message: "If an account with that email exists, we've sent password reset instructions." 
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to process password reset request" });
-    }
-  });
 
   // Deposit endpoint
   app.post("/api/deposit", authenticateToken, async (req, res) => {
