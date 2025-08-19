@@ -134,9 +134,26 @@ export async function registerRoutes(app) {
 
       const newUser = await storage.createUser(userData);
       
+      // Send welcome email
+      try {
+        const { emailService } = await import('./emailService.js');
+        await emailService.sendWelcomeEmail(newUser.email, {
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          mobile: newUser.mobile,
+          ownSponsorId: newUser.ownSponsorId,
+          sponsorId: sponsorId
+        });
+        console.log('Welcome email sent to:', newUser.email);
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't fail registration if email fails
+      }
+      
       res.status(201).json({ 
         success: true, 
-        message: "Account created successfully! Please login to continue.",
+        message: "Account created successfully! Please check your email for welcome message and login to continue.",
         user: newUser
       });
     } catch (error) {
@@ -415,6 +432,36 @@ export async function registerRoutes(app) {
       res.json(subscribers);
     } catch (error) {
       res.status(500).json({ error: "Failed to get subscribers" });
+    }
+  });
+
+  // Email testing endpoint for admin
+  app.post("/api/admin/test-email", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email address is required" });
+      }
+
+      const { emailService } = await import('./emailService.js');
+      const result = await emailService.sendTestEmail(email);
+      
+      if (result.success) {
+        res.json({ 
+          success: true, 
+          message: "Test email sent successfully",
+          messageId: result.messageId 
+        });
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          error: "Failed to send test email: " + result.error 
+        });
+      }
+    } catch (error) {
+      console.error('Email test error:', error);
+      res.status(500).json({ error: "Email test failed" });
     }
   });
 

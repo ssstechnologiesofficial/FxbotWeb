@@ -155,6 +155,33 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleEmailTest = async (email) => {
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    setSearchLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('/api/admin/test-email', 
+        { email },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success) {
+        alert('Test email sent successfully! Check the inbox for: ' + email);
+      } else {
+        alert('Failed to send test email: ' + response.data.error);
+      }
+    } catch (error) {
+      console.error('Error sending test email:', error);
+      alert('Error sending test email: ' + (error.response?.data?.error || error.message));
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
@@ -668,6 +695,74 @@ export default function AdminDashboard() {
                   </h3>
                   <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>
                     Investment tracking system coming soon...
+                  </p>
+                </div>
+              )}
+
+              {/* Email Test Section */}
+              {activeTab === 'users' && (
+                <div style={{
+                  backgroundColor: '#f0f9ff',
+                  borderRadius: '0.5rem',
+                  padding: '1rem',
+                  marginTop: '1.5rem',
+                  border: '1px solid #bae6fd'
+                }}>
+                  <h4 style={{
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    color: '#0369a1',
+                    marginBottom: '0.75rem'
+                  }}>
+                    Email Service Test
+                  </h4>
+                  <div style={{
+                    display: 'flex',
+                    gap: '1rem',
+                    alignItems: 'center'
+                  }}>
+                    <input
+                      type="email"
+                      placeholder="Enter email to test..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        border: '1px solid #bae6fd',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem',
+                        outline: 'none',
+                        flex: 1
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#0369a1'}
+                      onBlur={(e) => e.target.style.borderColor = '#bae6fd'}
+                    />
+                    <button
+                      onClick={() => handleEmailTest(searchTerm)}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#0369a1',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#075985'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#0369a1'}
+                    >
+                      Send Test Email
+                    </button>
+                  </div>
+                  <p style={{ 
+                    fontSize: '0.75rem', 
+                    color: '#0369a1', 
+                    marginTop: '0.5rem',
+                    marginBottom: 0
+                  }}>
+                    Test the email service by sending a test message to any email address.
                   </p>
                 </div>
               )}
