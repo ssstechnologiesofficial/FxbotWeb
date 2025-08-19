@@ -371,6 +371,35 @@ export async function registerRoutes(app) {
     }
   });
 
+  app.get("/api/admin/user-history/:searchTerm", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const { searchTerm } = req.params;
+      
+      // Search by email or mobile number
+      let user = await storage.getUserByEmail(searchTerm);
+      if (!user) {
+        user = await storage.getUserByMobile(searchTerm);
+      }
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Add mock income data for now (to be replaced with real data later)
+      const userHistory = {
+        ...user.toObject(),
+        fsIncome: 0, // Will be calculated from actual FS income system
+        smartLineIncome: 0, // Will be calculated from smart line system
+        driIncome: 0 // Will be calculated from DRI system
+      };
+
+      res.json(userHistory);
+    } catch (error) {
+      console.error('Error fetching user history:', error);
+      res.status(500).json({ error: "Failed to fetch user history" });
+    }
+  });
+
   app.get("/api/admin/contacts", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const contacts = await storage.getContacts();

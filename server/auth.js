@@ -41,10 +41,11 @@ export const requireAdmin = async (req, res, next) => {
     const storage = getStorage();
     
     const user = await storage.getUserById(req.userId);
-    if (!user || user.role !== 'admin') {
+    if (!user || !user.isAdmin) {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
+    req.adminUser = user;
     next();
   } catch (error) {
     res.status(500).json({ error: 'Authorization check failed' });

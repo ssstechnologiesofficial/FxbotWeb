@@ -100,6 +100,10 @@ class MongoStorage {
     return await User.findOne({ email: email.toLowerCase() });
   }
 
+  async getUserByMobile(mobile) {
+    return await User.findOne({ mobile: mobile });
+  }
+
   async getUserById(id) {
     return await User.findById(id).select('-password');
   }
