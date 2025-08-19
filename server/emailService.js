@@ -33,6 +33,29 @@ class EmailService {
     }
   }
 
+  async sendPasswordResetEmail(userEmail, resetToken, userName) {
+    try {
+      const resetLink = `https://fxbot.co.in/reset-password?token=${resetToken}`;
+      
+      const msg = {
+        to: userEmail,
+        from: {
+          email: this.fromEmail,
+          name: 'FXBOT Team'
+        },
+        subject: 'Reset Your FXBOT Password',
+        html: this.generatePasswordResetEmailTemplate(resetLink, userName)
+      };
+
+      const result = await sgMail.send(msg);
+      console.log('Password reset email sent successfully to:', userEmail);
+      return { success: true, messageId: result[0].headers['x-message-id'] };
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   generateWelcomeEmailTemplate(userData) {
     return `
     <!DOCTYPE html>
@@ -121,6 +144,84 @@ class EmailService {
           <p>&copy; 2025 FXBOT. All rights reserved.</p>
           <p>Professional Forex Investment Platform</p>
           <p>Need help? Contact us at support@fxbot.co.in</p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+  }
+
+  generatePasswordResetEmailTemplate(resetLink, userName) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Reset Your FXBOT Password</title>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 30px; text-align: center; }
+        .logo { color: #ffffff; font-size: 28px; font-weight: bold; margin: 0; }
+        .content { padding: 40px 30px; }
+        .reset-title { color: #111827; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+        .security-notice { background-color: #fef3c7; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #f59e0b; }
+        .button { background-color: #dc2626; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; margin: 25px 0; font-size: 16px; }
+        .button:hover { background-color: #b91c1c; }
+        .expiry-notice { background-color: #f3f4f6; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center; }
+        .footer { background-color: #374151; color: #d1d5db; text-align: center; padding: 20px; font-size: 14px; }
+        .link-text { word-break: break-all; color: #6b7280; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 class="logo">FXBOT</h1>
+          <p style="color: #fca5a5; margin: 10px 0 0 0;">Password Reset Request</p>
+        </div>
+        
+        <div class="content">
+          <h2 class="reset-title">Reset Your Password</h2>
+          
+          <p>Hello ${userName},</p>
+          
+          <p>We received a request to reset your FXBOT account password. If you made this request, please click the button below to create a new password:</p>
+          
+          <div style="text-align: center;">
+            <a href="${resetLink}" class="button">Reset My Password</a>
+          </div>
+          
+          <div class="expiry-notice">
+            <p style="margin: 0; color: #374151; font-weight: 600;">⏰ This link will expire in 1 hour</p>
+            <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;">For your security, this reset link can only be used once.</p>
+          </div>
+          
+          <div class="security-notice">
+            <h4 style="margin-top: 0; color: #92400e;">🔒 Security Notice</h4>
+            <ul style="margin: 10px 0; color: #78350f;">
+              <li>If you didn't request this password reset, please ignore this email</li>
+              <li>Your current password will remain unchanged until you create a new one</li>
+              <li>Never share your password or reset links with anyone</li>
+              <li>Always log in from our official website: fxbot.co.in</li>
+            </ul>
+          </div>
+          
+          <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+            <strong>Can't click the button?</strong><br>
+            Copy and paste this link into your browser:
+          </p>
+          <p class="link-text">${resetLink}</p>
+          
+          <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
+            If you're having trouble or didn't request this reset, please contact our support team at support@fxbot.co.in
+          </p>
+        </div>
+        
+        <div class="footer">
+          <p>&copy; 2025 FXBOT. All rights reserved.</p>
+          <p>Professional Forex Investment Platform</p>
+          <p>This email was sent because a password reset was requested for your account.</p>
         </div>
       </div>
     </body>

@@ -82,6 +82,11 @@ const userSchema = new mongoose.Schema({
   level3Earnings: { type: Number, default: 0 },
   level4Earnings: { type: Number, default: 0 },
   level5Earnings: { type: Number, default: 0 },
+  
+  // Password Reset
+  resetToken: { type: String, default: null },
+  resetTokenExpiry: { type: Date, default: null },
+  
   // DAS program fields
   dasEnrollmentDate: { type: Date, default: null },
   dasCountdownStartDate: { type: Date, default: null },

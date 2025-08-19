@@ -31,6 +31,7 @@ FXBOT is a modern full-stack web application for a Forex investment platform. Th
 - ✅ **Admin authentication fixed** - Proper `isAdmin` field recognition and routing from login to admin dashboard
 - ✅ **Engagement analytics tab** - User search by email/mobile with complete history display including FS Income, Smart Line Income, DRI Income, DAS status and investment volume
 - ✅ **Email integration system** - SendGrid-powered welcome email service with professional HTML templates, automatic sending on registration, and admin testing interface
+- ✅ **Password reset system** - Complete forgot/reset password functionality with secure token generation, email notifications, and comprehensive frontend pages
 
 ## User Preferences
 

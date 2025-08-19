@@ -475,6 +475,86 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Password Reset Routes
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      // Check if user exists
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return res.json({ 
+          success: true, 
+          message: "If an account with that email exists, a password reset link has been sent." 
+        });
+      }
+
+      // Generate reset token
+      const resetToken = await storage.generateResetToken();
+      
+      // Save token to user
+      await storage.setResetToken(email, resetToken);
+
+      // Send password reset email
+      try {
+        const { emailService } = await import('./emailService.js');
+        await emailService.sendPasswordResetEmail(
+          user.email, 
+          resetToken, 
+          `${user.firstName} ${user.lastName}`
+        );
+        console.log('Password reset email sent to:', user.email);
+      } catch (emailError) {
+        console.error('Failed to send password reset email:', emailError);
+        // Don't fail the request if email fails
+      }
+
+      res.json({ 
+        success: true, 
+        message: "If an account with that email exists, a password reset link has been sent to your email address." 
+      });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({ error: "Password reset failed" });
+    }
+  });
+
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ error: "Token and new password are required" });
+      }
+
+      if (newPassword.length < 8) {
+        return res.status(400).json({ error: "Password must be at least 8 characters long" });
+      }
+
+      // Verify reset token
+      const user = await storage.getUserByResetToken(token);
+      if (!user) {
+        return res.status(400).json({ error: "Invalid or expired reset token" });
+      }
+
+      // Update password and clear reset token
+      await storage.updatePassword(user._id, newPassword);
+
+      res.json({ 
+        success: true, 
+        message: "Password has been successfully reset. You can now login with your new password." 
+      });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({ error: "Password reset failed" });
+    }
+  });
+
   // DAS Program API Routes
   app.post("/api/das/enroll", authenticateToken, async (req, res) => {
     try {

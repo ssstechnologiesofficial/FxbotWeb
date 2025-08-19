@@ -159,6 +159,50 @@ class MongoStorage {
       throw error;
     }
   }
+
+  // Password Reset Functions
+  async generateResetToken() {
+    // Generate secure random token
+    const crypto = await import('crypto');
+    return crypto.default.randomBytes(32).toString('hex');
+  }
+
+  async setResetToken(email, token) {
+    const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+    return await User.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      {
+        resetToken: token,
+        resetTokenExpiry: expiry
+      },
+      { new: true }
+    );
+  }
+
+  async getUserByResetToken(token) {
+    return await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: new Date() } // Token not expired
+    });
+  }
+
+  async clearResetToken(userId) {
+    return await User.findByIdAndUpdate(userId, {
+      resetToken: null,
+      resetTokenExpiry: null
+    });
+  }
+
+  async updatePassword(userId, newPassword) {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    
+    return await User.findByIdAndUpdate(userId, {
+      password: hashedPassword,
+      resetToken: null,
+      resetTokenExpiry: null
+    });
+  }
 }
 
 let storage = null;
