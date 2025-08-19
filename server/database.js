@@ -98,7 +98,23 @@ const userSchema = new mongoose.Schema({
   dasTask1CompletedAt: { type: Date, default: null },
   dasTask2CompletedAt: { type: Date, default: null },
   dasTask3CompletedAt: { type: Date, default: null },
-  dasMonthlyEarnings: { type: Number, default: 0 }
+  dasMonthlyEarnings: { type: Number, default: 0 },
+  
+  // KYC fields
+  kycStatus: { 
+    type: String, 
+    enum: ['pending', 'approved', 'rejected'], 
+    default: null 
+  },
+  kycDocumentUrl: { type: String, default: null },
+  kycFileName: { type: String, default: null },
+  kycFileType: { type: String, default: null },
+  kycSubmittedAt: { type: Date, default: null },
+  kycApprovedAt: { type: Date, default: null },
+  kycRejectedAt: { type: Date, default: null },
+  kycApprovedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  kycRejectedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  kycRejectionReason: { type: String, default: null }
 }, {
   timestamps: true
 });
