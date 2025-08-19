@@ -155,12 +155,12 @@ export async function registerRoutes(app) {
 
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const result = loginSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ error: result.error.errors[0].message });
+      const { email, password } = req.body;
+      
+      // Basic validation
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
       }
-
-      const { email, password } = result.data;
       const user = await storage.getUserByEmail(email);
       
       if (!user) {
@@ -270,12 +270,12 @@ export async function registerRoutes(app) {
   // Forgot password (placeholder for now)
   app.post("/api/auth/forgot-password", async (req, res) => {
     try {
-      const result = forgotPasswordSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ error: result.error.errors[0].message });
+      const { email } = req.body;
+      
+      // Basic validation
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
       }
-
-      const { email } = result.data;
       const user = await storage.getUserByEmail(email);
       
       if (!user) {
