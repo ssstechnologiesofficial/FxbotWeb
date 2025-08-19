@@ -116,11 +116,7 @@ class MongoStorage {
     return await User.find().select('-password').sort({ createdAt: -1 });
   }
 
-  async getKycSubmissions() {
-    return await User.find({ 
-      kycStatus: { $exists: true, $ne: null } 
-    }).select('firstName lastName email kycStatus kycSubmittedAt kycFileName kycFileType kycApprovedAt kycRejectedAt kycRejectionReason').sort({ kycSubmittedAt: -1 });
-  }
+
 
   async verifyPassword(plainPassword, hashedPassword) {
     return await bcrypt.compare(plainPassword, hashedPassword);
@@ -212,6 +208,57 @@ class MongoStorage {
       resetToken: null,
       resetTokenExpiry: null
     });
+  }
+
+  // KYC Management Functions
+  async submitKycDocument(userId, documentUrl, fileName, fileType) {
+    try {
+      return await User.findByIdAndUpdate(userId, {
+        kycStatus: 'pending',
+        kycDocumentUrl: documentUrl,
+        kycFileName: fileName,
+        kycFileType: fileType,
+        kycSubmittedAt: new Date()
+      }, { new: true });
+    } catch (error) {
+      console.error('Error submitting KYC document:', error);
+      throw error;
+    }
+  }
+
+  async getKycSubmissions() {
+    try {
+      return await User.find({
+        kycStatus: { $exists: true, $ne: null }
+      }).select('firstName lastName email kycStatus kycDocumentUrl kycFileName kycSubmittedAt kycApprovedAt kycRejectedAt').sort({ kycSubmittedAt: -1 });
+    } catch (error) {
+      console.error('Error fetching KYC submissions:', error);
+      throw error;
+    }
+  }
+
+  async updateKycStatus(userId, status, adminId, rejectionReason = null) {
+    try {
+      const updateData = {
+        kycStatus: status
+      };
+
+      if (status === 'approved') {
+        updateData.kycApprovedAt = new Date();
+        updateData.kycApprovedBy = adminId;
+      } else if (status === 'rejected') {
+        updateData.kycRejectedAt = new Date();
+        updateData.kycRejectedBy = adminId;
+        if (rejectionReason) {
+          updateData.kycRejectionReason = rejectionReason;
+        }
+      }
+
+      return await User.findByIdAndUpdate(userId, updateData, { new: true });
+    } catch (error) {
+      console.error('Error updating KYC status:', error);
+      throw error;
+    }
   }
 }
 

@@ -675,16 +675,18 @@ export async function registerRoutes(app) {
       const objectStorageService = new ObjectStorageService();
       const normalizedPath = objectStorageService.normalizeObjectEntityPath(documentUrl);
 
-      // Update user's KYC status and document path in database
-      await storage.updateUser(userId, {
-        kycStatus: 'pending',
-        kycDocumentUrl: normalizedPath,
-        kycFileName: fileName,
-        kycFileType: fileType,
-        kycSubmittedAt: new Date()
-      });
+      // Submit KYC document using storage method
+      const updatedUser = await storage.submitKycDocument(userId, normalizedPath, fileName, fileType);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
+      }
 
-      res.json({ message: 'KYC document submitted successfully' });
+      res.json({ 
+        message: 'KYC document submitted successfully',
+        status: 'pending',
+        submittedAt: updatedUser.kycSubmittedAt
+      });
     } catch (error) {
       console.error('Error submitting KYC document:', error);
       res.status(500).json({ error: 'Failed to submit KYC document' });
@@ -744,11 +746,7 @@ export async function registerRoutes(app) {
   app.post('/api/admin/kyc/:userId/approve', authenticateToken, requireAdmin, async (req, res) => {
     try {
       const { userId } = req.params;
-      await storage.updateUser(userId, {
-        kycStatus: 'approved',
-        kycApprovedAt: new Date(),
-        kycApprovedBy: req.userId
-      });
+      await storage.updateKycStatus(userId, 'approved', req.userId);
       res.json({ message: 'KYC document approved successfully' });
     } catch (error) {
       console.error('Error approving KYC document:', error);
@@ -761,12 +759,7 @@ export async function registerRoutes(app) {
       const { userId } = req.params;
       const { reason } = req.body;
       
-      await storage.updateUser(userId, {
-        kycStatus: 'rejected',
-        kycRejectedAt: new Date(),
-        kycRejectedBy: req.userId,
-        kycRejectionReason: reason || 'Document not acceptable'
-      });
+      await storage.updateKycStatus(userId, 'rejected', req.userId, reason || 'Document not acceptable');
       res.json({ message: 'KYC document rejected successfully' });
     } catch (error) {
       console.error('Error rejecting KYC document:', error);
