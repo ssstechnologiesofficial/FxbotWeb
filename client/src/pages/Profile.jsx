@@ -58,18 +58,15 @@ export default function Profile() {
           <h1 className="text-2xl font-bold text-gray-900">User Profile</h1>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6" style={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
-        }}>
-          <div className="max-w-6xl mx-auto space-y-8">
+        <main className="flex-1 overflow-y-auto p-4 bg-slate-50">
+          <div className="max-w-5xl mx-auto space-y-6">
             {/* Hero Profile Header */}
-            <div className="relative bg-white rounded-3xl p-8 shadow-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50"></div>
-              <div className="relative flex items-center justify-between">
-                <div className="flex items-center space-x-6">
+            <div className="relative bg-white rounded-xl p-6 shadow-lg border border-slate-200 overflow-hidden">
+              <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-xl">
-                      <span className="text-3xl font-bold text-white">
+                    <div className="w-16 h-16 bg-slate-600 rounded-lg flex items-center justify-center shadow-sm">
+                      <span className="text-xl font-semibold text-white">
                         {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
                       </span>
                     </div>
