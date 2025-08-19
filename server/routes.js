@@ -1,8 +1,18 @@
 import { createServer } from "http";
+import { z } from "zod";
 import { getStorage } from "./storage.js";
 import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
-// Import validation schemas - these will be defined inline since we're using MongoDB directly
 import { DasService } from "./dasService.js";
+
+// User registration validation schema
+const userRegistrationSchema = z.object({
+  sponsorId: z.string().min(1, "Sponsor ID is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  mobile: z.string().min(10, "Valid mobile number is required"),
+  email: z.string().email("Valid email is required"),
+  password: z.string().min(8, "Password must be at least 8 characters")
+});
 
 export async function registerRoutes(app) {
   const storage = getStorage();
