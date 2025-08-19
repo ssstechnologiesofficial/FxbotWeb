@@ -287,6 +287,11 @@ body {
   color: #000;
 }
 
+.view-plans-btn:hover {
+  background: var(--color-gold) !important;
+  color: #000 !important;
+}
+
 .btn-lg {
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -333,9 +338,11 @@ body {
 
 .hero-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1rem;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* Animations */
@@ -404,6 +411,7 @@ body {
   .hero-buttons {
     flex-direction: row;
     justify-content: center;
+    flex-wrap: nowrap;
   }
   
   .hero-title {
@@ -637,4 +645,11 @@ body {
 /* Fix color references */
 :root {
   --primary-gold: var(--color-gold);
+  --hover-gold: #ffa000;
+  --dark-bg: var(--color-dark-bg);
+}
+
+/* Additional width utilities */
+.w-full {
+  width: 100%;
 }

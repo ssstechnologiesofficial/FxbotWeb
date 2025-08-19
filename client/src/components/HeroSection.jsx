@@ -34,7 +34,7 @@ export default function HeroSection() {
             <p className="text-xl text-secondary mb-8 hero-subtitle">
               Choose a Forex Package with <span className="text-gold font-semibold">FXBOT</span> That Works While You Sleep — With Full Transparency & Weekly Profits.
             </p>
-            <div className="hero-buttons flex flex-col gap-4 justify-center">
+            <div className="hero-buttons">
               <button 
                 onClick={scrollToPackages}
                 className="btn btn-primary btn-lg gradient-gold font-semibold"
@@ -43,7 +43,7 @@ export default function HeroSection() {
               </button>
               <button 
                 onClick={scrollToPackages}
-                className="btn btn-secondary btn-lg font-semibold"
+                className="btn btn-secondary btn-lg font-semibold view-plans-btn"
                 style={{ borderColor: 'var(--primary-gold)', color: 'var(--primary-gold)' }}
               >
                 View Plans

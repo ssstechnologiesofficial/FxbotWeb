@@ -13,7 +13,7 @@ export default function InvestmentPackages() {
         payout: "Monthly"
       },
       description: "Earn a fixed 6% monthly return on your invested capital until your investment doubles (2x). Backed by company reserves and trading profits.",
-      buttonClass: "bg-gradient-to-r from-gold to-gold-dark text-dark-bg"
+      buttonClass: "btn btn-primary gradient-gold"
     },
     {
       name: "SmartLine Income",
@@ -27,7 +27,7 @@ export default function InvestmentPackages() {
         { level: 5, percentage: "0.25%" }
       ],
       description: "Multi-level affiliate income distribution plan to reward partners for expanding our investor community across 5 levels.",
-      buttonClass: "bg-gradient-to-r from-blue-custom to-blue-dark text-white"
+      buttonClass: "btn btn-primary"
     },
     {
       name: "DRI Income",
@@ -40,7 +40,7 @@ export default function InvestmentPackages() {
       },
       example: "$1,000 referral = $60 commission",
       description: "Earn 6% commission on every investment made by your direct referrals. Commission credited for each new investment, no limit on referrals.",
-      buttonClass: "bg-gradient-to-r from-green-400 to-green-500 text-white"
+      buttonClass: "btn btn-primary"
     },
     {
       name: "DAS Income",
@@ -52,7 +52,7 @@ export default function InvestmentPackages() {
         { name: "Tier 3", amount: "$1000/month", requirements: "15 referrals, $50K volume, 90 days" }
       ],
       description: "Monthly salary income based on direct referral performance and business generation. Fixed rewards for committed promoters.",
-      buttonClass: "bg-gradient-to-r from-purple-400 to-purple-500 text-white"
+      buttonClass: "btn btn-primary"
     }
   ];
 
@@ -145,12 +145,17 @@ export default function InvestmentPackages() {
               
               <p className="text-secondary mb-6">{pkg.description}</p>
               
-              <button className="btn w-full font-semibold" style={{
-                background: pkg.color === 'gold' ? 'linear-gradient(135deg, var(--primary-gold), var(--hover-gold))' :
+              <button className="btn w-full font-semibold choose-plan-btn" style={{
+                background: pkg.color === 'gold' ? 'linear-gradient(135deg, #ffd700, #ffa000)' :
                            pkg.color === 'blue-custom' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' :
                            pkg.color === 'green-400' ? 'linear-gradient(135deg, #22c55e, #16a34a)' :
                            'linear-gradient(135deg, #a855f7, #7c3aed)',
-                color: pkg.color === 'gold' ? 'var(--dark-bg)' : 'white'
+                color: pkg.color === 'gold' ? '#000' : 'white',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
               }}>
                 Choose Plan
               </button>
