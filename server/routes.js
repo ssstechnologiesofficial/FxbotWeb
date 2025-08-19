@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getStorage } from "./storage.js";
 import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
 import { DasService } from "./dasService.js";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
 // User registration validation schema
 const userRegistrationSchema = z.object({
@@ -647,6 +648,118 @@ export async function registerRoutes(app) {
     } catch (error) {
       console.error("DAS investment error:", error);
       res.status(500).json({ error: "Failed to add investment" });
+    }
+  });
+
+  // KYC Document Upload Routes
+  app.post('/api/kyc/upload-url', authenticateToken, async (req, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error('Error getting KYC upload URL:', error);
+      res.status(500).json({ error: 'Failed to get upload URL' });
+    }
+  });
+
+  app.post('/api/kyc/submit', authenticateToken, async (req, res) => {
+    try {
+      const { documentUrl, fileName, fileType } = req.body;
+      const userId = req.userId;
+
+      if (!documentUrl || !fileName) {
+        return res.status(400).json({ error: 'Document URL and file name are required' });
+      }
+
+      const objectStorageService = new ObjectStorageService();
+      const normalizedPath = objectStorageService.normalizeObjectEntityPath(documentUrl);
+
+      // Update user's KYC status and document path in database
+      await storage.updateUser(userId, {
+        kycStatus: 'pending',
+        kycDocumentUrl: normalizedPath,
+        kycFileName: fileName,
+        kycFileType: fileType,
+        kycSubmittedAt: new Date()
+      });
+
+      res.json({ message: 'KYC document submitted successfully' });
+    } catch (error) {
+      console.error('Error submitting KYC document:', error);
+      res.status(500).json({ error: 'Failed to submit KYC document' });
+    }
+  });
+
+  // KYC Document Download Route (for admin viewing)
+  app.get('/api/kyc/document/:userId', async (req, res) => {
+    try {
+      // Check for admin token in query params or headers
+      let token = req.query.token || req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!token) {
+        return res.status(401).json({ error: 'Admin authorization required' });
+      }
+      
+      // Verify admin token
+      const jwt = (await import('jsonwebtoken')).default;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fxbot_secret_key_2024');
+      const adminUser = await storage.getUserById(decoded.userId);
+      
+      if (!adminUser || !adminUser.isAdmin) {
+        return res.status(403).json({ error: 'Admin privileges required' });
+      }
+
+      const { userId } = req.params;
+      const user = await storage.getUserById(userId);
+      
+      if (!user || !user.kycDocumentUrl) {
+        return res.status(404).json({ error: 'KYC document not found' });
+      }
+
+      const objectStorageService = new ObjectStorageService();
+      const objectFile = await objectStorageService.getObjectEntityFile(user.kycDocumentUrl);
+      await objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error('Error downloading KYC document:', error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.status(404).json({ error: 'KYC document not found' });
+      }
+      res.status(500).json({ error: 'Failed to download KYC document' });
+    }
+  });
+
+  // KYC Document Approval/Rejection Routes
+  app.post('/api/admin/kyc/:userId/approve', requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      await storage.updateUser(userId, {
+        kycStatus: 'approved',
+        kycApprovedAt: new Date(),
+        kycApprovedBy: req.userId
+      });
+      res.json({ message: 'KYC document approved successfully' });
+    } catch (error) {
+      console.error('Error approving KYC document:', error);
+      res.status(500).json({ error: 'Failed to approve KYC document' });
+    }
+  });
+
+  app.post('/api/admin/kyc/:userId/reject', requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason } = req.body;
+      
+      await storage.updateUser(userId, {
+        kycStatus: 'rejected',
+        kycRejectedAt: new Date(),
+        kycRejectedBy: req.userId,
+        kycRejectionReason: reason || 'Document not acceptable'
+      });
+      res.json({ message: 'KYC document rejected successfully' });
+    } catch (error) {
+      console.error('Error rejecting KYC document:', error);
+      res.status(500).json({ error: 'Failed to reject KYC document' });
     }
   });
 

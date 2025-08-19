@@ -108,6 +108,10 @@ class MongoStorage {
     return await User.findById(id).select('-password');
   }
 
+  async updateUser(userId, updates) {
+    return await User.findByIdAndUpdate(userId, { ...updates, updatedAt: new Date() }, { new: true });
+  }
+
   async getUsers() {
     return await User.find().select('-password').sort({ createdAt: -1 });
   }

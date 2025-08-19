@@ -100,6 +100,43 @@ export default function AdminDashboard() {
     window.location.href = '/';
   };
 
+  // KYC Management Functions
+  const handleViewKycDocument = (userId) => {
+    const token = localStorage.getItem('token');
+    window.open(`/api/kyc/document/${userId}?token=${token}`, '_blank');
+  };
+
+  const handleKycApproval = async (userId, action) => {
+    try {
+      const token = localStorage.getItem('token');
+      let reason = null;
+      
+      if (action === 'reject') {
+        reason = prompt('Please provide a reason for rejection:');
+        if (!reason) return; // User cancelled
+      }
+      
+      const endpoint = action === 'approve' ? 
+        `/api/admin/kyc/${userId}/approve` : 
+        `/api/admin/kyc/${userId}/reject`;
+      
+      await axios.post(endpoint, { reason }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Refresh users data
+      const usersResponse = await axios.get('/api/admin/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsers(usersResponse.data);
+      
+      alert(`KYC document ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
+    } catch (error) {
+      console.error(`Error ${action}ing KYC document:`, error);
+      alert(`Failed to ${action} KYC document. Please try again.`);
+    }
+  };
+
   const handleDepositAction = async (depositId, action) => {
     try {
       const token = localStorage.getItem('token');
@@ -458,11 +495,198 @@ export default function AdminDashboard() {
                     color: '#111827',
                     marginBottom: '1rem'
                   }}>
-                    KYC Status Management
+                    KYC Document Management
                   </h3>
-                  <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>
-                    KYC verification system coming soon...
-                  </p>
+                  
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{
+                      width: '100%',
+                      borderCollapse: 'collapse',
+                      fontSize: '0.875rem'
+                    }}>
+                      <thead>
+                        <tr style={{ backgroundColor: '#f9fafb' }}>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>User</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Status</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Document</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Submitted</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {users.filter(u => u.kycStatus && u.kycDocumentUrl).map((userData, index) => (
+                          <tr key={userData._id} style={{
+                            backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb'
+                          }}>
+                            <td style={{
+                              padding: '0.75rem',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}>
+                              <div>
+                                <div style={{ fontWeight: '600' }}>
+                                  {userData.firstName} {userData.lastName}
+                                </div>
+                                <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>
+                                  {userData.email}
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{
+                              padding: '0.75rem',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}>
+                              <span style={{
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '0.25rem',
+                                fontSize: '0.75rem',
+                                fontWeight: '600',
+                                backgroundColor: 
+                                  userData.kycStatus === 'approved' ? '#dcfce7' :
+                                  userData.kycStatus === 'rejected' ? '#fef2f2' :
+                                  '#fef3c7',
+                                color: 
+                                  userData.kycStatus === 'approved' ? '#166534' :
+                                  userData.kycStatus === 'rejected' ? '#dc2626' :
+                                  '#d97706'
+                              }}>
+                                {userData.kycStatus === 'approved' ? 'Approved' :
+                                 userData.kycStatus === 'rejected' ? 'Rejected' :
+                                 'Pending'}
+                              </span>
+                            </td>
+                            <td style={{
+                              padding: '0.75rem',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}>
+                              <button
+                                onClick={() => handleViewKycDocument(userData._id)}
+                                style={{
+                                  padding: '0.25rem 0.5rem',
+                                  backgroundColor: '#3b82f6',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '0.25rem',
+                                  fontSize: '0.75rem',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.25rem'
+                                }}
+                              >
+                                <Eye size={12} />
+                                View
+                              </button>
+                            </td>
+                            <td style={{
+                              padding: '0.75rem',
+                              borderBottom: '1px solid #e5e7eb',
+                              color: '#6b7280',
+                              fontSize: '0.75rem'
+                            }}>
+                              {userData.kycSubmittedAt ? 
+                                new Date(userData.kycSubmittedAt).toLocaleDateString() : 
+                                'N/A'}
+                            </td>
+                            <td style={{
+                              padding: '0.75rem',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}>
+                              {userData.kycStatus === 'pending' && (
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                  <button
+                                    onClick={() => handleKycApproval(userData._id, 'approve')}
+                                    style={{
+                                      padding: '0.25rem 0.5rem',
+                                      backgroundColor: '#10b981',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '0.25rem',
+                                      fontSize: '0.75rem',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '0.25rem'
+                                    }}
+                                  >
+                                    <CheckCircle size={12} />
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleKycApproval(userData._id, 'reject')}
+                                    style={{
+                                      padding: '0.25rem 0.5rem',
+                                      backgroundColor: '#ef4444',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '0.25rem',
+                                      fontSize: '0.75rem',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '0.25rem'
+                                    }}
+                                  >
+                                    <XCircle size={12} />
+                                    Reject
+                                  </button>
+                                </div>
+                              )}
+                              {userData.kycStatus === 'approved' && (
+                                <span style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: '600' }}>
+                                  Approved
+                                </span>
+                              )}
+                              {userData.kycStatus === 'rejected' && (
+                                <span style={{ color: '#ef4444', fontSize: '0.75rem', fontWeight: '600' }}>
+                                  Rejected
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    
+                    {users.filter(u => u.kycStatus && u.kycDocumentUrl).length === 0 && (
+                      <div style={{ 
+                        textAlign: 'center', 
+                        padding: '3rem',
+                        color: '#6b7280' 
+                      }}>
+                        No KYC documents submitted yet.
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 

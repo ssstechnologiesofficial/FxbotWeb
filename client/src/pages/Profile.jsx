@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
+import { ObjectUploader } from '../components/ObjectUploader';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -36,6 +37,47 @@ export default function Profile() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     window.location.href = '/';
+  };
+
+  // KYC Upload handlers
+  const handleGetKycUploadParameters = async () => {
+    const token = localStorage.getItem('token');
+    const response = await axios.post('/api/kyc/upload-url', {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return {
+      method: 'PUT',
+      url: response.data.uploadURL,
+    };
+  };
+
+  const handleKycUploadComplete = async (result) => {
+    if (result.successful.length > 0) {
+      const uploadedFile = result.successful[0];
+      const fileUrl = uploadedFile.uploadURL;
+      
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post('/api/kyc/submit', {
+          documentUrl: fileUrl,
+          fileName: uploadedFile.name,
+          fileType: uploadedFile.type
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        // Refresh user data
+        const userResponse = await axios.get('/api/auth/me', { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+        setUser(userResponse.data);
+        
+        alert('KYC document submitted successfully! It will be reviewed within 24 hours.');
+      } catch (error) {
+        console.error('Error submitting KYC document:', error);
+        alert('Error submitting KYC document. Please try again.');
+      }
+    }
   };
 
   if (loading) {
@@ -188,6 +230,67 @@ export default function Profile() {
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 font-medium">
                       {user?.mobile || 'Not provided'}
                     </div>
+                  </div>
+
+                  {/* KYC Document Upload Section */}
+                  <div className="border-t border-slate-200 pt-4 mt-6">
+                    <label className="block text-sm font-medium text-slate-600 mb-3">KYC Document</label>
+                    
+                    {/* KYC Status Display */}
+                    <div className="mb-4">
+                      {user?.kycStatus === 'approved' ? (
+                        <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-green-800 font-medium">Verified</span>
+                        </div>
+                      ) : user?.kycStatus === 'rejected' ? (
+                        <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg mb-3">
+                          <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          <span className="text-red-800 font-medium">Document rejected - Please upload again</span>
+                        </div>
+                      ) : user?.kycStatus === 'pending' ? (
+                        <div className="flex items-center space-x-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                          <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-yellow-800 font-medium">Under Review</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-2 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                          <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-slate-600 font-medium">No document uploaded</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Upload Button - Show only if not approved or if rejected */}
+                    {user?.kycStatus !== 'approved' && (
+                      <ObjectUploader
+                        maxNumberOfFiles={1}
+                        maxFileSize={5242880} // 5MB
+                        acceptedFileTypes={['.pdf', '.jpg', '.jpeg', '.png']}
+                        onGetUploadParameters={handleGetKycUploadParameters}
+                        onComplete={handleKycUploadComplete}
+                        buttonClassName="w-full"
+                      >
+                        <div className="flex items-center justify-center space-x-2">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                          <span>Submit KYC Document</span>
+                        </div>
+                      </ObjectUploader>
+                    )}
+
+                    <p className="text-xs text-slate-500 mt-2">
+                      Accepted formats: PDF, JPG, PNG. Max size: 5MB
+                    </p>
                   </div>
                 </div>
               </div>
