@@ -346,6 +346,12 @@ export async function registerRoutes(app) {
   app.get("/api/das/countdown/:userId", authenticateToken, async (req, res) => {
     try {
       const { userId } = req.params;
+      
+      // Check if the authenticated user is requesting their own data or is admin
+      if (req.userId !== userId && req.user?.role !== 'admin') {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
       const countdownData = await DasService.getDasCountdown(userId);
       res.json(countdownData);
     } catch (error) {
