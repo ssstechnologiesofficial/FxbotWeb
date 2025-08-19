@@ -42,4 +42,4 @@ localPort = 5173
 
 [agent]
 expertMode = true
-integrations = ["javascript_sendgrid==1.0.0", "javascript_log_in_with_replit==1.0.0"]
+integrations = ["javascript_log_in_with_replit==1.0.0", "javascript_sendgrid==1.0.0", "javascript_database==1.0.0"]

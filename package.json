@@ -10,6 +10,7 @@
     "start": "node start.js"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
     "@replit/vite-plugin-cartographer": "^0.2.8",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
     "@sendgrid/mail": "^8.1.5",
@@ -19,6 +20,9 @@
     "autoprefixer": "^10.4.21",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.4",
+    "drizzle-zod": "^0.8.3",
     "express": "^4.18.2",
     "gsap": "^3.13.0",
     "jsonwebtoken": "^9.0.2",

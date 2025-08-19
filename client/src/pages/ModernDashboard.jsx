@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import ModernSidebar from '../components/ModernSidebar';
+import DasCountdown from '../components/DasCountdown';
 import { 
   DollarSign, 
   Wallet, 
@@ -206,6 +207,18 @@ function ModernDashboard() {
               </div>
             );
           })}
+        </div>
+
+        {/* DAS Countdown Section */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '0.75rem',
+          padding: '2rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          border: '1px solid rgba(229, 231, 235, 0.5)',
+          marginBottom: '2rem'
+        }}>
+          <DasCountdown userId={user?._id} />
         </div>
 
         {/* Main Content Grid */}

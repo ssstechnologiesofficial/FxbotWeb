@@ -81,7 +81,19 @@ const userSchema = new mongoose.Schema({
   level2Earnings: { type: Number, default: 0 },
   level3Earnings: { type: Number, default: 0 },
   level4Earnings: { type: Number, default: 0 },
-  level5Earnings: { type: Number, default: 0 }
+  level5Earnings: { type: Number, default: 0 },
+  // DAS program fields
+  dasEnrollmentDate: { type: Date, default: null },
+  dasCountdownStartDate: { type: Date, default: null },
+  isEnrolledInDas: { type: Boolean, default: false },
+  totalInvestmentVolume: { type: Number, default: 0 },
+  dasTask1Completed: { type: Boolean, default: false },
+  dasTask2Completed: { type: Boolean, default: false },
+  dasTask3Completed: { type: Boolean, default: false },
+  dasTask1CompletedAt: { type: Date, default: null },
+  dasTask2CompletedAt: { type: Date, default: null },
+  dasTask3CompletedAt: { type: Date, default: null },
+  dasMonthlyEarnings: { type: Number, default: 0 }
 }, {
   timestamps: true
 });
@@ -124,8 +136,33 @@ const newsletterSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Investment Schema for tracking volume
+const investmentSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  amount: {
+    type: Number,
+    required: true
+  },
+  packageType: {
+    type: String,
+    default: 'standard'
+  },
+  status: {
+    type: String,
+    enum: ['active', 'completed', 'cancelled'],
+    default: 'active'
+  }
+}, {
+  timestamps: true
+});
+
 export const User = mongoose.model('User', userSchema);
 export const Contact = mongoose.model('Contact', contactSchema);
 export const Newsletter = mongoose.model('Newsletter', newsletterSchema);
+export const Investment = mongoose.model('Investment', investmentSchema);
 
 export default connectDB;

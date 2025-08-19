@@ -1,7 +1,8 @@
 import { createServer } from "http";
 import { getStorage } from "./storage.js";
 import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
-import { loginSchema, forgotPasswordSchema, userRegistrationSchema } from "../shared/schema.js";
+// Import validation schemas - these will be defined inline since we're using MongoDB directly
+import { DasService } from "./dasService.js";
 
 export async function registerRoutes(app) {
   const storage = getStorage();
@@ -322,6 +323,66 @@ export async function registerRoutes(app) {
       res.json(subscribers);
     } catch (error) {
       res.status(500).json({ error: "Failed to get subscribers" });
+    }
+  });
+
+  // DAS Program API Routes
+  app.post("/api/das/enroll", authenticateToken, async (req, res) => {
+    try {
+      const { userId } = req.body;
+      const result = await DasService.enrollUserInDas(userId);
+      
+      if (result) {
+        res.json({ success: true, message: "Successfully enrolled in DAS program" });
+      } else {
+        res.status(400).json({ error: "Failed to enroll in DAS program" });
+      }
+    } catch (error) {
+      console.error("DAS enrollment error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/das/countdown/:userId", authenticateToken, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const countdownData = await DasService.getDasCountdown(userId);
+      res.json(countdownData);
+    } catch (error) {
+      console.error("DAS countdown error:", error);
+      res.status(500).json({ error: "Failed to fetch countdown data" });
+    }
+  });
+
+  app.post("/api/das/complete-task", authenticateToken, async (req, res) => {
+    try {
+      const { userId, taskNumber } = req.body;
+      const result = await DasService.updateTaskCompletion(userId, taskNumber);
+      
+      if (result) {
+        res.json({ success: true, message: `Task ${taskNumber} completed successfully` });
+      } else {
+        res.status(400).json({ error: "Task requirements not met or already completed" });
+      }
+    } catch (error) {
+      console.error("DAS task completion error:", error);
+      res.status(500).json({ error: "Failed to complete task" });
+    }
+  });
+
+  app.post("/api/das/add-investment", authenticateToken, async (req, res) => {
+    try {
+      const { userId, amount, packageType } = req.body;
+      const result = await DasService.addInvestment(userId, amount, packageType);
+      
+      if (result) {
+        res.json({ success: true, message: "Investment added successfully" });
+      } else {
+        res.status(400).json({ error: "Failed to add investment" });
+      }
+    } catch (error) {
+      console.error("DAS investment error:", error);
+      res.status(500).json({ error: "Failed to add investment" });
     }
   });
 
