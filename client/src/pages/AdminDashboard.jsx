@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
   const [deposits, setDeposits] = useState([]);
+  const [kycSubmissions, setKycSubmissions] = useState([]);
   const [userHistory, setUserHistory] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [stats, setStats] = useState({
@@ -54,17 +55,21 @@ export default function AdminDashboard() {
         setUser(userResponse.data);
 
         // Fetch admin data
-        const [usersResponse, depositsResponse] = await Promise.all([
+        const [usersResponse, depositsResponse, kycResponse] = await Promise.all([
           axios.get('/api/admin/users', {
             headers: { Authorization: `Bearer ${token}` }
           }),
           axios.get('/api/admin/deposits', {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('/api/admin/kyc', {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
 
         setUsers(usersResponse.data);
         setDeposits(depositsResponse.data);
+        setKycSubmissions(kycResponse.data);
 
         // Calculate stats
         const totalDeposits = depositsResponse.data.length;
@@ -124,11 +129,17 @@ export default function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Refresh users data
-      const usersResponse = await axios.get('/api/admin/users', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // Refresh KYC and users data
+      const [usersResponse, kycResponse] = await Promise.all([
+        axios.get('/api/admin/users', {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get('/api/admin/kyc', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
       setUsers(usersResponse.data);
+      setKycSubmissions(kycResponse.data);
       
       alert(`KYC document ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
     } catch (error) {
@@ -427,60 +438,74 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {users.map((userData, index) => (
-                          <tr key={userData._id} style={{
-                            backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb'
-                          }}>
-                            <td style={{
-                              padding: '0.75rem',
-                              borderBottom: '1px solid #e5e7eb'
-                            }}>
-                              {userData.firstName} {userData.lastName}
-                            </td>
-                            <td style={{
-                              padding: '0.75rem',
-                              borderBottom: '1px solid #e5e7eb'
-                            }}>
-                              {userData.email}
-                            </td>
-                            <td style={{
-                              padding: '0.75rem',
-                              borderBottom: '1px solid #e5e7eb',
-                              fontFamily: 'monospace',
-                              color: '#3b82f6'
-                            }}>
-                              {userData.ownSponsorId}
-                            </td>
-                            <td style={{
-                              padding: '0.75rem',
-                              borderBottom: '1px solid #e5e7eb'
-                            }}>
-                              {userData.referralCount || 0}
-                            </td>
-                            <td style={{
-                              padding: '0.75rem',
-                              borderBottom: '1px solid #e5e7eb'
-                            }}>
-                              <span style={{
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '0.25rem',
-                                fontSize: '0.75rem',
-                                fontWeight: '600',
-                                backgroundColor: userData.isEnrolledInDas ? '#dcfce7' : '#f3f4f6',
-                                color: userData.isEnrolledInDas ? '#166534' : '#6b7280'
-                              }}>
-                                {userData.isEnrolledInDas ? 'Enrolled' : 'Not Enrolled'}
-                              </span>
-                            </td>
-                            <td style={{
-                              padding: '0.75rem',
-                              borderBottom: '1px solid #e5e7eb',
+                        {users.length === 0 ? (
+                          <tr>
+                            <td colSpan="6" style={{
+                              padding: '2rem',
+                              textAlign: 'center',
                               color: '#6b7280'
                             }}>
-                              {new Date(userData.createdAt).toLocaleDateString()}
+                              No users found
                             </td>
                           </tr>
-                        ))}
+                        ) : (
+                          users.map((userData, index) => (
+                            <tr key={userData._id} style={{
+                              backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb'
+                            }}>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                {userData.firstName && userData.lastName 
+                                  ? `${userData.firstName} ${userData.lastName}` 
+                                  : userData.email || 'N/A'}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                {userData.email || 'N/A'}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb',
+                                fontFamily: 'monospace',
+                                color: '#3b82f6'
+                              }}>
+                                {userData.ownSponsorId || 'N/A'}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                {userData.referralCount || 0}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                <span style={{
+                                  padding: '0.25rem 0.5rem',
+                                  borderRadius: '0.25rem',
+                                  fontSize: '0.75rem',
+                                  fontWeight: '600',
+                                  backgroundColor: userData.isEnrolledInDas ? '#dcfce7' : '#f3f4f6',
+                                  color: userData.isEnrolledInDas ? '#166534' : '#6b7280'
+                                }}>
+                                  {userData.isEnrolledInDas ? 'Enrolled' : 'Not Enrolled'}
+                                </span>
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb',
+                                color: '#6b7280'
+                              }}>
+                                {userData.createdAt ? new Date(userData.createdAt).toLocaleDateString() : 'N/A'}
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -544,7 +569,18 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {users.filter(u => u.kycStatus && u.kycDocumentUrl).map((userData, index) => (
+                        {kycSubmissions.length === 0 ? (
+                          <tr>
+                            <td colSpan="5" style={{
+                              padding: '2rem',
+                              textAlign: 'center',
+                              color: '#6b7280'
+                            }}>
+                              No KYC submissions found
+                            </td>
+                          </tr>
+                        ) : (
+                          kycSubmissions.map((userData, index) => (
                           <tr key={userData._id} style={{
                             backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb'
                           }}>
@@ -673,19 +709,10 @@ export default function AdminDashboard() {
                               )}
                             </td>
                           </tr>
-                        ))}
+                          ))
+                        )}
                       </tbody>
                     </table>
-                    
-                    {users.filter(u => u.kycStatus && u.kycDocumentUrl).length === 0 && (
-                      <div style={{ 
-                        textAlign: 'center', 
-                        padding: '3rem',
-                        color: '#6b7280' 
-                      }}>
-                        No KYC documents submitted yet.
-                      </div>
-                    )}
                   </div>
                 </div>
               )}

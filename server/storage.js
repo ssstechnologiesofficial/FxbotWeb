@@ -116,6 +116,12 @@ class MongoStorage {
     return await User.find().select('-password').sort({ createdAt: -1 });
   }
 
+  async getKycSubmissions() {
+    return await User.find({ 
+      kycStatus: { $exists: true, $ne: null } 
+    }).select('firstName lastName email kycStatus kycSubmittedAt kycFileName kycFileType kycApprovedAt kycRejectedAt kycRejectionReason').sort({ kycSubmittedAt: -1 });
+  }
+
   async verifyPassword(plainPassword, hashedPassword) {
     return await bcrypt.compare(plainPassword, hashedPassword);
   }

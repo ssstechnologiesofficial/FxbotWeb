@@ -729,8 +729,19 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Get all KYC submissions for admin
+  app.get('/api/admin/kyc', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const kycSubmissions = await storage.getKycSubmissions();
+      res.json(kycSubmissions);
+    } catch (error) {
+      console.error('Error fetching KYC submissions:', error);
+      res.status(500).json({ error: 'Failed to fetch KYC submissions' });
+    }
+  });
+
   // KYC Document Approval/Rejection Routes
-  app.post('/api/admin/kyc/:userId/approve', requireAdmin, async (req, res) => {
+  app.post('/api/admin/kyc/:userId/approve', authenticateToken, requireAdmin, async (req, res) => {
     try {
       const { userId } = req.params;
       await storage.updateUser(userId, {
@@ -745,7 +756,7 @@ export async function registerRoutes(app) {
     }
   });
 
-  app.post('/api/admin/kyc/:userId/reject', requireAdmin, async (req, res) => {
+  app.post('/api/admin/kyc/:userId/reject', authenticateToken, requireAdmin, async (req, res) => {
     try {
       const { userId } = req.params;
       const { reason } = req.body;
