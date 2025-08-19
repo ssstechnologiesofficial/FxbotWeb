@@ -59,7 +59,7 @@ export default function ReferralTree() {
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Referral Tree</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Referral Network</h1>
         </header>
 
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
