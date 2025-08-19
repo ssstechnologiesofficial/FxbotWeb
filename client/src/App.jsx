@@ -8,6 +8,7 @@ import Fund from "./pages/Fund";
 import ReferralTree from "./pages/ReferralTree";
 import Deposit from "./pages/Deposit";
 import Withdrawal from "./pages/Withdrawal";
+import AdminDashboard from "./pages/AdminDashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/referral-tree" component={ReferralTree} />
         <Route path="/deposit" component={Deposit} />
         <Route path="/withdrawal" component={Withdrawal} />
+        <Route path="/admin" component={AdminDashboard} />
         <Route path="/forgot-password" component={ForgotPassword} />
       </Switch>
     </div>

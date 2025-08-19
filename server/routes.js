@@ -344,6 +344,33 @@ export async function registerRoutes(app) {
     }
   });
 
+  app.get("/api/admin/deposits", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const deposits = await storage.getAllDeposits();
+      res.json(deposits);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get deposits" });
+    }
+  });
+
+  app.post("/api/admin/deposits/:id/approve", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const deposit = await storage.updateDepositStatus(req.params.id, 'confirmed');
+      res.json({ success: true, deposit });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to approve deposit" });
+    }
+  });
+
+  app.post("/api/admin/deposits/:id/reject", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const deposit = await storage.updateDepositStatus(req.params.id, 'rejected');
+      res.json({ success: true, deposit });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to reject deposit" });
+    }
+  });
+
   app.get("/api/admin/contacts", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const contacts = await storage.getContacts();

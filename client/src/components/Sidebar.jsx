@@ -17,14 +17,25 @@ const Sidebar = ({ user, onLogout }) => {
   const [location, setLocation] = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
-    { id: 'fund', label: 'Fund', icon: Wallet, path: '/fund' },
-    { id: 'referral-tree', label: 'Referral Tree', icon: Users, path: '/referral-tree' },
-    { id: 'deposit', label: 'Deposit', icon: DollarSign, path: '/deposit' },
-    { id: 'withdrawal', label: 'Withdrawal', icon: CreditCard, path: '/withdrawal' }
-  ];
+  const getMenuItems = () => {
+    const baseItems = [
+      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+      { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
+      { id: 'fund', label: 'Fund', icon: Wallet, path: '/fund' },
+      { id: 'referral-tree', label: 'Referral Tree', icon: Users, path: '/referral-tree' },
+      { id: 'deposit', label: 'Deposit', icon: DollarSign, path: '/deposit' },
+      { id: 'withdrawal', label: 'Withdrawal', icon: CreditCard, path: '/withdrawal' }
+    ];
+
+    // Add admin menu for admin users
+    if (user?.isAdmin) {
+      baseItems.push({ id: 'admin', label: 'Admin Panel', icon: Target, path: '/admin' });
+    }
+
+    return baseItems;
+  };
+
+  const menuItems = getMenuItems();
 
   const handleNavigation = (path) => {
     setLocation(path);
