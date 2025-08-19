@@ -480,7 +480,6 @@ export async function registerRoutes(app) {
           `${user.firstName} ${user.lastName}`
         );
         console.log('Password reset email sent to:', user.email);
-        console.log('Reset link will be: http://localhost:5000/reset-password?token=' + resetToken);
       } catch (emailError) {
         console.error('Failed to send password reset email:', emailError);
         // Don't fail the request if email fails
