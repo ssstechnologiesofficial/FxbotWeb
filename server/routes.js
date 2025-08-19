@@ -332,6 +332,7 @@ export async function registerRoutes(app) {
     }
   });
 
+
   // Admin endpoints
   app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
     try {

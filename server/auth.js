@@ -30,6 +30,7 @@ export const authenticateToken = async (req, res, next) => {
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
 
+  console.log('Auth middleware - decoded userId:', decoded.userId);
   req.userId = decoded.userId;
   next();
 };
@@ -41,13 +42,17 @@ export const requireAdmin = async (req, res, next) => {
     const storage = getStorage();
     
     const user = await storage.getUserById(req.userId);
-    if (!user || !user.isAdmin) {
+    console.log('Admin check - User found:', user?._id);
+    console.log('Admin check - role field:', user?.role);
+    
+    if (!user || user.role !== 'admin') {
       return res.status(403).json({ error: 'Admin access required' });
     }
     
     req.adminUser = user;
     next();
   } catch (error) {
+    console.error('Admin middleware error:', error);
     res.status(500).json({ error: 'Authorization check failed' });
   }
 };
