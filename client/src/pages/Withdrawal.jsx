@@ -102,75 +102,93 @@ export default function Withdrawal() {
           <h1 className="text-2xl font-bold text-gray-900">Withdrawal Request</h1>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="max-w-4xl mx-auto space-y-6">
-            {/* Balance Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-green-100">Total Earnings</h3>
-                    <div className="text-2xl font-bold mt-1">${(user?.totalEarnings || 0).toFixed(2)}</div>
-                  </div>
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
-                  </div>
-                </div>
+        <main className="flex-1 overflow-y-auto p-6" style={{ 
+          background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' 
+        }}>
+          <div className="max-w-6xl mx-auto space-y-8">
+            {/* Hero Balance Header */}
+            <div className="bg-white rounded-3xl p-8 shadow-2xl">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
+                  💰 Withdrawal Center
+                </h1>
+                <p className="text-gray-600 text-lg">Manage your earnings and request withdrawals securely</p>
               </div>
               
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-blue-100">Available Balance</h3>
-                    <div className="text-2xl font-bold mt-1">${(user?.totalEarnings || 0).toFixed(2)}</div>
-                  </div>
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                  </div>
-                </div>
-                <p className="text-xs text-blue-100 mt-2">Ready for withdrawal</p>
-              </div>
-              
-              <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-purple-100">Referral Count</h3>
-                    <div className="text-2xl font-bold mt-1">{user?.referralCount || 0}</div>
-                  </div>
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+              {/* Balance Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="relative bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-green-100 mb-2">💵 Total Earnings</h3>
+                      <div className="text-3xl font-bold mb-1">${(user?.totalEarnings || 0).toFixed(2)}</div>
+                      <div className="text-xs text-green-100">All time commission</div>
+                    </div>
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <p className="text-xs text-purple-100 mt-2">Active referrals</p>
+                
+                <div className="relative bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-blue-100 mb-2">🏦 Available Balance</h3>
+                      <div className="text-3xl font-bold mb-1">${(user?.totalEarnings || 0).toFixed(2)}</div>
+                      <div className="text-xs text-blue-100">Ready for withdrawal</div>
+                    </div>
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="relative bg-gradient-to-br from-purple-400 via-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-purple-100 mb-2">👥 Referral Network</h3>
+                      <div className="text-3xl font-bold mb-1">{user?.referralCount || 0}</div>
+                      <div className="text-xs text-purple-100">Active referrals</div>
+                    </div>
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Withdrawal Request Form */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  Request Withdrawal
-                </h2>
+              <div className="bg-white rounded-3xl p-8 shadow-2xl border-0 hover:shadow-3xl transition-all duration-300">
+                <div className="flex items-center mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-3xl font-bold text-gray-800 ml-4">🚀 Request Withdrawal</h2>
+                </div>
                 
                 <form onSubmit={handleWithdrawal} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Withdrawal Amount</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-3">💸 Withdrawal Amount</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-3 text-gray-500 text-lg">$</span>
+                      <span className="absolute left-4 top-4 text-gray-600 text-xl font-bold">$</span>
                       <input
                         type="number"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full border-2 border-gray-200 rounded-2xl pl-12 pr-4 py-4 text-xl font-bold focus:ring-4 focus:ring-red-200 focus:border-red-500 transition-all bg-gradient-to-r from-gray-50 to-white hover:shadow-lg"
                         placeholder="0.00"
                         min="50"
                         step="0.01"
@@ -178,116 +196,142 @@ export default function Withdrawal() {
                         disabled={submitting}
                       />
                     </div>
-                    <p className="text-sm text-gray-500 mt-1">Minimum withdrawal: $50</p>
+                    <p className="text-sm text-gray-600 mt-2 font-medium">💡 Minimum withdrawal: $50</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Withdrawal Method</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-3">🏦 Withdrawal Method</label>
                     <select
                       value={method}
                       onChange={(e) => setMethod(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full border-2 border-gray-200 rounded-2xl px-4 py-4 text-lg font-semibold focus:ring-4 focus:ring-red-200 focus:border-red-500 transition-all bg-gradient-to-r from-gray-50 to-white hover:shadow-lg"
                       required
                       disabled={submitting}
                     >
-                      <option value="crypto">USDT TRC-20</option>
-                      <option value="bank">Bank Transfer</option>
-                      <option value="upi">UPI Payment</option>
+                      <option value="crypto">🪙 USDT TRC-20 (Recommended)</option>
+                      <option value="bank">🏦 Bank Transfer</option>
+                      <option value="upi">📱 UPI Payment</option>
                     </select>
                   </div>
 
                   {method === 'crypto' && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">USDT TRC-20 Wallet Address</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-3">🔐 USDT TRC-20 Wallet Address</label>
                       <input
                         type="text"
                         value={walletAddress}
                         onChange={(e) => setWalletAddress(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 font-mono"
-                        placeholder="Enter your USDT TRC-20 wallet address"
+                        className="w-full border-2 border-gray-200 rounded-2xl px-4 py-4 font-mono text-sm focus:ring-4 focus:ring-red-200 focus:border-red-500 transition-all bg-gradient-to-r from-gray-50 to-white hover:shadow-lg"
+                        placeholder="TXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                         required
                         disabled={submitting}
                       />
-                      <p className="text-sm text-gray-500 mt-1">Double-check your wallet address - transactions cannot be reversed</p>
+                      <p className="text-sm text-red-600 mt-2 font-medium">⚠️ Double-check your address - transactions cannot be reversed!</p>
                     </div>
                   )}
 
-                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <h3 className="font-medium text-amber-900 mb-2">Withdrawal Information</h3>
-                    <ul className="text-sm text-amber-800 space-y-1">
-                      <li>• Withdrawals are processed within 1-3 business days</li>
-                      <li>• Processing fee: $5 for crypto, $10 for bank/UPI</li>
-                      <li>• Minimum withdrawal amount: $50</li>
-                      <li>• Identity verification may be required for large amounts</li>
-                      <li>• Ensure wallet address is correct - we are not responsible for wrong addresses</li>
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-2xl border-2 border-amber-200 shadow-lg">
+                    <h3 className="font-bold text-amber-900 mb-3 flex items-center">
+                      <span className="mr-2">ℹ️</span>
+                      Withdrawal Information
+                    </h3>
+                    <ul className="text-sm text-amber-800 space-y-2 font-medium">
+                      <li className="flex items-center"><span className="mr-2">⏱️</span>Processed within 1-3 business days</li>
+                      <li className="flex items-center"><span className="mr-2">💰</span>Fee: $5 (crypto) / $10 (bank/UPI)</li>
+                      <li className="flex items-center"><span className="mr-2">📊</span>Minimum amount: $50</li>
+                      <li className="flex items-center"><span className="mr-2">🔍</span>KYC verification may be required</li>
+                      <li className="flex items-center"><span className="mr-2">⚠️</span>Verify wallet address carefully</li>
                     </ul>
                   </div>
 
                   <button
                     type="submit"
                     disabled={submitting || (user?.totalEarnings || 0) < 50}
-                    className={`w-full py-3 rounded-lg font-medium transition-colors ${
+                    className={`w-full py-4 rounded-2xl text-xl font-bold transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 ${
                       submitting || (user?.totalEarnings || 0) < 50
-                        ? 'bg-gray-400 cursor-not-allowed text-white'
-                        : 'bg-red-600 hover:bg-red-700 text-white'
+                        ? 'bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed text-white'
+                        : 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white'
                     }`}
                     data-testid="button-submit-withdrawal"
                   >
-                    {submitting ? 'Processing...' : 'Request Withdrawal'}
+                    {submitting ? '🔄 Processing...' : '🚀 Request Withdrawal'}
                   </button>
                   
                   {(user?.totalEarnings || 0) < 50 && (
-                    <p className="text-sm text-red-600 text-center">
-                      Insufficient balance. You need at least $50 to make a withdrawal.
-                    </p>
+                    <div className="text-center p-4 bg-red-50 rounded-2xl border-2 border-red-200">
+                      <p className="text-red-700 font-bold">
+                        💸 Insufficient balance - You need at least $50 to withdraw
+                      </p>
+                    </div>
                   )}
                 </form>
               </div>
 
               {/* Recent Withdrawals */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m2 0h10a2 2 0 002-2V7a2 2 0 00-2-2H9m0 0V3m0 2v6" />
-                  </svg>
-                  Withdrawal History
-                </h3>
+              <div className="bg-white rounded-3xl p-8 shadow-2xl border-0 hover:shadow-3xl transition-all duration-300">
+                <div className="flex items-center mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m2 0h10a2 2 0 002-2V7a2 2 0 00-2-2H9m0 0V3m0 2v6" />
+                    </svg>
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-800 ml-4">📊 Withdrawal History</h3>
+                </div>
                 
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                   {withdrawals.length > 0 ? (
                     withdrawals.map((withdrawal) => (
-                      <div key={withdrawal._id} className="p-4 bg-gray-50 rounded-lg border">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="font-medium text-gray-900">
+                      <div key={withdrawal._id} className="p-6 bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-gray-100 hover:shadow-lg transition-all duration-300 hover:scale-102">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-2xl font-bold text-gray-800">
                             ${withdrawal.amount.toFixed(2)}
                           </div>
-                          <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            withdrawal.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            withdrawal.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
-                            withdrawal.status === 'pending' ? 'bg-blue-100 text-blue-800' :
-                            'bg-red-100 text-red-800'
+                          <div className={`px-4 py-2 rounded-full text-sm font-bold shadow-md ${
+                            withdrawal.status === 'completed' ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' :
+                            withdrawal.status === 'processing' ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white' :
+                            withdrawal.status === 'pending' ? 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white' :
+                            'bg-gradient-to-r from-red-400 to-pink-500 text-white'
                           }`}>
-                            {withdrawal.status.charAt(0).toUpperCase() + withdrawal.status.slice(1)}
+                            {withdrawal.status === 'completed' ? '✅ Completed' :
+                             withdrawal.status === 'processing' ? '🔄 Processing' :
+                             withdrawal.status === 'pending' ? '⏳ Pending' :
+                             '❌ Failed'}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-600">
-                          <div>Method: {withdrawal.method === 'crypto' ? 'USDT TRC-20' : withdrawal.method}</div>
-                          <div>Date: {new Date(withdrawal.createdAt).toLocaleDateString()}</div>
+                        <div className="text-sm text-gray-600 space-y-1 font-medium">
+                          <div className="flex items-center">
+                            <span className="mr-2">💳</span>
+                            Method: {withdrawal.method === 'crypto' ? '🪙 USDT TRC-20' : withdrawal.method}
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2">📅</span>
+                            Date: {new Date(withdrawal.createdAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            })}
+                          </div>
                           {withdrawal.transactionHash && (
-                            <div className="font-mono text-xs">TX: {withdrawal.transactionHash}</div>
+                            <div className="flex items-center">
+                              <span className="mr-2">🔗</span>
+                              <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                                TX: {withdrawal.transactionHash}
+                              </span>
+                            </div>
                           )}
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="text-center py-12">
+                      <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m2 0h10a2 2 0 002-2V7a2 2 0 00-2-2H9m0 0V3m0 2v6" />
                         </svg>
                       </div>
-                      <p>No withdrawals yet</p>
-                      <p className="text-sm mt-1">Your withdrawal history will appear here</p>
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">📝 No Withdrawal History</h3>
+                      <p className="text-gray-600 font-medium">Your withdrawal requests will appear here once you make them</p>
+                      <p className="text-sm text-gray-500 mt-2">Make your first withdrawal to get started!</p>
                     </div>
                   )}
                 </div>
