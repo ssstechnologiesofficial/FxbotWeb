@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
+import { Copy, Upload, CheckCircle, DollarSign, Wallet, QrCode } from 'lucide-react';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
+import qrCodeImage from '@assets/QR_1755581675343.jpeg';
 
 export default function Deposit() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [amount, setAmount] = useState('');
-  const [method, setMethod] = useState('crypto');
+  const [depositAmount, setDepositAmount] = useState(250);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const walletAddress = "TDdjYG9Jhz1G68AzgZqWFL75iEbsRD1FSH";
+  const walletType = "TRC";
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -40,100 +47,491 @@ export default function Deposit() {
     window.location.href = '/';
   };
 
-  const handleDeposit = (e) => {
-    e.preventDefault();
-    alert(`Deposit of $${amount} via ${method} initiated. This is a demo - no actual transaction will occur.`);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(walletAddress).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
+  const handleAmountChange = (event) => {
+    const value = parseInt(event.target.value);
+    if (value >= 250 && value % 250 === 0) {
+      setDepositAmount(value);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+    formData.append('amount', depositAmount);
+    formData.append('walletType', walletType);
+    formData.append('walletAddress', walletAddress);
+    if (uploadedFile) {
+      formData.append('screenshot', uploadedFile);
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/deposit', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        alert('Deposit request submitted successfully! Our admin will review and confirm your transaction.');
+        setUploadedFile(null);
+        setDepositAmount(250);
+        document.getElementById('file-upload').value = '';
+      } else {
+        alert('Failed to submit deposit request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Deposit submission error:', error);
+      alert('Error submitting deposit request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const generateAmountOptions = () => {
+    const options = [];
+    for (let i = 250; i <= 2500; i += 250) {
+      options.push(
+        <option key={i} value={i}>
+          ${i}
+        </option>
+      );
+    }
+    return options;
   };
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-100">
-        <div className="w-64 bg-gray-900"></div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
+        <div style={{ width: '16rem', backgroundColor: '#1f2937' }}></div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{
+            width: '3rem',
+            height: '3rem',
+            border: '2px solid #e5e7eb',
+            borderTop: '2px solid #3b82f6',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
       <Sidebar user={user} onLogout={handleLogout} />
       
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Deposit</h1>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <header style={{
+          backgroundColor: '#ffffff',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          borderBottom: '1px solid #e5e7eb',
+          padding: '1rem 1.5rem'
+        }}>
+          <h1 style={{
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            color: '#111827',
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <DollarSign style={{ width: '1.5rem', height: '1.5rem', color: '#f59e0b' }} />
+            Deposit
+          </h1>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Make a Deposit</h2>
+        <main style={{
+          flex: 1,
+          overflowY: 'auto',
+          backgroundColor: '#f9fafb',
+          padding: '1.5rem'
+        }}>
+          <div style={{ 
+            maxWidth: '900px',
+            margin: '0 auto'
+          }}>
+            {/* Header */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h2 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                color: '#111827',
+                marginBottom: '0.5rem'
+              }}>
+                Make a Deposit
+              </h2>
+              <p style={{ 
+                color: '#6b7280',
+                fontSize: '1rem',
+                marginBottom: '1rem'
+              }}>
+                Add funds to your FXBOT trading account using USDT TRC-20
+              </p>
               
-              <form onSubmit={handleDeposit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Deposit Amount</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-2 text-gray-500 text-lg">$</span>
-                    <input
-                      type="number"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2"
-                      placeholder="0.00"
-                      min="10"
-                      step="0.01"
-                      required
-                    />
-                  </div>
-                  <p className="text-sm text-gray-500 mt-1">Minimum deposit: $10</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
-                  <select
-                    value={method}
-                    onChange={(e) => setMethod(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                    required
-                  >
-                    <option value="crypto">Cryptocurrency</option>
-                    <option value="bank">Bank Transfer</option>
-                    <option value="card">Credit/Debit Card</option>
-                    <option value="paypal">PayPal</option>
-                  </select>
-                </div>
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="font-medium text-blue-900 mb-2">Deposit Information</h3>
-                  <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• Deposits are processed within 1-24 hours</li>
-                    <li>• No fees for cryptocurrency deposits</li>
-                    <li>• 3% processing fee for card payments</li>
-                    <li>• All deposits are secured with bank-level encryption</li>
-                  </ul>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
-                  data-testid="button-submit-deposit"
-                >
-                  Proceed to Deposit
-                </button>
-              </form>
-            </div>
-
-            {/* Recent Deposits */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Deposits</h3>
-              <div className="text-center py-8 text-gray-500">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl">📄</span>
-                </div>
-                <p>No deposits yet</p>
+              {/* Remark */}
+              <div style={{
+                backgroundColor: '#fef3c7',
+                border: '1px solid #f59e0b',
+                borderRadius: '0.5rem',
+                padding: '0.75rem',
+                fontSize: '0.875rem',
+                color: '#92400e'
+              }}>
+                <strong>Remark:</strong> Please ensure you only transfer the same selected type of digital asset.
               </div>
             </div>
+
+      <form onSubmit={handleSubmit}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr 1fr', 
+          gap: '2rem',
+          alignItems: 'start'
+        }}>
+          {/* Left Column - Form */}
+          <div style={{ 
+            backgroundColor: '#ffffff',
+            borderRadius: '1rem',
+            padding: '2rem',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            border: '1px solid #e5e7eb'
+          }}>
+            {/* Payment Method */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ 
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Payment Method
+              </label>
+              <div style={{
+                backgroundColor: '#f3f4f6',
+                border: '2px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                padding: '0.75rem 1rem',
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: '#111827',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <Wallet style={{ width: '1.25rem', height: '1.25rem', color: '#f59e0b' }} />
+                USDT TRC-20
+              </div>
+            </div>
+
+            {/* Deposit Amount */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ 
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Deposit Amount (USD)
+              </label>
+              <select
+                value={depositAmount}
+                onChange={handleAmountChange}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  backgroundColor: '#ffffff',
+                  color: '#111827',
+                  cursor: 'pointer'
+                }}
+              >
+                {generateAmountOptions()}
+              </select>
+              <p style={{ 
+                fontSize: '0.75rem',
+                color: '#6b7280',
+                marginTop: '0.25rem'
+              }}>
+                Minimum $250. Deposits must be in multiples of $250
+              </p>
+            </div>
+
+            {/* Wallet Type */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ 
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Wallet Type
+              </label>
+              <div style={{
+                backgroundColor: '#f3f4f6',
+                border: '2px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                padding: '0.75rem 1rem',
+                fontSize: '1rem',
+                fontWeight: '600',
+                color: '#111827'
+              }}>
+                {walletType}
+              </div>
+            </div>
+
+            {/* Wallet Address */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ 
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Wallet Address
+              </label>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <input
+                  type="text"
+                  value={walletAddress}
+                  readOnly
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    fontSize: '0.875rem',
+                    backgroundColor: '#f9fafb',
+                    color: '#111827'
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={copyToClipboard}
+                  style={{
+                    padding: '0.75rem',
+                    backgroundColor: copied ? '#22c55e' : '#f59e0b',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {copied ? (
+                    <>
+                      <CheckCircle style={{ width: '1rem', height: '1rem' }} />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy style={{ width: '1rem', height: '1rem' }} />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* File Upload */}
+            <div style={{ marginBottom: '2rem' }}>
+              <label style={{ 
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Upload Payment Screenshot
+              </label>
+              <div style={{
+                border: '2px dashed #e5e7eb',
+                borderRadius: '0.5rem',
+                padding: '2rem',
+                textAlign: 'center',
+                backgroundColor: '#f9fafb'
+              }}>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+                <label
+                  htmlFor="file-upload"
+                  style={{
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <Upload style={{ width: '2rem', height: '2rem', color: '#6b7280' }} />
+                  <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                    Click to upload screenshot
+                  </span>
+                </label>
+                {uploadedFile && (
+                  <p style={{ 
+                    fontSize: '0.875rem',
+                    color: '#22c55e',
+                    marginTop: '0.5rem',
+                    fontWeight: '600'
+                  }}>
+                    ✓ {uploadedFile.name}
+                  </p>
+                )}
+              </div>
+              <p style={{ 
+                fontSize: '0.75rem',
+                color: '#6b7280',
+                marginTop: '0.25rem'
+              }}>
+                Upload a screenshot of your payment for admin review
+              </p>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || !uploadedFile}
+              style={{
+                width: '100%',
+                padding: '1rem',
+                backgroundColor: (!uploadedFile || isSubmitting) ? '#9ca3af' : '#f59e0b',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: (!uploadedFile || isSubmitting) ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (!isSubmitting && uploadedFile) {
+                  e.target.style.backgroundColor = '#d97706';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSubmitting && uploadedFile) {
+                  e.target.style.backgroundColor = '#f59e0b';
+                }
+              }}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Deposit Request'}
+            </button>
+          </div>
+
+          {/* Right Column - QR Code */}
+          <div style={{ 
+            backgroundColor: '#ffffff',
+            borderRadius: '1rem',
+            padding: '2rem',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            border: '1px solid #e5e7eb',
+            textAlign: 'center'
+          }}>
+            <div style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              marginBottom: '1.5rem'
+            }}>
+              <QrCode style={{ width: '1.5rem', height: '1.5rem', color: '#f59e0b' }} />
+              <h3 style={{ 
+                fontSize: '1.25rem',
+                fontWeight: 'bold',
+                color: '#111827',
+                margin: 0
+              }}>
+                Wallet QR Code
+              </h3>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#f9fafb',
+              border: '2px solid #e5e7eb',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              marginBottom: '1rem'
+            }}>
+              <img
+                src={qrCodeImage}
+                alt="Wallet QR Code"
+                style={{
+                  width: '200px',
+                  height: '200px',
+                  objectFit: 'contain',
+                  borderRadius: '0.5rem'
+                }}
+              />
+            </div>
+
+            <p style={{ 
+              fontSize: '0.875rem',
+              color: '#6b7280',
+              marginBottom: '1rem'
+            }}>
+              Scan this QR code to send USDT TRC-20 to our wallet
+            </p>
+
+            <div style={{
+              backgroundColor: '#fef3c7',
+              border: '1px solid #f59e0b',
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              fontSize: '0.875rem',
+              color: '#92400e'
+            }}>
+              <strong>Important:</strong>
+              <ul style={{ margin: '0.5rem 0', paddingLeft: '1.25rem' }}>
+                <li>Only send USDT TRC-20 to this address</li>
+                <li>Minimum deposit: $250</li>
+                <li>Upload payment screenshot for verification</li>
+                <li>Processing time: 1-24 hours</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </form>
           </div>
         </main>
       </div>

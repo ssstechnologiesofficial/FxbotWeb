@@ -1,4 +1,4 @@
-import connectDB, { User, Contact, Newsletter } from './database.js';
+import connectDB, { User, Contact, Newsletter, Deposit } from './database.js';
 import bcrypt from 'bcryptjs';
 
 // MongoDB Storage implementation
@@ -115,6 +115,45 @@ class MongoStorage {
   async getUserReferrals(userId) {
     const user = await User.findById(userId).populate('children', 'firstName lastName email createdAt');
     return user ? user.children : [];
+  }
+
+  // Deposit methods
+  async createDeposit(depositData) {
+    try {
+      const deposit = new Deposit(depositData);
+      await deposit.save();
+      return deposit;
+    } catch (error) {
+      console.error('Error creating deposit:', error);
+      throw error;
+    }
+  }
+
+  async getDepositsByUserId(userId) {
+    try {
+      return await Deposit.find({ userId }).sort({ createdAt: -1 });
+    } catch (error) {
+      console.error('Error fetching deposits:', error);
+      throw error;
+    }
+  }
+
+  async getAllDeposits() {
+    try {
+      return await Deposit.find().populate('userId', 'email firstName lastName').sort({ createdAt: -1 });
+    } catch (error) {
+      console.error('Error fetching all deposits:', error);
+      throw error;
+    }
+  }
+
+  async updateDepositStatus(depositId, status) {
+    try {
+      return await Deposit.findByIdAndUpdate(depositId, { status, updatedAt: new Date() }, { new: true });
+    } catch (error) {
+      console.error('Error updating deposit status:', error);
+      throw error;
+    }
   }
 }
 

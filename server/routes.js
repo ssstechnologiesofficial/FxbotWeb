@@ -298,6 +298,42 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Deposit endpoint
+  app.post("/api/deposit", authenticateToken, async (req, res) => {
+    try {
+      const { amount, walletType, walletAddress } = req.body;
+      const userId = req.userId;
+
+      // Basic validation
+      if (!amount || amount < 250 || amount % 250 !== 0) {
+        return res.status(400).json({ error: "Invalid deposit amount. Minimum $250 in multiples of $250." });
+      }
+
+      // Create deposit record
+      const depositData = {
+        userId,
+        amount: parseInt(amount),
+        walletType,
+        walletAddress,
+        status: 'pending',
+        createdAt: new Date(),
+        paymentMethod: 'USDT TRC-20'
+      };
+
+      // Store deposit request
+      await storage.createDeposit(depositData);
+      
+      res.json({
+        success: true,
+        message: "Deposit request submitted successfully. Admin will review and confirm your transaction.",
+        depositData
+      });
+    } catch (error) {
+      console.error("Deposit error:", error);
+      res.status(500).json({ error: "Failed to submit deposit request" });
+    }
+  });
+
   // Admin endpoints
   app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
     try {

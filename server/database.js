@@ -160,9 +160,27 @@ const investmentSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Deposit Schema
+const depositSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  amount: { type: Number, required: true, min: 250 },
+  walletType: { type: String, required: true },
+  walletAddress: { type: String, required: true },
+  paymentMethod: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['pending', 'confirmed', 'rejected'], 
+    default: 'pending' 
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  adminNotes: { type: String }
+});
+
 export const User = mongoose.model('User', userSchema);
 export const Contact = mongoose.model('Contact', contactSchema);
 export const Newsletter = mongoose.model('Newsletter', newsletterSchema);
 export const Investment = mongoose.model('Investment', investmentSchema);
+export const Deposit = mongoose.model('Deposit', depositSchema);
 
 export default connectDB;
