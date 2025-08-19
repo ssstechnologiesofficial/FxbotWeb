@@ -231,8 +231,11 @@ class EmailService {
 
   async sendPasswordResetEmail(toEmail, resetToken, userName) {
     try {
-      // Create the reset link
-      const resetLink = `${process.env.BASE_URL || 'https://fxbot.co.in'}/reset-password?token=${resetToken}`;
+      // Create the reset link - use current domain for development
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://fxbot.co.in' 
+        : `http://localhost:5000`;
+      const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
       
       const msg = {
         to: toEmail,
