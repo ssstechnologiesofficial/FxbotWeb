@@ -58,106 +58,131 @@ export default function ReferralTree() {
       <Sidebar user={user} onLogout={handleLogout} />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Referral Network</h1>
-        </header>
-
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="max-w-6xl mx-auto space-y-6">
-            
-            {/* Overview Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-blue-100">Total Referrals</h3>
-                    <div className="text-2xl font-bold mt-1">{user?.referralCount || 0}</div>
-                  </div>
-                  <svg className="w-8 h-8 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <p className="text-xs text-blue-100 mt-2">All levels combined</p>
+        <main className="flex-1 overflow-y-auto p-6" style={{ 
+          background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' 
+        }}>
+          <div className="max-w-7xl mx-auto space-y-8">
+            {/* Hero Header */}
+            <div className="bg-white rounded-3xl p-8 shadow-2xl">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
+                  🌟 Referral Network Tree
+                </h1>
+                <p className="text-gray-600 text-lg">Track your multi-level referral network and commission earnings</p>
               </div>
               
-              <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-green-100">Total Earnings</h3>
-                    <div className="text-2xl font-bold mt-1">${(user?.totalEarnings || 0).toFixed(2)}</div>
+              {/* Overview Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="relative bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-blue-100 mb-2">👥 Total Referrals</h3>
+                      <div className="text-3xl font-bold mb-1">{referralData?.referralCount || 0}</div>
+                      <div className="text-xs text-blue-100">Active network</div>
+                    </div>
+                    <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg">
+                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
                   </div>
-                  <svg className="w-8 h-8 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                  </svg>
                 </div>
-                <p className="text-xs text-green-100 mt-2">From all referrals</p>
-              </div>
-              
-              <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-purple-100">Your Sponsor ID</h3>
-                    <div className="text-lg font-bold mt-1 font-mono">{user?.ownSponsorId}</div>
+                
+                <div className="relative bg-gradient-to-br from-green-400 via-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-green-100 mb-2">💰 Total Earnings</h3>
+                      <div className="text-3xl font-bold mb-1">${(referralData?.totalEarnings || 0).toFixed(2)}</div>
+                      <div className="text-xs text-green-100">From all referrals</div>
+                    </div>
+                    <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg">
+                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                      </svg>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(user?.ownSponsorId || '');
-                      alert('Sponsor ID copied to clipboard!');
-                    }}
-                    className="w-8 h-8 text-purple-200 hover:text-white transition-colors"
-                  >
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                  </button>
                 </div>
-                <p className="text-xs text-purple-100 mt-2">Share to invite users</p>
-              </div>
-              
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-orange-100">Network Depth</h3>
-                    <div className="text-2xl font-bold mt-1">5 Levels</div>
+                
+                <div className="relative bg-gradient-to-br from-purple-400 via-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-purple-100 mb-2">🆔 Your Sponsor ID</h3>
+                      <div className="text-lg font-bold mb-1 font-mono">{referralData?.ownSponsorId}</div>
+                      <div className="text-xs text-purple-100">Share to invite users</div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(referralData?.ownSponsorId || '');
+                        alert('🎉 Sponsor ID copied to clipboard!');
+                      }}
+                      className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg hover:bg-white/30 transition-colors"
+                    >
+                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </button>
                   </div>
-                  <svg className="w-8 h-8 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
-                  </svg>
                 </div>
-                <p className="text-xs text-orange-100 mt-2">Maximum earning depth</p>
+                
+                <div className="relative bg-gradient-to-br from-orange-400 via-orange-500 to-red-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-orange-100 mb-2">🌐 Network Depth</h3>
+                      <div className="text-3xl font-bold mb-1">5 Levels</div>
+                      <div className="text-xs text-orange-100">Maximum earning depth</div>
+                    </div>
+                    <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-lg">
+                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Multi-Level Stats */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                Multi-Level Referral Overview
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* Multi-Level Commission Breakdown */}
+            <div className="bg-white rounded-3xl p-8 shadow-2xl border-0 hover:shadow-3xl transition-all duration-300">
+              <div className="flex items-center mb-8">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 ml-4">📊 5-Level Commission Structure</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                 {[1, 2, 3, 4, 5].map(level => {
-                  const count = user?.[`level${level}Count`] || 0;
-                  const earnings = user?.[`level${level}Earnings`] || 0;
+                  const count = referralData?.[`level${level}Count`] || 0;
+                  const earnings = referralData?.[`level${level}Earnings`] || 0;
                   const commission = level === 1 ? '1.5%' : level === 2 ? '1.0%' : level === 3 ? '0.75%' : level === 4 ? '0.5%' : '0.25%';
+                  const colors = [
+                    'from-red-400 to-pink-500',
+                    'from-orange-400 to-yellow-500', 
+                    'from-green-400 to-emerald-500',
+                    'from-blue-400 to-cyan-500',
+                    'from-purple-400 to-indigo-500'
+                  ];
                   
                   return (
-                    <div key={level} className={`text-center p-4 rounded-lg border-2 transition-all hover:shadow-lg ${
-                      count > 0 ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
-                    }`}>
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
-                        count > 0 ? 'bg-blue-500 text-white' : 'bg-gray-400 text-white'
-                      }`}>
-                        <span className="font-bold">{level}</span>
-                      </div>
-                      <div className="text-2xl font-bold text-gray-900 mb-1">{count}</div>
-                      <div className="text-sm text-gray-500 mb-2">Level {level} Users</div>
-                      <div className={`text-xs font-medium mb-1 ${earnings > 0 ? 'text-green-600' : 'text-gray-500'}`}>
-                        ${earnings.toFixed(2)} earned
-                      </div>
-                      <div className="text-xs text-blue-600 font-medium">
-                        {commission} commission
+                    <div key={level} className={`relative bg-gradient-to-br ${colors[level-1]} rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
+                      <div className="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+                      <div className="relative text-center">
+                        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-lg">
+                          <span className="text-xl font-bold">{level}</span>
+                        </div>
+                        <h3 className="text-sm font-semibold mb-2 opacity-90">Level {level}</h3>
+                        <div className="text-2xl font-bold mb-1">{count}</div>
+                        <div className="text-xs opacity-80 mb-3">Referrals</div>
+                        <div className="bg-white/20 rounded-lg p-2 backdrop-blur-sm">
+                          <div className="text-sm font-semibold">${earnings.toFixed(2)}</div>
+                          <div className="text-xs opacity-80">{commission} commission</div>
+                        </div>
                       </div>
                     </div>
                   );
@@ -165,117 +190,61 @@ export default function ReferralTree() {
               </div>
             </div>
 
-            {/* Direct Referrals */}
-            {referralData?.children && referralData.children.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            {/* Direct Referrals List */}
+            <div className="bg-white rounded-3xl p-8 shadow-2xl border-0 hover:shadow-3xl transition-all duration-300">
+              <div className="flex items-center mb-8">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
-                  Your Direct Referrals (Level 1)
-                </h2>
-                <div className="space-y-4">
-                  {referralData.children.map((child, index) => (
-                    <div key={child._id || child.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border hover:shadow-md transition-shadow">
-                      <div className="flex items-center">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4 shadow-md">
-                          {child.firstName && child.lastName 
-                            ? `${child.firstName[0]}${child.lastName[0]}`
-                            : child.name?.split(' ').map(n => n[0]).join('') || 'U'}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            {child.firstName && child.lastName 
-                              ? `${child.firstName} ${child.lastName}`
-                              : child.name || 'Unknown User'}
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 ml-4">👥 Your Direct Referrals</h2>
+              </div>
+              
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {referralData?.referrals && referralData.referrals.length > 0 ? (
+                  referralData.referrals.map((referral, index) => (
+                    <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-gray-100 hover:shadow-lg transition-all duration-300 hover:scale-102">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                            <span className="text-white font-bold text-lg">
+                              {referral.firstName?.charAt(0)}{referral.lastName?.charAt(0)}
+                            </span>
                           </div>
-                          <div className="text-sm text-gray-500">{child.email}</div>
-                          <div className="text-xs text-blue-600 font-medium">Level 1 - 1.5% commission</div>
+                          <div>
+                            <h3 className="font-bold text-gray-800 text-lg">{referral.firstName} {referral.lastName}</h3>
+                            <p className="text-gray-600 font-medium">{referral.email}</p>
+                            <p className="text-sm text-gray-500">ID: {referral.ownSponsorId}</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm text-gray-500">
-                          Joined {new Date(child.createdAt || child.registeredAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })}
-                        </div>
-                        <div className={`text-xs font-medium px-2 py-1 rounded-full ${
-                          child.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {child.isActive ? 'Active Member' : 'Inactive'}
+                        <div className="text-right">
+                          <div className={`px-4 py-2 rounded-full text-sm font-bold ${
+                            referral.isActive 
+                              ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' 
+                              : 'bg-gradient-to-r from-gray-400 to-gray-500 text-white'
+                          }`}>
+                            {referral.isActive ? '✅ Active' : '💤 Inactive'}
+                          </div>
+                          <p className="text-sm text-gray-500 mt-2">
+                            Joined: {new Date(referral.createdAt).toLocaleDateString()}
+                          </p>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {(!referralData?.children || referralData.children.length === 0) && (
-              <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Build Your Referral Network</h3>
-                <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Start earning commissions by inviting others to join FXBOT. Share your unique sponsor ID to begin building your referral tree.
-                </p>
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6">
-                  <div className="text-sm font-medium text-gray-700 mb-2">Your Sponsor ID</div>
-                  <div className="text-2xl font-bold text-blue-600 font-mono mb-3">
-                    {user?.ownSponsorId}
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 616 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">No Direct Referrals Yet</h3>
+                    <p className="text-gray-600 font-medium">Share your sponsor ID to start building your network!</p>
+                    <p className="text-sm text-gray-500 mt-2">Your referrals will appear here once they register</p>
                   </div>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(user?.ownSponsorId || '');
-                      alert('Sponsor ID copied to clipboard!');
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                    data-testid="button-copy-sponsor-id"
-                  >
-                    Copy Sponsor ID
-                  </button>
-                </div>
-                <div className="text-sm text-gray-500">
-                  Share this ID with others to invite them to your referral network
-                </div>
-              </div>
-            )}
-
-            {/* Referral Program Info */}
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-              <h3 className="text-xl font-semibold mb-4">How Our Referral Program Works</h3>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-sm">
-                <div className="text-center">
-                  <div className="font-bold text-lg mb-1">Level 1</div>
-                  <div className="opacity-90">1.5% Commission</div>
-                  <div className="text-xs opacity-75">Direct referrals</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg mb-1">Level 2</div>
-                  <div className="opacity-90">1.0% Commission</div>
-                  <div className="text-xs opacity-75">Referrals of referrals</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg mb-1">Level 3</div>
-                  <div className="opacity-90">0.75% Commission</div>
-                  <div className="text-xs opacity-75">Third level down</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg mb-1">Level 4</div>
-                  <div className="opacity-90">0.5% Commission</div>
-                  <div className="text-xs opacity-75">Fourth level down</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg mb-1">Level 5</div>
-                  <div className="opacity-90">0.25% Commission</div>
-                  <div className="text-xs opacity-75">Fifth level down</div>
-                </div>
+                )}
               </div>
             </div>
           </div>
