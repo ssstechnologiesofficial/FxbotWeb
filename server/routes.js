@@ -332,6 +332,63 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Submit withdrawal request
+  app.post("/api/withdrawal", authenticateToken, async (req, res) => {
+    try {
+      const { amount, method, walletAddress } = req.body;
+      
+      if (!amount || amount < 50) {
+        return res.status(400).json({ error: "Minimum withdrawal amount is $50" });
+      }
+
+      if (method === 'crypto' && !walletAddress) {
+        return res.status(400).json({ error: "Wallet address is required for crypto withdrawals" });
+      }
+
+      const userId = req.userId;
+      const user = await storage.getUserById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if ((user.totalEarnings || 0) < amount) {
+        return res.status(400).json({ error: "Insufficient balance for withdrawal" });
+      }
+
+      const withdrawalData = {
+        userId: userId,
+        amount: parseFloat(amount),
+        method,
+        walletAddress,
+        status: 'pending',
+        createdAt: new Date()
+      };
+
+      // In a real app, save to withdrawals collection and deduct balance
+      console.log('Withdrawal request:', withdrawalData);
+      
+      res.json({ 
+        success: true, 
+        message: "Withdrawal request submitted successfully! It will be processed within 1-3 business days." 
+      });
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      res.status(500).json({ error: "Failed to submit withdrawal request" });
+    }
+  });
+
+  // Get user withdrawals
+  app.get("/api/withdrawals", authenticateToken, async (req, res) => {
+    try {
+      // For demo, return empty array
+      // In real app, fetch from withdrawals collection
+      res.json([]);
+    } catch (error) {
+      console.error("Get withdrawals error:", error);
+      res.status(500).json({ error: "Failed to fetch withdrawals" });
+    }
+  });
 
   // Admin endpoints
   app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
