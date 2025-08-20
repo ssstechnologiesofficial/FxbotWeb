@@ -447,15 +447,26 @@ export async function registerRoutes(app) {
       });
 
       if (action === 'approve') {
-        // Create investment record and process referral income
-        const { InvestmentService } = await import('./investmentService.js');
-        await InvestmentService.processInvestment(
-          deposit.userId,
-          deposit.amount,
-          'fs_income'
-        );
-
-        // Note: InvestmentService.processInvestment handles transaction creation
+        // Create investment and transaction records using storage interface
+        try {
+          // Update user's total investment amount
+          await storage.updateUser(deposit.userId, {
+            $inc: { totalInvestmentAmount: deposit.amount }
+          });
+          
+          // Create transaction record
+          await storage.createTransaction({
+            userId: deposit.userId,
+            type: 'deposit',
+            amount: deposit.amount,
+            description: `Deposit confirmed - Investment activated ($${deposit.amount})`,
+            status: 'completed'
+          });
+          
+          console.log(`Investment processed: $${deposit.amount} for user ${deposit.userId}`);
+        } catch (investmentError) {
+          console.error('Error during investment processing:', investmentError);
+        }
 
         // Send approval email
         try {
