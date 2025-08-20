@@ -283,18 +283,24 @@ class MongoStorage {
     }
   }
 
-  async getUserTransactions(userId, page = 1, limit = 50) {
+  async getUserTransactions(userId, page = 1, limit = 50, filter = 'all') {
     try {
       const { Transaction } = await import('./database.js');
       const skip = (page - 1) * limit;
       
-      const transactions = await Transaction.find({ userId })
+      // Build query with filter
+      const query = { userId };
+      if (filter !== 'all') {
+        query.type = filter;
+      }
+      
+      const transactions = await Transaction.find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean();
 
-      const total = await Transaction.countDocuments({ userId });
+      const total = await Transaction.countDocuments(query);
 
       return {
         transactions,
