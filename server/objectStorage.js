@@ -66,23 +66,27 @@ export class ObjectStorageService {
       throw new ObjectNotFoundError();
     }
 
-    const parts = objectPath.slice(1).split("/");
-    if (parts.length < 2) {
-      throw new ObjectNotFoundError();
+    // Construct the full object path: private directory + object path
+    let privateDir = this.getPrivateObjectDir();
+    if (!privateDir.endsWith("/")) {
+      privateDir = `${privateDir}/`;
     }
-
-    const entityId = parts.slice(1).join("/");
-    let entityDir = this.getPrivateObjectDir();
-    if (!entityDir.endsWith("/")) {
-      entityDir = `${entityDir}/`;
-    }
-    const objectEntityPath = `${entityDir}${objectPath}`;
-    const { bucketName, objectName } = this.parseObjectPath(objectEntityPath);
+    
+    // Remove leading slash from objectPath before concatenating
+    const cleanObjectPath = objectPath.startsWith("/") ? objectPath.slice(1) : objectPath;
+    const fullObjectPath = `${privateDir}${cleanObjectPath}`;
+    
+    console.log('Debug - Object path:', objectPath);
+    console.log('Debug - Private dir:', privateDir);
+    console.log('Debug - Full object path:', fullObjectPath);
+    
+    const { bucketName, objectName } = this.parseObjectPath(fullObjectPath);
     const bucket = objectStorageClient.bucket(bucketName);
     const objectFile = bucket.file(objectName);
     
     const [exists] = await objectFile.exists();
     if (!exists) {
+      console.log('Debug - File does not exist:', objectName, 'in bucket:', bucketName);
       throw new ObjectNotFoundError();
     }
     return objectFile;

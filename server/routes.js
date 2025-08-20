@@ -374,10 +374,8 @@ export async function registerRoutes(app) {
       // Send admin notification email
       try {
         const user = await storage.getUserById(userId);
-        const { EmailService } = await import('./emailService.js');
-        const emailInstance = new EmailService();
-        
-        await emailInstance.sendDepositNotificationEmail(deposit, user);
+        const { emailService } = await import('./emailService.js');
+        await emailService.sendDepositNotificationEmail(deposit, user);
       } catch (emailError) {
         console.error('Error sending admin notification:', emailError);
         // Continue even if email fails
