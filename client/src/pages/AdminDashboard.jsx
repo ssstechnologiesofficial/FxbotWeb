@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
   const [deposits, setDeposits] = useState([]);
+  const [withdrawals, setWithdrawals] = useState([]);
   const [kycSubmissions, setKycSubmissions] = useState([]);
   const [userHistory, setUserHistory] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -29,7 +30,9 @@ export default function AdminDashboard() {
     totalUsers: 0,
     totalDeposits: 0,
     pendingDeposits: 0,
-    totalVolume: 0
+    totalVolume: 0,
+    totalWithdrawals: 0,
+    pendingWithdrawals: 0
   });
 
   useEffect(() => {
@@ -55,11 +58,14 @@ export default function AdminDashboard() {
         setUser(userResponse.data);
 
         // Fetch admin data
-        const [usersResponse, depositsResponse, kycResponse] = await Promise.all([
+        const [usersResponse, depositsResponse, withdrawalsResponse, kycResponse] = await Promise.all([
           axios.get('/api/admin/users', {
             headers: { Authorization: `Bearer ${token}` }
           }),
           axios.get('/api/admin/deposits', {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get('/api/admin/withdrawals', {
             headers: { Authorization: `Bearer ${token}` }
           }),
           axios.get('/api/admin/kyc', {
@@ -69,6 +75,7 @@ export default function AdminDashboard() {
 
         setUsers(usersResponse.data);
         setDeposits(depositsResponse.data);
+        setWithdrawals(withdrawalsResponse.data);
         setKycSubmissions(kycResponse.data);
 
         // Calculate stats
@@ -78,11 +85,16 @@ export default function AdminDashboard() {
           .filter(d => d.status === 'confirmed')
           .reduce((sum, d) => sum + d.amount, 0);
 
+        const totalWithdrawals = withdrawalsResponse.data.length;
+        const pendingWithdrawals = withdrawalsResponse.data.filter(w => w.status === 'pending_admin').length;
+
         setStats({
           totalUsers: usersResponse.data.length,
           totalDeposits,
           pendingDeposits,
-          totalVolume
+          totalVolume,
+          totalWithdrawals,
+          pendingWithdrawals
         });
 
       } catch (error) {
@@ -195,6 +207,41 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error updating deposit:', error);
       alert('Error updating deposit status');
+    }
+  };
+
+  const handleWithdrawalAction = async (withdrawalId, action, notes) => {
+    if (!notes?.trim()) {
+      alert('Please provide notes for this action');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`/api/admin/withdrawals/${withdrawalId}/action`, {
+        action,
+        notes: notes.trim()
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Refresh withdrawals
+      const withdrawalsResponse = await axios.get('/api/admin/withdrawals', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setWithdrawals(withdrawalsResponse.data);
+
+      // Update stats
+      const pendingWithdrawals = withdrawalsResponse.data.filter(w => w.status === 'pending_admin').length;
+      setStats(prev => ({
+        ...prev,
+        pendingWithdrawals
+      }));
+
+      alert(`Withdrawal ${action}d successfully!`);
+    } catch (error) {
+      console.error('Error processing withdrawal:', error);
+      alert('Error processing withdrawal action');
     }
   };
 
@@ -916,11 +963,276 @@ export default function AdminDashboard() {
                     color: '#111827',
                     marginBottom: '1rem'
                   }}>
-                    Withdrawal Requests
+                    Withdrawal Management
                   </h3>
-                  <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>
-                    Withdrawal management system coming soon...
-                  </p>
+                  
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{
+                      width: '100%',
+                      borderCollapse: 'collapse',
+                      fontSize: '0.875rem'
+                    }}>
+                      <thead>
+                        <tr style={{ backgroundColor: '#f9fafb' }}>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>User</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Requested</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Service Charge</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Net Amount</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Method & Address</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Status</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Date</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
+                          }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {withdrawals.length === 0 ? (
+                          <tr>
+                            <td colSpan="8" style={{
+                              padding: '2rem',
+                              textAlign: 'center',
+                              color: '#6b7280'
+                            }}>
+                              No withdrawal requests found
+                            </td>
+                          </tr>
+                        ) : (
+                          withdrawals.map((withdrawal, index) => (
+                            <tr key={withdrawal._id} style={{
+                              backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb'
+                            }}>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                <div>
+                                  <div style={{ fontWeight: '600' }}>
+                                    {withdrawal.user?.name || 'Unknown User'}
+                                  </div>
+                                  <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>
+                                    {withdrawal.user?.email || 'No email'}
+                                  </div>
+                                  <div style={{ color: '#3b82f6', fontSize: '0.75rem' }}>
+                                    {withdrawal.user?.sponsorId || 'No ID'}
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb',
+                                fontWeight: '600',
+                                color: '#111827'
+                              }}>
+                                ${withdrawal.requestedAmount}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb',
+                                color: '#ef4444',
+                                fontWeight: '500'
+                              }}>
+                                -${withdrawal.serviceCharge}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb',
+                                fontWeight: '600',
+                                color: '#059669'
+                              }}>
+                                ${withdrawal.netAmount || withdrawal.amount}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                <div>
+                                  <div style={{ fontWeight: '500' }}>
+                                    {withdrawal.method}
+                                  </div>
+                                  <div style={{ 
+                                    color: '#6b7280', 
+                                    fontSize: '0.75rem',
+                                    wordBreak: 'break-all'
+                                  }}>
+                                    {withdrawal.walletAddress}
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                <span style={{
+                                  padding: '0.25rem 0.5rem',
+                                  borderRadius: '0.25rem',
+                                  fontSize: '0.75rem',
+                                  fontWeight: '600',
+                                  backgroundColor: 
+                                    withdrawal.status === 'approved' ? '#dcfce7' :
+                                    withdrawal.status === 'rejected' ? '#fef2f2' :
+                                    withdrawal.status === 'pending_admin' ? '#fef3c7' :
+                                    '#f3f4f6',
+                                  color: 
+                                    withdrawal.status === 'approved' ? '#166534' :
+                                    withdrawal.status === 'rejected' ? '#dc2626' :
+                                    withdrawal.status === 'pending_admin' ? '#d97706' :
+                                    '#6b7280'
+                                }}>
+                                  {withdrawal.status === 'approved' ? 'Approved' :
+                                   withdrawal.status === 'rejected' ? 'Rejected' :
+                                   withdrawal.status === 'pending_admin' ? 'Pending Admin' :
+                                   withdrawal.status === 'pending_otp' ? 'Awaiting OTP' :
+                                   'Unknown'}
+                                </span>
+                                {withdrawal.otpVerified && (
+                                  <div style={{ 
+                                    fontSize: '0.75rem', 
+                                    color: '#059669', 
+                                    marginTop: '0.25rem' 
+                                  }}>
+                                    OTP Verified
+                                  </div>
+                                )}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb',
+                                color: '#6b7280',
+                                fontSize: '0.75rem'
+                              }}>
+                                <div>
+                                  {new Date(withdrawal.createdAt).toLocaleDateString()}
+                                </div>
+                                <div>
+                                  {new Date(withdrawal.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </div>
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                {withdrawal.status === 'pending_admin' && (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <button
+                                      onClick={() => {
+                                        const notes = prompt('Enter approval notes:');
+                                        if (notes) handleWithdrawalAction(withdrawal._id, 'approve', notes);
+                                      }}
+                                      style={{
+                                        padding: '0.25rem 0.5rem',
+                                        backgroundColor: '#10b981',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '0.25rem',
+                                        fontSize: '0.75rem',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.25rem'
+                                      }}
+                                    >
+                                      <CheckCircle size={12} />
+                                      Approve
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        const notes = prompt('Enter rejection reason:');
+                                        if (notes) handleWithdrawalAction(withdrawal._id, 'reject', notes);
+                                      }}
+                                      style={{
+                                        padding: '0.25rem 0.5rem',
+                                        backgroundColor: '#ef4444',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '0.25rem',
+                                        fontSize: '0.75rem',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.25rem'
+                                      }}
+                                    >
+                                      <XCircle size={12} />
+                                      Reject
+                                    </button>
+                                  </div>
+                                )}
+                                {withdrawal.status !== 'pending_admin' && (
+                                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                                    {withdrawal.adminNotes && (
+                                      <div style={{
+                                        backgroundColor: '#f9fafb',
+                                        padding: '0.5rem',
+                                        borderRadius: '0.25rem',
+                                        maxWidth: '200px'
+                                      }}>
+                                        <strong>Notes:</strong><br />
+                                        {withdrawal.adminNotes}
+                                      </div>
+                                    )}
+                                    {withdrawal.adminActionBy && (
+                                      <div style={{ marginTop: '0.25rem', fontSize: '0.75rem' }}>
+                                        By: {withdrawal.adminActionBy.name}
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 
