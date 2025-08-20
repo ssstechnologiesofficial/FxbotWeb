@@ -177,12 +177,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDepositAction = async (depositId, action, notes) => {
-    if (!notes?.trim()) {
-      alert('Please provide notes for this action');
-      return;
-    }
-
+  const handleDepositAction = async (depositId, action, notes = '') => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(`/api/admin/deposits/${depositId}/action`, {
@@ -976,10 +971,7 @@ export default function AdminDashboard() {
                               {deposit.status === 'pending' && (
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                   <button
-                                    onClick={() => {
-                                      const notes = prompt('Please provide notes for approval:');
-                                      if (notes) handleDepositAction(deposit._id, 'approve', notes);
-                                    }}
+                                    onClick={() => handleDepositAction(deposit._id, 'approve')}
                                     style={{
                                       padding: '0.25rem 0.5rem',
                                       backgroundColor: '#10b981',
@@ -997,10 +989,7 @@ export default function AdminDashboard() {
                                     Approve
                                   </button>
                                   <button
-                                    onClick={() => {
-                                      const notes = prompt('Please provide notes for rejection:');
-                                      if (notes) handleDepositAction(deposit._id, 'reject', notes);
-                                    }}
+                                    onClick={() => handleDepositAction(deposit._id, 'reject')}
                                     style={{
                                       padding: '0.25rem 0.5rem',
                                       backgroundColor: '#ef4444',

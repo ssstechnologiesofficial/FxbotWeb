@@ -396,7 +396,8 @@ export async function registerRoutes(app) {
   app.get("/deposits/screenshot/:objectPath(*)", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
-      const objectPath = `/deposits/${req.params.objectPath}`;
+      // Don't add /deposits/ prefix since it's already in the objectPath
+      const objectPath = `/${req.params.objectPath}`;
       const objectFile = await objectStorageService.getDepositScreenshotFile(objectPath);
       await objectStorageService.downloadObject(objectFile, res);
     } catch (error) {
@@ -409,7 +410,7 @@ export async function registerRoutes(app) {
   });
 
   // Admin deposit approval/rejection
-  app.post("/api/admin/deposits/:depositId/action", requireAdmin, async (req, res) => {
+  app.post("/api/admin/deposits/:depositId/action", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const { depositId } = req.params;
       const { action, notes } = req.body;
@@ -417,10 +418,6 @@ export async function registerRoutes(app) {
 
       if (!action || !['approve', 'reject'].includes(action)) {
         return res.status(400).json({ error: "Valid action (approve/reject) is required" });
-      }
-
-      if (!notes?.trim()) {
-        return res.status(400).json({ error: "Notes are required" });
       }
 
       // Get deposit details
@@ -444,7 +441,7 @@ export async function registerRoutes(app) {
       // Update deposit status
       const updatedDeposit = await storage.updateDepositStatus(depositId, {
         status,
-        adminNotes: notes.trim(),
+        adminNotes: notes?.trim() || '',
         adminActionAt: new Date(),
         adminActionBy: adminUserId
       });
