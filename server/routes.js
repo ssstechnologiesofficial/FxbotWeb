@@ -448,21 +448,14 @@ export async function registerRoutes(app) {
 
       if (action === 'approve') {
         // Create investment record and process referral income
-        const investmentService = new InvestmentService(storage);
-        await investmentService.createInvestment({
-          userId: deposit.userId,
-          amount: deposit.amount,
-          packageType: 'fs_income'
-        });
+        const { InvestmentService } = await import('./investmentService.js');
+        await InvestmentService.processInvestment(
+          deposit.userId,
+          deposit.amount,
+          'fs_income'
+        );
 
-        // Create deposit transaction
-        await storage.createTransaction({
-          userId: deposit.userId,
-          type: 'deposit',
-          amount: deposit.amount,
-          description: `Deposit confirmed - Investment activated ($${deposit.amount})`,
-          status: 'completed'
-        });
+        // Note: InvestmentService.processInvestment handles transaction creation
 
         // Send approval email
         try {
