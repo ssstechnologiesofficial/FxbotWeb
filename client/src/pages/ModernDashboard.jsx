@@ -109,10 +109,23 @@ function ModernDashboard() {
     },
     {
       title: 'Monthly ROI',
-      value: '6.00%',
+      value: '6.00%',//change to actual
       icon: TrendingUp,
       color: 'from-orange-500 to-orange-600',
       bgColor: 'rgba(249, 115, 22, 0.1)'
+    },
+    {
+      title: 'DRI Income',
+      value: '6.00%',//change to actual 
+      icon: TrendingUp,
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'rgba(139, 92, 246, 0.1)'
+    },    {
+      title: 'Wallet Balance',
+      value: 6%,//change to actual 
+      icon: Wallet,
+      color: 'from-green-500 to-green-600',
+      bgColor: 'rgba(34, 197, 94, 0.1)'
     }
   ];
 
