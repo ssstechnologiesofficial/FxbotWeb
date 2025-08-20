@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Receipt, ArrowUpFromLine, ArrowDownToLine, TrendingUp, DollarSign, Wallet, Clock } from 'lucide-react';
 import axios from 'axios';
+import ModernSidebar from '../components/ModernSidebar';
 
 const TransactionHistory = () => {
   const [transactions, setTransactions] = useState([]);
@@ -97,7 +98,9 @@ const TransactionHistory = () => {
   }
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      <ModernSidebar />
+      <main style={{ flex: 1, marginLeft: '240px', padding: '2rem' }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ 
@@ -294,6 +297,7 @@ const TransactionHistory = () => {
           </button>
         </div>
       )}
+      </main>
     </div>
   );
 };
