@@ -4,6 +4,7 @@ import { getStorage } from "./storage.js";
 import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
 import { DasService } from "./dasService.js";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
+import { InvestmentService } from "./investmentService.js";
 
 // User registration validation schema
 const userRegistrationSchema = z.object({
@@ -271,6 +272,32 @@ export async function registerRoutes(app) {
       res.json(tree);
     } catch (error) {
       res.status(500).json({ error: "Failed to get referral tree" });
+    }
+  });
+
+  // User investment summary endpoint
+  app.get("/api/user/investment-summary", authenticateToken, async (req, res) => {
+    try {
+      const summary = await InvestmentService.getUserInvestmentSummary(req.userId);
+      res.json(summary);
+    } catch (error) {
+      console.error("Error fetching investment summary:", error);
+      res.status(500).json({ error: "Failed to fetch investment summary" });
+    }
+  });
+
+  // User transaction history endpoint
+  app.get("/api/user/transactions", authenticateToken, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+      const filter = req.query.filter || 'all';
+      
+      const history = await InvestmentService.getUserTransactionHistory(req.userId, page, limit);
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching transaction history:", error);
+      res.status(500).json({ error: "Failed to fetch transaction history" });
     }
   });
 

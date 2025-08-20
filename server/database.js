@@ -100,6 +100,15 @@ const userSchema = new mongoose.Schema({
   dasTask3CompletedAt: { type: Date, default: null },
   dasMonthlyEarnings: { type: Number, default: 0 },
   
+  // Investment tracking fields
+  totalInvestmentAmount: { type: Number, default: 0 },
+  directIncome: { type: Number, default: 0 }, // 6% from direct referrals
+  fsIncome: { type: Number, default: 0 }, // FS (FixSix) monthly returns
+  smartLineIncome: { type: Number, default: 0 }, // 5-tier commissions (already handled by levelXEarnings)
+  walletBalance: { type: Number, default: 0 }, // Total withdrawable amount
+  totalWithdrawn: { type: Number, default: 0 },
+  dailyFsIncome: { type: Number, default: 0 }, // Today's FS income credit
+  
   // KYC fields
   kycStatus: { 
     type: String, 
@@ -170,12 +179,78 @@ const investmentSchema = new mongoose.Schema({
   },
   packageType: {
     type: String,
-    default: 'standard'
+    enum: ['fs_income', 'smartline', 'dri', 'das'],
+    default: 'fs_income'
   },
   status: {
     type: String,
     enum: ['active', 'completed', 'cancelled'],
     default: 'active'
+  },
+  lockPeriod: {
+    type: Number,
+    default: 17 // months
+  },
+  unlockDate: {
+    type: Date
+  },
+  totalReturns: {
+    type: Number,
+    default: 0
+  },
+  remainingReturns: {
+    type: Number
+  },
+  dailyFsRate: {
+    type: Number,
+    default: 0.002727 // 6% monthly / 22 days
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, {
+  timestamps: true
+});
+
+// Transaction Schema for logging all activities
+const transactionSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['deposit', 'fs_income', 'dri_income', 'smartline_income', 'das_income', 'withdrawal'],
+    required: true
+  },
+  amount: {
+    type: Number,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'completed', 'failed'],
+    default: 'completed'
+  },
+  relatedInvestmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Investment',
+    default: null
+  },
+  fromUserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  referralLevel: {
+    type: Number,
+    default: null
   }
 }, {
   timestamps: true
@@ -203,5 +278,6 @@ export const Contact = mongoose.model('Contact', contactSchema);
 export const Newsletter = mongoose.model('Newsletter', newsletterSchema);
 export const Investment = mongoose.model('Investment', investmentSchema);
 export const Deposit = mongoose.model('Deposit', depositSchema);
+export const Transaction = mongoose.model('Transaction', transactionSchema);
 
 export default connectDB;

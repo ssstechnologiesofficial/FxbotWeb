@@ -11,6 +11,7 @@ import ReferralTree from "./pages/ReferralTree";
 import Deposit from "./pages/Deposit";
 import Withdrawal from "./pages/Withdrawal";
 import AdminDashboard from "./pages/AdminDashboard";
+import TransactionHistory from "./pages/TransactionHistory";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/referral-tree" component={ReferralTree} />
         <Route path="/deposit" component={Deposit} />
         <Route path="/withdrawal" component={Withdrawal} />
+        <Route path="/transactions" component={TransactionHistory} />
         <Route path="/admin" component={AdminDashboard} />
       </Switch>
     </div>

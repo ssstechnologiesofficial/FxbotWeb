@@ -28,6 +28,13 @@ function ModernDashboard() {
     enabled: !!userData
   });
 
+  // Fetch investment summary
+  const { data: investmentSummary } = useQuery({
+    queryKey: ['/api/user/investment-summary'],
+    retry: false,
+    enabled: !!userData
+  });
+
   useEffect(() => {
     if (userData) {
       setUser(userData);
@@ -88,7 +95,7 @@ function ModernDashboard() {
   const stats = [
     {
       title: 'Total Investment',
-      value: '$0.00',
+      value: `$${(investmentSummary?.totalInvestmentAmount || 0).toFixed(2)}`,
       icon: DollarSign,
       color: 'from-blue-500 to-blue-600',
       bgColor: 'rgba(59, 130, 246, 0.1)'
@@ -108,23 +115,24 @@ function ModernDashboard() {
       bgColor: 'rgba(139, 92, 246, 0.1)'
     },
     {
-      title: 'Monthly ROI',
-      value: '6.00%',//change to actual
-      icon: TrendingUp,
-      color: 'from-orange-500 to-orange-600',
+      title: 'Credited Interest',
+      value: `6.00% (${investmentSummary?.dailyFsIncome ? `$${investmentSummary.dailyFsIncome.toFixed(2)}` : '$0.00'})`,
+      icon: DollarSign,
+      color: 'from-pink-500 to-pink-600',
       bgColor: 'rgba(249, 115, 22, 0.1)'
     },
     {
       title: 'DRI Income',
-      value: '6.00%',//change to actual 
+      value: `$${(investmentSummary?.directIncome || 0).toFixed(2)}`,
       icon: TrendingUp,
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-red-500 to-red-600',
       bgColor: 'rgba(139, 92, 246, 0.1)'
-    },    {
+    },
+    {
       title: 'Wallet Balance',
-      value: 6%,//change to actual 
+      value: `$${(investmentSummary?.walletBalance || 0).toFixed(2)}`,
       icon: Wallet,
-      color: 'from-green-500 to-green-600',
+      color: 'from-green-700 to-green-800',
       bgColor: 'rgba(34, 197, 94, 0.1)'
     }
   ];

@@ -7,6 +7,7 @@ import {
   GitBranch, 
   ArrowDownToLine, 
   ArrowUpFromLine, 
+  Receipt,
   LogOut,
   ChevronRight
 } from 'lucide-react';
@@ -56,6 +57,13 @@ const ModernSidebar = ({ user, onLogout }) => {
       icon: ArrowUpFromLine,
       path: '/withdrawal',
       active: location === '/withdrawal'
+    },
+    {
+      id: 'transactions',
+      label: 'Transaction History',
+      icon: Receipt,
+      path: '/transactions',
+      active: location === '/transactions'
     }
   ];
 
