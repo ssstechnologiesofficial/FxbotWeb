@@ -273,11 +273,46 @@ const depositSchema = new mongoose.Schema({
   adminNotes: { type: String }
 });
 
+// Withdrawal Schema
+const withdrawalSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  amount: { type: Number, required: true, min: 15 },
+  requestedAmount: { type: Number, required: true }, // Original amount before service charge
+  serviceCharge: { type: Number, required: true }, // 5% service charge
+  method: { type: String, required: true },
+  walletAddress: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['pending_otp', 'pending_admin', 'approved', 'rejected', 'completed'], 
+    default: 'pending_otp' 
+  },
+  otpVerified: { type: Boolean, default: false },
+  otpVerifiedAt: { type: Date },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  adminNotes: { type: String },
+  adminActionAt: { type: Date },
+  adminActionBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+});
+
+// OTP Schema for withdrawal verification
+const otpSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  withdrawalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Withdrawal', required: true },
+  otp: { type: String, required: true },
+  purpose: { type: String, enum: ['withdrawal'], required: true },
+  isUsed: { type: Boolean, default: false },
+  expiresAt: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
 export const User = mongoose.model('User', userSchema);
 export const Contact = mongoose.model('Contact', contactSchema);
 export const Newsletter = mongoose.model('Newsletter', newsletterSchema);
 export const Investment = mongoose.model('Investment', investmentSchema);
 export const Deposit = mongoose.model('Deposit', depositSchema);
 export const Transaction = mongoose.model('Transaction', transactionSchema);
+export const Withdrawal = mongoose.model('Withdrawal', withdrawalSchema);
+export const OTP = mongoose.model('OTP', otpSchema);
 
 export default connectDB;

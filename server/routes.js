@@ -360,49 +360,179 @@ export async function registerRoutes(app) {
     }
   });
 
-  // Submit withdrawal request
+  // Submit withdrawal request (Step 1 - Initial request)
   app.post("/api/withdrawal", authenticateToken, async (req, res) => {
     try {
       const { amount, method, walletAddress } = req.body;
+      const { Withdrawal, User, OTP } = await import('./database.js');
+      const { sendEmail } = await import('./emailService.js');
       
-      if (!amount || amount < 50) {
-        return res.status(400).json({ error: "Minimum withdrawal amount is $50" });
+      // Validation
+      if (!amount || amount < 15) {
+        return res.status(400).json({ error: "Minimum withdrawal amount is $15" });
       }
 
-      if (method === 'crypto' && !walletAddress) {
-        return res.status(400).json({ error: "Wallet address is required for crypto withdrawals" });
+      if (!method || !walletAddress) {
+        return res.status(400).json({ error: "Method and wallet address are required" });
       }
 
       const userId = req.userId;
-      const user = await storage.getUserById(userId);
+      const user = await User.findById(userId);
       
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      if ((user.totalEarnings || 0) < amount) {
-        return res.status(400).json({ error: "Insufficient balance for withdrawal" });
+      // Get user's available balance from investment summary
+      const summary = await InvestmentService.getUserInvestmentSummary(userId);
+      const availableBalance = summary.walletBalance || 0;
+
+      if (availableBalance < amount) {
+        return res.status(400).json({ error: `Insufficient balance. Available: $${availableBalance.toFixed(2)}` });
       }
 
-      const withdrawalData = {
+      // Calculate service charge (5%)
+      const serviceCharge = amount * 0.05;
+      const netAmount = amount - serviceCharge;
+
+      // Create withdrawal request
+      const withdrawal = new Withdrawal({
         userId: userId,
-        amount: parseFloat(amount),
+        requestedAmount: amount,
+        serviceCharge: serviceCharge,
+        amount: netAmount, // Amount after service charge
         method,
         walletAddress,
-        status: 'pending',
-        createdAt: new Date()
-      };
+        status: 'pending_otp'
+      });
 
-      // In a real app, save to withdrawals collection and deduct balance
-      console.log('Withdrawal request:', withdrawalData);
-      
-      res.json({ 
-        success: true, 
-        message: "Withdrawal request submitted successfully! It will be processed within 1-3 business days." 
+      await withdrawal.save();
+
+      // Generate 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+      // Save OTP
+      const otpRecord = new OTP({
+        userId: userId,
+        withdrawalId: withdrawal._id,
+        otp: otp,
+        purpose: 'withdrawal',
+        expiresAt: expiresAt
+      });
+
+      await otpRecord.save();
+
+      // Send OTP via email
+      const emailSent = await sendEmail({
+        to: user.email,
+        subject: 'FXBOT - Withdrawal Verification OTP',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #1f2937; text-align: center;">Withdrawal Verification</h2>
+            <p>Dear ${user.firstName} ${user.lastName},</p>
+            <p>You have requested a withdrawal of <strong>$${amount.toFixed(2)}</strong> from your FXBOT account.</p>
+            
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #374151; margin-top: 0;">Withdrawal Details:</h3>
+              <p><strong>Requested Amount:</strong> $${amount.toFixed(2)}</p>
+              <p><strong>Service Charge (5%):</strong> $${serviceCharge.toFixed(2)}</p>
+              <p><strong>Net Amount:</strong> $${netAmount.toFixed(2)}</p>
+              <p><strong>Method:</strong> ${method}</p>
+              <p><strong>Wallet Address:</strong> ${walletAddress}</p>
+            </div>
+            
+            <div style="background: #dbeafe; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+              <h3 style="color: #1e40af; margin-top: 0;">Your OTP Code</h3>
+              <div style="font-size: 32px; font-weight: bold; color: #1e40af; letter-spacing: 4px;">${otp}</div>
+              <p style="color: #374151; margin-bottom: 0;">This OTP is valid for 10 minutes only.</p>
+            </div>
+            
+            <p style="color: #6b7280; font-size: 14px;">
+              If you did not request this withdrawal, please contact our support team immediately.
+            </p>
+            
+            <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center; color: #6b7280; font-size: 12px;">
+              <p>FXBOT - Professional Forex Investment Platform</p>
+            </div>
+          </div>
+        `
+      });
+
+      if (!emailSent) {
+        // Clean up if email failed
+        await Withdrawal.findByIdAndDelete(withdrawal._id);
+        await OTP.findByIdAndDelete(otpRecord._id);
+        return res.status(500).json({ error: "Failed to send OTP email. Please try again." });
+      }
+
+      res.json({
+        success: true,
+        withdrawalId: withdrawal._id,
+        message: `Withdrawal request created. OTP sent to ${user.email}. Please verify within 10 minutes.`,
+        withdrawalDetails: {
+          requestedAmount: amount,
+          serviceCharge: serviceCharge,
+          netAmount: netAmount,
+          method: method,
+          walletAddress: walletAddress
+        }
       });
     } catch (error) {
       console.error("Withdrawal error:", error);
       res.status(500).json({ error: "Failed to submit withdrawal request" });
+    }
+  });
+
+  // Verify withdrawal OTP (Step 2 - OTP verification)
+  app.post("/api/withdrawal/verify-otp", authenticateToken, async (req, res) => {
+    try {
+      const { withdrawalId, otp } = req.body;
+      const { Withdrawal, User, OTP } = await import('./database.js');
+      
+      if (!withdrawalId || !otp) {
+        return res.status(400).json({ error: "Withdrawal ID and OTP are required" });
+      }
+
+      // Find the withdrawal request
+      const withdrawal = await Withdrawal.findById(withdrawalId);
+      if (!withdrawal || withdrawal.userId.toString() !== req.userId) {
+        return res.status(404).json({ error: "Withdrawal request not found" });
+      }
+
+      if (withdrawal.status !== 'pending_otp') {
+        return res.status(400).json({ error: "This withdrawal request is no longer pending OTP verification" });
+      }
+
+      // Find and verify OTP
+      const otpRecord = await OTP.findOne({
+        withdrawalId: withdrawalId,
+        otp: otp,
+        isUsed: false,
+        expiresAt: { $gt: new Date() }
+      });
+
+      if (!otpRecord) {
+        return res.status(400).json({ error: "Invalid or expired OTP" });
+      }
+
+      // Mark OTP as used and update withdrawal status
+      otpRecord.isUsed = true;
+      await otpRecord.save();
+
+      withdrawal.status = 'pending_admin';
+      withdrawal.otpVerified = true;
+      withdrawal.otpVerifiedAt = new Date();
+      withdrawal.updatedAt = new Date();
+      await withdrawal.save();
+
+      res.json({
+        success: true,
+        message: "OTP verified successfully. Your withdrawal request has been forwarded to admin for approval."
+      });
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      res.status(500).json({ error: "Failed to verify OTP" });
     }
   });
 
@@ -499,6 +629,171 @@ export async function registerRoutes(app) {
       res.json(subscribers);
     } catch (error) {
       res.status(500).json({ error: "Failed to get subscribers" });
+    }
+  });
+
+  // Admin endpoint to get withdrawal requests
+  app.get("/api/admin/withdrawals", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const { Withdrawal, User } = await import('./database.js');
+      
+      const withdrawals = await Withdrawal.find({ status: { $in: ['pending_admin', 'approved', 'rejected'] } })
+        .populate('userId', 'firstName lastName email ownSponsorId')
+        .populate('adminActionBy', 'firstName lastName email')
+        .sort({ createdAt: -1 });
+
+      const formattedWithdrawals = withdrawals.map(withdrawal => ({
+        _id: withdrawal._id,
+        user: {
+          name: `${withdrawal.userId.firstName} ${withdrawal.userId.lastName}`,
+          email: withdrawal.userId.email,
+          sponsorId: withdrawal.userId.ownSponsorId
+        },
+        requestedAmount: withdrawal.requestedAmount,
+        serviceCharge: withdrawal.serviceCharge,
+        netAmount: withdrawal.amount,
+        method: withdrawal.method,
+        walletAddress: withdrawal.walletAddress,
+        status: withdrawal.status,
+        otpVerified: withdrawal.otpVerified,
+        otpVerifiedAt: withdrawal.otpVerifiedAt,
+        createdAt: withdrawal.createdAt,
+        updatedAt: withdrawal.updatedAt,
+        adminNotes: withdrawal.adminNotes,
+        adminActionAt: withdrawal.adminActionAt,
+        adminActionBy: withdrawal.adminActionBy ? {
+          name: `${withdrawal.adminActionBy.firstName} ${withdrawal.adminActionBy.lastName}`,
+          email: withdrawal.adminActionBy.email
+        } : null
+      }));
+
+      res.json(formattedWithdrawals);
+    } catch (error) {
+      console.error("Error fetching withdrawals:", error);
+      res.status(500).json({ error: "Failed to fetch withdrawal requests" });
+    }
+  });
+
+  // Admin endpoint to approve/reject withdrawal
+  app.post("/api/admin/withdrawals/:id/action", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const { action, notes } = req.body; // action: 'approve' or 'reject'
+      const withdrawalId = req.params.id;
+      const { Withdrawal, User } = await import('./database.js');
+      const { sendEmail } = await import('./emailService.js');
+      
+      if (!['approve', 'reject'].includes(action)) {
+        return res.status(400).json({ error: "Action must be 'approve' or 'reject'" });
+      }
+
+      const withdrawal = await Withdrawal.findById(withdrawalId).populate('userId');
+      if (!withdrawal) {
+        return res.status(404).json({ error: "Withdrawal request not found" });
+      }
+
+      if (withdrawal.status !== 'pending_admin') {
+        return res.status(400).json({ error: "This withdrawal request is not pending admin approval" });
+      }
+
+      // Update withdrawal status
+      const newStatus = action === 'approve' ? 'approved' : 'rejected';
+      withdrawal.status = newStatus;
+      withdrawal.adminNotes = notes || '';
+      withdrawal.adminActionAt = new Date();
+      withdrawal.adminActionBy = req.userId;
+      withdrawal.updatedAt = new Date();
+
+      await withdrawal.save();
+
+      // Send notification email to user
+      const user = withdrawal.userId;
+      const emailSubject = action === 'approve' 
+        ? 'FXBOT - Withdrawal Request Approved'
+        : 'FXBOT - Withdrawal Request Rejected';
+
+      const emailContent = action === 'approve' 
+        ? `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #10b981; text-align: center;">Withdrawal Approved</h2>
+            <p>Dear ${user.firstName} ${user.lastName},</p>
+            <p>Great news! Your withdrawal request has been <strong style="color: #10b981;">APPROVED</strong>.</p>
+            
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #374151; margin-top: 0;">Withdrawal Details:</h3>
+              <p><strong>Requested Amount:</strong> $${withdrawal.requestedAmount.toFixed(2)}</p>
+              <p><strong>Service Charge (5%):</strong> $${withdrawal.serviceCharge.toFixed(2)}</p>
+              <p><strong>Net Amount to be Sent:</strong> $${withdrawal.amount.toFixed(2)}</p>
+              <p><strong>Method:</strong> ${withdrawal.method}</p>
+              <p><strong>Wallet Address:</strong> ${withdrawal.walletAddress}</p>
+              <p><strong>Approval Date:</strong> ${new Date().toLocaleDateString()}</p>
+            </div>
+            
+            ${notes ? `
+            <div style="background: #dbeafe; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #1e40af; margin-top: 0;">Admin Notes:</h4>
+              <p style="margin-bottom: 0;">${notes}</p>
+            </div>
+            ` : ''}
+            
+            <p style="color: #10b981; font-weight: 600;">
+              Your funds will be processed within 24-48 hours.
+            </p>
+            
+            <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center; color: #6b7280; font-size: 12px;">
+              <p>FXBOT - Professional Forex Investment Platform</p>
+            </div>
+          </div>
+        `
+        : `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #ef4444; text-align: center;">Withdrawal Request Rejected</h2>
+            <p>Dear ${user.firstName} ${user.lastName},</p>
+            <p>We regret to inform you that your withdrawal request has been <strong style="color: #ef4444;">REJECTED</strong>.</p>
+            
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #374151; margin-top: 0;">Withdrawal Details:</h3>
+              <p><strong>Requested Amount:</strong> $${withdrawal.requestedAmount.toFixed(2)}</p>
+              <p><strong>Method:</strong> ${withdrawal.method}</p>
+              <p><strong>Wallet Address:</strong> ${withdrawal.walletAddress}</p>
+              <p><strong>Rejection Date:</strong> ${new Date().toLocaleDateString()}</p>
+            </div>
+            
+            ${notes ? `
+            <div style="background: #fee2e2; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #dc2626; margin-top: 0;">Reason for Rejection:</h4>
+              <p style="margin-bottom: 0;">${notes}</p>
+            </div>
+            ` : ''}
+            
+            <p style="color: #6b7280;">
+              If you have any questions about this decision, please contact our support team.
+            </p>
+            
+            <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center; color: #6b7280; font-size: 12px;">
+              <p>FXBOT - Professional Forex Investment Platform</p>
+            </div>
+          </div>
+        `;
+
+      await sendEmail({
+        to: user.email,
+        subject: emailSubject,
+        html: emailContent
+      });
+
+      res.json({
+        success: true,
+        message: `Withdrawal request ${action}d successfully`,
+        withdrawal: {
+          _id: withdrawal._id,
+          status: withdrawal.status,
+          adminNotes: withdrawal.adminNotes,
+          adminActionAt: withdrawal.adminActionAt
+        }
+      });
+    } catch (error) {
+      console.error("Error processing withdrawal action:", error);
+      res.status(500).json({ error: "Failed to process withdrawal action" });
     }
   });
 
