@@ -694,24 +694,8 @@ export async function registerRoutes(app) {
   });
 
   // KYC Document Download Route (for admin viewing)
-  app.get('/api/kyc/document/:userId', async (req, res) => {
+  app.get('/api/kyc/document/:userId', authenticateToken, requireAdmin, async (req, res) => {
     try {
-      // Check for admin token in query params or headers
-      let token = req.query.token || req.headers.authorization?.replace('Bearer ', '');
-      
-      if (!token) {
-        return res.status(401).json({ error: 'Admin authorization required' });
-      }
-      
-      // Verify admin token
-      const jwt = (await import('jsonwebtoken')).default;
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fxbot_secret_key_2024');
-      const adminUser = await storage.getUserById(decoded.userId);
-      
-      if (!adminUser || !adminUser.isAdmin) {
-        return res.status(403).json({ error: 'Admin privileges required' });
-      }
-
       const { userId } = req.params;
       const user = await storage.getUserById(userId);
       
