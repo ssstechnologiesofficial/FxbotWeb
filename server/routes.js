@@ -365,7 +365,7 @@ export async function registerRoutes(app) {
     try {
       const { amount, method, walletAddress } = req.body;
       const { Withdrawal, User, OTP } = await import('./database.js');
-      const { sendEmail } = await import('./emailService.js');
+      const { emailService } = await import('./emailService.js');
       
       // Validation
       if (!amount || amount < 15) {
@@ -384,6 +384,7 @@ export async function registerRoutes(app) {
       }
 
       // Get user's available balance from investment summary
+      const { InvestmentService } = await import('./investmentService.js');
       const summary = await InvestmentService.getUserInvestmentSummary(userId);
       const availableBalance = summary.walletBalance || 0;
 
@@ -424,10 +425,8 @@ export async function registerRoutes(app) {
       await otpRecord.save();
 
       // Send OTP via email
-      const emailSent = await sendEmail({
-        to: user.email,
-        subject: 'FXBOT - Withdrawal Verification OTP',
-        html: `
+      const emailSent = await emailService.sendEmail(user.email, 'FXBOT - Withdrawal Verification OTP',
+        `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #1f2937; text-align: center;">Withdrawal Verification</h2>
             <p>Dear ${user.firstName} ${user.lastName},</p>
@@ -456,10 +455,9 @@ export async function registerRoutes(app) {
               <p>FXBOT - Professional Forex Investment Platform</p>
             </div>
           </div>
-        `
-      });
+        `);
 
-      if (!emailSent) {
+      if (!emailSent.success) {
         // Clean up if email failed
         await Withdrawal.findByIdAndDelete(withdrawal._id);
         await OTP.findByIdAndDelete(otpRecord._id);
@@ -680,7 +678,7 @@ export async function registerRoutes(app) {
       const { action, notes } = req.body; // action: 'approve' or 'reject'
       const withdrawalId = req.params.id;
       const { Withdrawal, User } = await import('./database.js');
-      const { sendEmail } = await import('./emailService.js');
+      const { emailService } = await import('./emailService.js');
       
       if (!['approve', 'reject'].includes(action)) {
         return res.status(400).json({ error: "Action must be 'approve' or 'reject'" });
@@ -775,11 +773,7 @@ export async function registerRoutes(app) {
           </div>
         `;
 
-      await sendEmail({
-        to: user.email,
-        subject: emailSubject,
-        html: emailContent
-      });
+      await emailService.sendEmail(user.email, emailSubject, emailContent);
 
       res.json({
         success: true,

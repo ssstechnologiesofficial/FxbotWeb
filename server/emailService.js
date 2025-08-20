@@ -284,6 +284,28 @@ class EmailService {
       return { success: false, error: error.message };
     }
   }
+
+  // Generic email sending method
+  async sendEmail(to, subject, htmlContent) {
+    try {
+      const msg = {
+        to: to,
+        from: {
+          email: this.fromEmail,
+          name: 'FXBOT Team'
+        },
+        subject: subject,
+        html: htmlContent
+      };
+
+      const result = await sgMail.send(msg);
+      console.log('Email sent successfully to:', to);
+      return { success: true, messageId: result[0].headers['x-message-id'] };
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 export const emailService = new EmailService();

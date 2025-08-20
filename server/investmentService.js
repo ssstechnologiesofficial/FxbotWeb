@@ -198,6 +198,15 @@ export class InvestmentService {
       const totalReturns = investments.reduce((sum, inv) => sum + inv.totalReturns, 0);
       const pendingReturns = investments.reduce((sum, inv) => sum + inv.remainingReturns, 0);
 
+      // Calculate total wallet balance from all income sources
+      const totalWalletBalance = (user.totalEarnings || 0) + 
+                                (user.directIncome || 0) + 
+                                (user.fsIncome || 0) + 
+                                (user.smartLineIncome || 0) + 
+                                (user.walletBalance || 0) + 
+                                (user.dailyFsIncome || 0) + 
+                                (user.dasMonthlyEarnings || 0);
+
       return {
         totalInvestmentAmount: totalInvested,
         activeInvestments,
@@ -206,7 +215,7 @@ export class InvestmentService {
         directIncome: user.directIncome || 0,
         fsIncome: user.fsIncome || 0,
         smartLineIncome: user.smartLineIncome || 0,
-        walletBalance: user.walletBalance || 0,
+        walletBalance: totalWalletBalance,
         dailyFsIncome: user.dailyFsIncome || 0,
         dasMonthlyEarnings: user.dasMonthlyEarnings || 0
       };
