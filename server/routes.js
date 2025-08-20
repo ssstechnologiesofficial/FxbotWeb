@@ -374,8 +374,8 @@ export async function registerRoutes(app) {
       // Send admin notification email
       try {
         const user = await storage.getUserById(userId);
-        const emailService = await import('./emailService.js');
-        const emailInstance = new emailService.default();
+        const { EmailService } = await import('./emailService.js');
+        const emailInstance = new EmailService();
         
         await emailInstance.sendDepositNotificationEmail(deposit, user);
       } catch (emailError) {
@@ -395,7 +395,7 @@ export async function registerRoutes(app) {
   });
 
   // Get deposit screenshot for admin viewing
-  app.get("/deposits/screenshot/:objectPath(*)", requireAdmin, async (req, res) => {
+  app.get("/deposits/screenshot/:objectPath(*)", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
       const objectPath = `/deposits/${req.params.objectPath}`;

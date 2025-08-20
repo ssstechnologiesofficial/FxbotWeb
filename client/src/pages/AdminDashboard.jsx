@@ -219,16 +219,31 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleViewDepositScreenshot = (deposit) => {
+  const handleViewDepositScreenshot = async (deposit) => {
     if (!deposit.screenshotPath) {
       alert('No screenshot available for this deposit');
       return;
     }
     
-    // Open screenshot in new window/tab for admin review
-    const token = localStorage.getItem('token');
-    const screenshotUrl = `/deposits/screenshot${deposit.screenshotPath}?auth=${token}`;
-    window.open(screenshotUrl, '_blank', 'width=800,height=600');
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/deposits/screenshot${deposit.screenshotPath}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank', 'width=800,height=600');
+      } else {
+        alert('Failed to load screenshot. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error viewing screenshot:', error);
+      alert('Error loading screenshot');
+    }
   };
 
   const handleWithdrawalAction = async (withdrawalId, action, notes) => {
