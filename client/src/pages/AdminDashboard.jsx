@@ -106,9 +106,26 @@ export default function AdminDashboard() {
   };
 
   // KYC Management Functions
-  const handleViewKycDocument = (userId) => {
-    const token = localStorage.getItem('token');
-    window.open(`/api/kyc/document/${userId}?token=${token}`, '_blank');
+  const handleViewKycDocument = async (userId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/kyc/document/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error('Error viewing KYC document:', error);
+      alert('Failed to load KYC document. Please try again.');
+    }
   };
 
   const handleKycApproval = async (userId, action) => {
