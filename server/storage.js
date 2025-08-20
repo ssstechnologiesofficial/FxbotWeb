@@ -157,9 +157,18 @@ class MongoStorage {
     }
   }
 
-  async updateDepositStatus(depositId, status) {
+  async getDepositById(depositId) {
     try {
-      return await Deposit.findByIdAndUpdate(depositId, { status, updatedAt: new Date() }, { new: true });
+      return await Deposit.findById(depositId).populate('userId', 'email firstName lastName');
+    } catch (error) {
+      console.error('Error fetching deposit by ID:', error);
+      throw error;
+    }
+  }
+
+  async updateDepositStatus(depositId, updates) {
+    try {
+      return await Deposit.findByIdAndUpdate(depositId, { ...updates, updatedAt: new Date() }, { new: true });
     } catch (error) {
       console.error('Error updating deposit status:', error);
       throw error;

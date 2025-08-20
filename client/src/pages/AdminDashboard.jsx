@@ -177,10 +177,18 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDepositAction = async (depositId, action) => {
+  const handleDepositAction = async (depositId, action, notes) => {
+    if (!notes?.trim()) {
+      alert('Please provide notes for this action');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`/api/admin/deposits/${depositId}/${action}`, {}, {
+      await axios.post(`/api/admin/deposits/${depositId}/action`, {
+        action,
+        notes: notes.trim()
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -204,10 +212,23 @@ export default function AdminDashboard() {
         totalVolume
       }));
 
+      alert(`Deposit ${action}d successfully!`);
     } catch (error) {
       console.error('Error updating deposit:', error);
       alert('Error updating deposit status');
     }
+  };
+
+  const handleViewDepositScreenshot = (deposit) => {
+    if (!deposit.screenshotPath) {
+      alert('No screenshot available for this deposit');
+      return;
+    }
+    
+    // Open screenshot in new window/tab for admin review
+    const token = localStorage.getItem('token');
+    const screenshotUrl = `/deposits/screenshot${deposit.screenshotPath}?auth=${token}`;
+    window.open(screenshotUrl, '_blank', 'width=800,height=600');
   };
 
   const handleWithdrawalAction = async (withdrawalId, action, notes) => {
@@ -841,6 +862,13 @@ export default function AdminDashboard() {
                             fontWeight: '600',
                             color: '#374151',
                             borderBottom: '1px solid #e5e7eb'
+                          }}>Screenshot</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
                           }}>Actions</th>
                         </tr>
                       </thead>
@@ -901,10 +929,42 @@ export default function AdminDashboard() {
                               padding: '0.75rem',
                               borderBottom: '1px solid #e5e7eb'
                             }}>
+                              {deposit.screenshotPath ? (
+                                <button
+                                  onClick={() => handleViewDepositScreenshot(deposit)}
+                                  style={{
+                                    padding: '0.25rem 0.5rem',
+                                    backgroundColor: '#3b82f6',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.75rem',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.25rem'
+                                  }}
+                                >
+                                  <Eye style={{ width: '0.75rem', height: '0.75rem' }} />
+                                  View
+                                </button>
+                              ) : (
+                                <span style={{ color: '#6b7280', fontSize: '0.75rem' }}>
+                                  No screenshot
+                                </span>
+                              )}
+                            </td>
+                            <td style={{
+                              padding: '0.75rem',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}>
                               {deposit.status === 'pending' && (
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                   <button
-                                    onClick={() => handleDepositAction(deposit._id, 'approve')}
+                                    onClick={() => {
+                                      const notes = prompt('Please provide notes for approval:');
+                                      if (notes) handleDepositAction(deposit._id, 'approve', notes);
+                                    }}
                                     style={{
                                       padding: '0.25rem 0.5rem',
                                       backgroundColor: '#10b981',
@@ -922,7 +982,10 @@ export default function AdminDashboard() {
                                     Approve
                                   </button>
                                   <button
-                                    onClick={() => handleDepositAction(deposit._id, 'reject')}
+                                    onClick={() => {
+                                      const notes = prompt('Please provide notes for rejection:');
+                                      if (notes) handleDepositAction(deposit._id, 'reject', notes);
+                                    }}
                                     style={{
                                       padding: '0.25rem 0.5rem',
                                       backgroundColor: '#ef4444',
@@ -943,7 +1006,11 @@ export default function AdminDashboard() {
                               )}
                               {deposit.status !== 'pending' && (
                                 <span style={{ color: '#6b7280', fontSize: '0.75rem' }}>
-                                  No actions
+                                  {deposit.adminNotes && (
+                                    <span style={{ fontSize: '0.75rem', fontStyle: 'italic' }}>
+                                      {deposit.adminNotes}
+                                    </span>
+                                  )}
                                 </span>
                               )}
                             </td>

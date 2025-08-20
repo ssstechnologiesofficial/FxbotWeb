@@ -285,6 +285,240 @@ class EmailService {
     }
   }
 
+  // Deposit notification email to admin
+  async sendDepositNotificationEmail(depositData, userData) {
+    try {
+      const adminEmail = 'vijay@fxbot.co.in'; // Admin email
+      
+      const msg = {
+        to: adminEmail,
+        from: {
+          email: this.fromEmail,
+          name: 'FXBOT System'
+        },
+        subject: `New Deposit Request - $${depositData.amount} from ${userData.firstName} ${userData.lastName}`,
+        html: this.generateDepositNotificationTemplate(depositData, userData)
+      };
+
+      const result = await sgMail.send(msg);
+      console.log('Deposit notification email sent successfully to admin:', adminEmail);
+      return { success: true, messageId: result[0].headers['x-message-id'] };
+    } catch (error) {
+      console.error('Error sending deposit notification email:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Deposit approval email to user
+  async sendDepositApprovalEmail(userEmail, depositData, userName) {
+    try {
+      const msg = {
+        to: userEmail,
+        from: {
+          email: this.fromEmail,
+          name: 'FXBOT Team'
+        },
+        subject: 'Deposit Approved - Investment Activated - FXBOT',
+        html: this.generateDepositApprovalTemplate(depositData, userName)
+      };
+
+      const result = await sgMail.send(msg);
+      console.log('Deposit approval email sent successfully to:', userEmail);
+      return { success: true, messageId: result[0].headers['x-message-id'] };
+    } catch (error) {
+      console.error('Error sending deposit approval email:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Deposit rejection email to user
+  async sendDepositRejectionEmail(userEmail, depositData, userName) {
+    try {
+      const msg = {
+        to: userEmail,
+        from: {
+          email: this.fromEmail,
+          name: 'FXBOT Team'
+        },
+        subject: 'Deposit Request Rejected - FXBOT',
+        html: this.generateDepositRejectionTemplate(depositData, userName)
+      };
+
+      const result = await sgMail.send(msg);
+      console.log('Deposit rejection email sent successfully to:', userEmail);
+      return { success: true, messageId: result[0].headers['x-message-id'] };
+    } catch (error) {
+      console.error('Error sending deposit rejection email:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  generateDepositNotificationTemplate(depositData, userData) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Deposit Request</title>
+    </head>
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <div style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; font-size: 28px; font-weight: bold; margin: 0;">FXBOT</h1>
+          <p style="color: #ffffff; font-size: 16px; margin: 10px 0 0 0;">Admin Notification</p>
+        </div>
+        
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111827; font-size: 24px; font-weight: bold; margin-bottom: 20px;">New Deposit Request</h2>
+          
+          <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+            <h3 style="color: #f59e0b; margin: 0 0 15px 0;">User Details</h3>
+            <p style="margin: 5px 0;"><strong>Name:</strong> ${userData.firstName} ${userData.lastName}</p>
+            <p style="margin: 5px 0;"><strong>Email:</strong> ${userData.email}</p>
+            <p style="margin: 5px 0;"><strong>Sponsor ID:</strong> ${userData.ownSponsorId}</p>
+            <p style="margin: 5px 0;"><strong>Mobile:</strong> ${userData.mobile}</p>
+          </div>
+
+          <div style="background-color: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+            <h3 style="color: #3b82f6; margin: 0 0 15px 0;">Deposit Details</h3>
+            <p style="margin: 5px 0;"><strong>Amount:</strong> $${depositData.amount}</p>
+            <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${depositData.paymentMethod}</p>
+            <p style="margin: 5px 0;"><strong>Wallet Type:</strong> ${depositData.walletType}</p>
+            <p style="margin: 5px 0;"><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+
+          <div style="background-color: #f0fdf4; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #10b981;">
+            <h3 style="color: #10b981; margin: 0 0 15px 0;">Action Required</h3>
+            <p style="margin: 5px 0;">Please review the payment screenshot and approve or reject this deposit request from the admin dashboard.</p>
+            <p style="margin: 5px 0;"><strong>Status:</strong> Pending Review</p>
+          </div>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #6b7280; font-size: 14px;">
+              Login to admin dashboard to review and process this deposit request.
+            </p>
+          </div>
+        </div>
+
+        <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+          <p style="color: #6b7280; font-size: 12px; margin: 0;">
+            FXBOT - Professional Forex Investment Platform<br>
+            This is an automated system notification.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+  }
+
+  generateDepositApprovalTemplate(depositData, userName) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Deposit Approved</title>
+    </head>
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; font-size: 28px; font-weight: bold; margin: 0;">FXBOT</h1>
+          <p style="color: #ffffff; font-size: 16px; margin: 10px 0 0 0;">Deposit Approved</p>
+        </div>
+        
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111827; font-size: 24px; font-weight: bold; margin-bottom: 20px;">Great News! Your Deposit is Approved</h2>
+          <p style="color: #6b7280; font-size: 16px; margin-bottom: 20px;">Dear ${userName},</p>
+          
+          <div style="background-color: #f0fdf4; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #10b981;">
+            <h3 style="color: #10b981; margin: 0 0 15px 0;">✓ Investment Activated</h3>
+            <p style="margin: 5px 0;"><strong>Amount:</strong> $${depositData.amount}</p>
+            <p style="margin: 5px 0;"><strong>Status:</strong> Approved & Active</p>
+            <p style="margin: 5px 0;"><strong>Investment Package:</strong> FS Income (6% Monthly)</p>
+          </div>
+
+          <p style="color: #6b7280; font-size: 16px; line-height: 1.5;">
+            Your deposit has been successfully verified and your investment is now active. You'll start earning FS Income 
+            at 6% monthly, distributed daily over 22 weekdays at 11:59 PM IST.
+          </p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #6b7280; font-size: 14px;">
+              Check your dashboard to monitor your investment performance and earnings.
+            </p>
+          </div>
+        </div>
+
+        <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+          <p style="color: #6b7280; font-size: 12px; margin: 0;">
+            FXBOT - Professional Forex Investment Platform<br>
+            Thank you for trusting us with your investment.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+  }
+
+  generateDepositRejectionTemplate(depositData, userName) {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Deposit Rejected</title>
+    </head>
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <div style="background: linear-gradient(135deg, #ef4444, #dc2626); padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; font-size: 28px; font-weight: bold; margin: 0;">FXBOT</h1>
+          <p style="color: #ffffff; font-size: 16px; margin: 10px 0 0 0;">Deposit Update</p>
+        </div>
+        
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111827; font-size: 24px; font-weight: bold; margin-bottom: 20px;">Deposit Request Not Approved</h2>
+          <p style="color: #6b7280; font-size: 16px; margin-bottom: 20px;">Dear ${userName},</p>
+          
+          <div style="background-color: #fef2f2; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
+            <h3 style="color: #ef4444; margin: 0 0 15px 0;">Deposit Details</h3>
+            <p style="margin: 5px 0;"><strong>Amount:</strong> $${depositData.amount}</p>
+            <p style="margin: 5px 0;"><strong>Status:</strong> Not Approved</p>
+            ${depositData.adminNotes ? `<p style="margin: 10px 0 5px 0;"><strong>Reason:</strong> ${depositData.adminNotes}</p>` : ''}
+          </div>
+
+          <p style="color: #6b7280; font-size: 16px; line-height: 1.5;">
+            Unfortunately, we were unable to verify your payment. This could be due to unclear payment screenshot, 
+            incorrect payment amount, or other verification issues.
+          </p>
+
+          <p style="color: #6b7280; font-size: 16px; line-height: 1.5;">
+            Please contact our support team or resubmit your deposit request with a clear payment screenshot.
+          </p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #6b7280; font-size: 14px;">
+              Contact support: support@fxbot.co.in
+            </p>
+          </div>
+        </div>
+
+        <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+          <p style="color: #6b7280; font-size: 12px; margin: 0;">
+            FXBOT - Professional Forex Investment Platform<br>
+            We're here to help with any questions.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+  }
+
   // Generic email sending method
   async sendEmail(to, subject, htmlContent) {
     try {

@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Copy, Upload, CheckCircle, DollarSign, Wallet, QrCode } from 'lucide-react';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
+import { ObjectUploader } from '../components/ObjectUploader';
 import qrCodeImage from '@assets/QR_1755581675343.jpeg';
 
 export default function Deposit() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [depositAmount, setDepositAmount] = useState(250);
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedScreenshotUrl, setUploadedScreenshotUrl] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -54,10 +55,32 @@ export default function Deposit() {
     });
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setUploadedFile(file);
+  const handleGetUploadParameters = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/deposit/upload-url', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get upload URL');
+      }
+
+      const data = await response.json();
+      return { url: data.uploadURL };
+    } catch (error) {
+      console.error('Error getting upload URL:', error);
+      throw error;
+    }
+  };
+
+  const handleUploadComplete = (result) => {
+    if (result.successful && result.successful.length > 0) {
+      setUploadedScreenshotUrl(result.successful[0].uploadURL);
     }
   };
 
@@ -70,33 +93,40 @@ export default function Deposit() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = new FormData();
-    formData.append('amount', depositAmount);
-    formData.append('walletType', walletType);
-    formData.append('walletAddress', walletAddress);
-    if (uploadedFile) {
-      formData.append('screenshot', uploadedFile);
+    
+    if (!uploadedScreenshotUrl) {
+      alert('Please upload a payment screenshot before submitting.');
+      return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/deposit', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        body: formData
+        body: JSON.stringify({
+          amount: depositAmount,
+          walletType: walletType,
+          walletAddress: walletAddress,
+          screenshotUrl: uploadedScreenshotUrl
+        })
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        alert('Deposit request submitted successfully! Our admin will review and confirm your transaction.');
-        setUploadedFile(null);
+        alert('Deposit request submitted successfully! Our admin will review and confirm your transaction within 24 hours.');
+        setUploadedScreenshotUrl(null);
         setDepositAmount(250);
-        document.getElementById('file-upload').value = '';
+        // Reset the uploader component
+        window.location.reload();
       } else {
-        alert('Failed to submit deposit request. Please try again.');
+        alert(data.error || 'Failed to submit deposit request. Please try again.');
       }
     } catch (error) {
       console.error('Deposit submission error:', error);
@@ -377,83 +407,51 @@ export default function Deposit() {
                 color: '#374151',
                 marginBottom: '0.5rem'
               }}>
-                Upload Payment Screenshot
+                Upload Payment Screenshot *
               </label>
-              <div style={{
-                border: '2px dashed #e5e7eb',
-                borderRadius: '0.5rem',
-                padding: '2rem',
-                textAlign: 'center',
-                backgroundColor: '#f9fafb'
-              }}>
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }}
-                />
-                <label
-                  htmlFor="file-upload"
-                  style={{
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}
-                >
-                  <Upload style={{ width: '2rem', height: '2rem', color: '#6b7280' }} />
-                  <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                    Click to upload screenshot
-                  </span>
-                </label>
-                {uploadedFile && (
-                  <p style={{ 
-                    fontSize: '0.875rem',
-                    color: '#22c55e',
-                    marginTop: '0.5rem',
-                    fontWeight: '600'
-                  }}>
-                    ✓ {uploadedFile.name}
-                  </p>
-                )}
-              </div>
+              <ObjectUploader
+                maxNumberOfFiles={1}
+                maxFileSize={10485760}
+                onGetUploadParameters={handleGetUploadParameters}
+                onComplete={handleUploadComplete}
+                acceptedFileTypes="image/*"
+              />
               <p style={{ 
                 fontSize: '0.75rem',
                 color: '#6b7280',
                 marginTop: '0.25rem'
               }}>
-                Upload a screenshot of your payment for admin review
+                Upload a clear screenshot of your payment transaction for admin verification
               </p>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting || !uploadedFile}
+              disabled={isSubmitting || !uploadedScreenshotUrl}
               style={{
                 width: '100%',
                 padding: '1rem',
-                backgroundColor: (!uploadedFile || isSubmitting) ? '#9ca3af' : '#f59e0b',
+                backgroundColor: (!uploadedScreenshotUrl || isSubmitting) ? '#9ca3af' : '#f59e0b',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
                 fontSize: '1rem',
                 fontWeight: '600',
-                cursor: (!uploadedFile || isSubmitting) ? 'not-allowed' : 'pointer',
+                cursor: (!uploadedScreenshotUrl || isSubmitting) ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease'
               }}
               onMouseEnter={(e) => {
-                if (!isSubmitting && uploadedFile) {
+                if (!isSubmitting && uploadedScreenshotUrl) {
                   e.target.style.backgroundColor = '#d97706';
                 }
               }}
               onMouseLeave={(e) => {
-                if (!isSubmitting && uploadedFile) {
+                if (!isSubmitting && uploadedScreenshotUrl) {
                   e.target.style.backgroundColor = '#f59e0b';
                 }
               }}
+              data-testid="button-submit-deposit"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Deposit Request'}
             </button>

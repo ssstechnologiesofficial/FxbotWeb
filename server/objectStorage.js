@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 
 const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
 
+// Object storage client for Replit
 export const objectStorageClient = new Storage({
   credentials: {
     audience: "replit",
@@ -25,37 +26,43 @@ export class ObjectNotFoundError extends Error {
   constructor() {
     super("Object not found");
     this.name = "ObjectNotFoundError";
+    Object.setPrototypeOf(this, ObjectNotFoundError.prototype);
   }
 }
 
 export class ObjectStorageService {
   constructor() {}
 
+  // Get private object directory for uploads
   getPrivateObjectDir() {
     const dir = process.env.PRIVATE_OBJECT_DIR || "";
     if (!dir) {
-      throw new Error("PRIVATE_OBJECT_DIR not set. Object storage not configured properly.");
+      throw new Error(
+        "PRIVATE_OBJECT_DIR not set. Object storage not configured."
+      );
     }
     return dir;
   }
 
-  async getObjectEntityUploadURL() {
+  // Generate upload URL for deposit screenshots
+  async getDepositScreenshotUploadURL() {
     const privateObjectDir = this.getPrivateObjectDir();
     const objectId = randomUUID();
-    const fullPath = `${privateObjectDir}/kyc-uploads/${objectId}`;
+    const fullPath = `${privateObjectDir}/deposits/${objectId}`;
 
-    const { bucketName, objectName } = parseObjectPath(fullPath);
+    const { bucketName, objectName } = this.parseObjectPath(fullPath);
 
-    return signObjectURL({
+    return this.signObjectURL({
       bucketName,
       objectName,
       method: "PUT",
-      ttlSec: 900,
+      ttlSec: 900, // 15 minutes
     });
   }
 
-  async getObjectEntityFile(objectPath) {
-    if (!objectPath.startsWith("/objects/")) {
+  // Get deposit screenshot file from object path
+  async getDepositScreenshotFile(objectPath) {
+    if (!objectPath.startsWith("/deposits/")) {
       throw new ObjectNotFoundError();
     }
 
@@ -69,10 +76,11 @@ export class ObjectStorageService {
     if (!entityDir.endsWith("/")) {
       entityDir = `${entityDir}/`;
     }
-    const objectEntityPath = `${entityDir}${entityId}`;
-    const { bucketName, objectName } = parseObjectPath(objectEntityPath);
+    const objectEntityPath = `${entityDir}${objectPath}`;
+    const { bucketName, objectName } = this.parseObjectPath(objectEntityPath);
     const bucket = objectStorageClient.bucket(bucketName);
     const objectFile = bucket.file(objectName);
+    
     const [exists] = await objectFile.exists();
     if (!exists) {
       throw new ObjectNotFoundError();
@@ -80,7 +88,36 @@ export class ObjectStorageService {
     return objectFile;
   }
 
-  normalizeObjectEntityPath(rawPath) {
+  // Download object file to response
+  async downloadObject(file, res, cacheTtlSec = 3600) {
+    try {
+      const [metadata] = await file.getMetadata();
+      
+      res.set({
+        "Content-Type": metadata.contentType || "application/octet-stream",
+        "Content-Length": metadata.size,
+        "Cache-Control": `private, max-age=${cacheTtlSec}`,
+      });
+
+      const stream = file.createReadStream();
+      stream.on("error", (err) => {
+        console.error("Stream error:", err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: "Error streaming file" });
+        }
+      });
+
+      stream.pipe(res);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Error downloading file" });
+      }
+    }
+  }
+
+  // Normalize deposit screenshot path from upload URL
+  normalizeDepositScreenshotPath(rawPath) {
     if (!rawPath.startsWith("https://storage.googleapis.com/")) {
       return rawPath;
     }
@@ -97,80 +134,58 @@ export class ObjectStorageService {
       return rawObjectPath;
     }
 
+    // Extract the entity ID from the path
     const entityId = rawObjectPath.slice(objectEntityDir.length);
-    return `/objects/${entityId}`;
+    return `/${entityId}`;
   }
 
-  async downloadObject(file, res, cacheTtlSec = 3600) {
-    try {
-      const [metadata] = await file.getMetadata();
-      res.set({
-        "Content-Type": metadata.contentType || "application/octet-stream",
-        "Content-Length": metadata.size,
-        "Cache-Control": `private, max-age=${cacheTtlSec}`,
-      });
+  // Parse object path helper
+  parseObjectPath(path) {
+    if (!path.startsWith("/")) {
+      path = `/${path}`;
+    }
+    const pathParts = path.split("/");
+    if (pathParts.length < 3) {
+      throw new Error("Invalid path: must contain at least a bucket name");
+    }
 
-      const stream = file.createReadStream();
+    const bucketName = pathParts[1];
+    const objectName = pathParts.slice(2).join("/");
 
-      stream.on("error", (err) => {
-        console.error("Stream error:", err);
-        if (!res.headersSent) {
-          res.status(500).json({ error: "Error streaming file" });
-        }
-      });
+    return {
+      bucketName,
+      objectName,
+    };
+  }
 
-      stream.pipe(res);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "Error downloading file" });
+  // Sign object URL for upload/download
+  async signObjectURL({ bucketName, objectName, method, ttlSec }) {
+    const request = {
+      bucket_name: bucketName,
+      object_name: objectName,
+      method,
+      expires_at: new Date(Date.now() + ttlSec * 1000).toISOString(),
+    };
+    
+    const response = await fetch(
+      `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request),
       }
-    }
-  }
-}
-
-function parseObjectPath(path) {
-  if (!path.startsWith("/")) {
-    path = `/${path}`;
-  }
-  const pathParts = path.split("/");
-  if (pathParts.length < 3) {
-    throw new Error("Invalid path: must contain at least a bucket name");
-  }
-
-  const bucketName = pathParts[1];
-  const objectName = pathParts.slice(2).join("/");
-
-  return {
-    bucketName,
-    objectName,
-  };
-}
-
-async function signObjectURL({ bucketName, objectName, method, ttlSec }) {
-  const request = {
-    bucket_name: bucketName,
-    object_name: objectName,
-    method,
-    expires_at: new Date(Date.now() + ttlSec * 1000).toISOString(),
-  };
-  const response = await fetch(
-    `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    }
-  );
-  if (!response.ok) {
-    throw new Error(
-      `Failed to sign object URL, errorcode: ${response.status}, ` +
-      `make sure you're running on Replit`
     );
-  }
+    
+    if (!response.ok) {
+      throw new Error(
+        `Failed to sign object URL, errorcode: ${response.status}, ` +
+          `make sure you're running on Replit`
+      );
+    }
 
-  const { signed_url: signedURL } = await response.json();
-  return signedURL;
+    const { signed_url: signedURL } = await response.json();
+    return signedURL;
+  }
 }

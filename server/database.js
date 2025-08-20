@@ -262,15 +262,19 @@ const depositSchema = new mongoose.Schema({
   amount: { type: Number, required: true, min: 250 },
   walletType: { type: String, required: true },
   walletAddress: { type: String, required: true },
-  paymentMethod: { type: String, required: true },
+  paymentMethod: { type: String, default: 'USDT TRC-20' },
+  screenshotPath: { type: String }, // Object storage path for payment screenshot
+  screenshotUrl: { type: String }, // Upload URL for screenshot
   status: { 
     type: String, 
     enum: ['pending', 'confirmed', 'rejected'], 
     default: 'pending' 
   },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+  adminActionAt: { type: Date },
+  adminActionBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   adminNotes: { type: String }
+}, {
+  timestamps: true
 });
 
 // Withdrawal Schema

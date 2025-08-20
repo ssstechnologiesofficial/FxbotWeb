@@ -325,9 +325,22 @@ export async function registerRoutes(app) {
 
 
   // Deposit endpoint
+  // Get deposit screenshot upload URL
+  app.post("/api/deposit/upload-url", authenticateToken, async (req, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getDepositScreenshotUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error('Error generating upload URL:', error);
+      res.status(500).json({ error: "Failed to generate upload URL" });
+    }
+  });
+
+  // Submit deposit request with screenshot
   app.post("/api/deposit", authenticateToken, async (req, res) => {
     try {
-      const { amount, walletType, walletAddress } = req.body;
+      const { amount, walletType, walletAddress, screenshotUrl } = req.body;
       const userId = req.userId;
 
       // Basic validation
@@ -335,24 +348,158 @@ export async function registerRoutes(app) {
         return res.status(400).json({ error: "Invalid deposit amount. Minimum $250 in multiples of $250." });
       }
 
+      if (!screenshotUrl) {
+        return res.status(400).json({ error: "Payment screenshot is required." });
+      }
+
+      // Normalize screenshot path
+      const objectStorageService = new ObjectStorageService();
+      const screenshotPath = objectStorageService.normalizeDepositScreenshotPath(screenshotUrl);
+
       // Create deposit record
       const depositData = {
         userId,
         amount: parseInt(amount),
         walletType,
         walletAddress,
-        status: 'pending',
-        createdAt: new Date(),
-        paymentMethod: 'USDT TRC-20'
+        paymentMethod: 'USDT TRC-20',
+        screenshotUrl,
+        screenshotPath,
+        status: 'pending'
       };
 
       // Store deposit request
-      await storage.createDeposit(depositData);
+      const deposit = await storage.createDeposit(depositData);
+      
+      // Send admin notification email
+      try {
+        const user = await storage.getUserById(userId);
+        const emailService = await import('./emailService.js');
+        const emailInstance = new emailService.default();
+        
+        await emailInstance.sendDepositNotificationEmail(deposit, user);
+      } catch (emailError) {
+        console.error('Error sending admin notification:', emailError);
+        // Continue even if email fails
+      }
       
       res.json({
         success: true,
-        message: "Deposit request submitted successfully. Admin will review and confirm your transaction.",
-        depositData
+        message: "Deposit request submitted successfully! Admin will review your transaction and update your account within 24 hours.",
+        depositId: deposit._id
+      });
+    } catch (error) {
+      console.error("Deposit submission error:", error);
+      res.status(500).json({ error: "Failed to submit deposit request" });
+    }
+  });
+
+  // Get deposit screenshot for admin viewing
+  app.get("/deposits/screenshot/:objectPath(*)", requireAdmin, async (req, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const objectPath = `/deposits/${req.params.objectPath}`;
+      const objectFile = await objectStorageService.getDepositScreenshotFile(objectPath);
+      await objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error serving deposit screenshot:", error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.sendStatus(404);
+      }
+      return res.sendStatus(500);
+    }
+  });
+
+  // Admin deposit approval/rejection
+  app.post("/api/admin/deposits/:depositId/action", requireAdmin, async (req, res) => {
+    try {
+      const { depositId } = req.params;
+      const { action, notes } = req.body;
+      const adminUserId = req.userId;
+
+      if (!action || !['approve', 'reject'].includes(action)) {
+        return res.status(400).json({ error: "Valid action (approve/reject) is required" });
+      }
+
+      if (!notes?.trim()) {
+        return res.status(400).json({ error: "Notes are required" });
+      }
+
+      // Get deposit details
+      const deposit = await storage.getDepositById(depositId);
+      if (!deposit) {
+        return res.status(404).json({ error: "Deposit not found" });
+      }
+
+      if (deposit.status !== 'pending') {
+        return res.status(400).json({ error: "Deposit is not pending approval" });
+      }
+
+      // Get user details
+      const user = await storage.getUserById(deposit.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const status = action === 'approve' ? 'confirmed' : 'rejected';
+
+      // Update deposit status
+      const updatedDeposit = await storage.updateDepositStatus(depositId, {
+        status,
+        adminNotes: notes.trim(),
+        adminActionAt: new Date(),
+        adminActionBy: adminUserId
+      });
+
+      if (action === 'approve') {
+        // Create investment record and process referral income
+        const investmentService = new InvestmentService(storage);
+        await investmentService.createInvestment({
+          userId: deposit.userId,
+          amount: deposit.amount,
+          packageType: 'fs_income'
+        });
+
+        // Create deposit transaction
+        await storage.createTransaction({
+          userId: deposit.userId,
+          type: 'deposit',
+          amount: deposit.amount,
+          description: `Deposit confirmed - Investment activated ($${deposit.amount})`,
+          status: 'completed'
+        });
+
+        // Send approval email
+        try {
+          const emailService = await import('./emailService.js');
+          const emailInstance = new emailService.default();
+          await emailInstance.sendDepositApprovalEmail(
+            user.email,
+            updatedDeposit,
+            `${user.firstName} ${user.lastName}`
+          );
+        } catch (emailError) {
+          console.error('Error sending approval email:', emailError);
+        }
+      } else {
+        // Send rejection email
+        try {
+          const emailService = await import('./emailService.js');
+          const emailInstance = new emailService.default();
+          await emailInstance.sendDepositRejectionEmail(
+            user.email,
+            updatedDeposit,
+            `${user.firstName} ${user.lastName}`
+          );
+        } catch (emailError) {
+          console.error('Error sending rejection email:', emailError);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `Deposit ${action}d successfully`,
+        deposit: updatedDeposit
       });
     } catch (error) {
       console.error("Deposit error:", error);
