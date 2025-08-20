@@ -269,6 +269,44 @@ class MongoStorage {
       throw error;
     }
   }
+
+  // Transaction Management Functions
+  async createTransaction(transactionData) {
+    try {
+      const { Transaction } = await import('./database.js');
+      const transaction = new Transaction(transactionData);
+      await transaction.save();
+      return transaction;
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+      throw error;
+    }
+  }
+
+  async getUserTransactions(userId, page = 1, limit = 50) {
+    try {
+      const { Transaction } = await import('./database.js');
+      const skip = (page - 1) * limit;
+      
+      const transactions = await Transaction.find({ userId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      const total = await Transaction.countDocuments({ userId });
+
+      return {
+        transactions,
+        total,
+        page,
+        totalPages: Math.ceil(total / limit)
+      };
+    } catch (error) {
+      console.error('Error fetching user transactions:', error);
+      throw error;
+    }
+  }
 }
 
 let storage = null;

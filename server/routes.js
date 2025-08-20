@@ -293,7 +293,8 @@ export async function registerRoutes(app) {
       const limit = parseInt(req.query.limit) || 50;
       const filter = req.query.filter || 'all';
       
-      const history = await InvestmentService.getUserTransactionHistory(req.userId, page, limit);
+      // Use storage interface for transaction history
+      const history = await storage.getUserTransactions(req.userId, page, limit);
       res.json(history);
     } catch (error) {
       console.error("Error fetching transaction history:", error);
