@@ -65,6 +65,15 @@ temp/
 .upm/
 .cache/
 
+# Development assets and temporary files
+attached_assets/image_*.png
+attached_assets/Screenshot*.png
+attached_assets/screencapture-*.pdf
+attached_assets/screencapture-*.png
+attached_assets/Pasted-*.txt
+attached_assets/*_17*.png
+attached_assets/*_17*.jpeg
+
 # TypeScript build info
 *.tsbuildinfo
 vite.config.ts.*
