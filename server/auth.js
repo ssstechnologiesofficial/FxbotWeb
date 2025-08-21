@@ -2,7 +2,12 @@ import jwt from 'jsonwebtoken';
 
 // Generate JWT token
 export const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET environment variable is not set');
+  }
+  
+  return jwt.sign({ userId }, jwtSecret, {
     expiresIn: '7d', // Token expires in 7 days
   });
 };
@@ -10,7 +15,11 @@ export const generateToken = (userId) => {
 // Verify JWT token
 export const verifyToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is not set');
+    }
+    return jwt.verify(token, jwtSecret);
   } catch (error) {
     return null;
   }

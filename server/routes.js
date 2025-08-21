@@ -17,6 +17,14 @@ const userRegistrationSchema = z.object({
 });
 
 export async function registerRoutes(app) {
+  // Initialize database connection for serverless
+  try {
+    const connectDB = (await import('./database.js')).default;
+    await connectDB();
+  } catch (error) {
+    console.error('Failed to connect to database:', error);
+  }
+
   const storage = getStorage();
   const server = createServer(app);
 
