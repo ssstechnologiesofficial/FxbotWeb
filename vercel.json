@@ -2,17 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "start.js",
-      "use": "@vercel/node",
+      "src": "package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "includeFiles": "server/**"
+        "distDir": "dist"
       }
     },
     {
-      "src": "client/**",
-      "use": "@vercel/static-build",
+      "src": "start.js",
+      "use": "@vercel/node",
       "config": {
-        "distDir": "../dist"
+        "includeFiles": ["server/**", "package.json"]
       }
     }
   ],
@@ -23,7 +23,10 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/client/$1"
+      "dest": "/dist/$1"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
