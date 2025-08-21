@@ -26,7 +26,8 @@ export async function registerRoutes(app) {
   }
 
   const storage = getStorage();
-  const server = createServer(app);
+  // Don't create server in serverless environment
+  const server = process.env.VERCEL ? null : createServer(app);
 
   // API Routes
   app.get("/api/health", (req, res) => {
@@ -1222,5 +1223,5 @@ export async function registerRoutes(app) {
     }
   });
 
-  return server;
+  return server || app;
 }
