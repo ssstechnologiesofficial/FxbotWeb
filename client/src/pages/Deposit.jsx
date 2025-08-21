@@ -3,7 +3,7 @@ import { Copy, Upload, CheckCircle, DollarSign, Wallet, QrCode } from 'lucide-re
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { ObjectUploader } from '../components/ObjectUploader';
-import qrCodeImage from '@assets/QR_1755581675343.jpeg';
+// QR code placeholder - will be replaced with dynamic QR generation
 
 export default function Deposit() {
   const [user, setUser] = useState(null);
@@ -489,18 +489,29 @@ export default function Deposit() {
               border: '2px solid #e5e7eb',
               borderRadius: '1rem',
               padding: '1.5rem',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '200px'
             }}>
-              <img
-                src={qrCodeImage}
-                alt="Wallet QR Code"
-                style={{
-                  width: '200px',
-                  height: '200px',
-                  objectFit: 'contain',
-                  borderRadius: '0.5rem'
-                }}
-              />
+              <div style={{
+                textAlign: 'center',
+                color: '#6b7280'
+              }}>
+                <QrCode style={{ 
+                  width: '4rem', 
+                  height: '4rem', 
+                  margin: '0 auto 1rem',
+                  color: '#9ca3af' 
+                }} />
+                <p style={{ fontSize: '0.875rem', margin: 0 }}>
+                  QR Code will be displayed here
+                </p>
+                <p style={{ fontSize: '0.75rem', margin: '0.5rem 0 0', color: '#9ca3af' }}>
+                  Use the wallet address below for manual transfer
+                </p>
+              </div>
             </div>
 
             <p style={{ 
