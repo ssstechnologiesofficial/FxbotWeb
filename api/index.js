@@ -25,19 +25,13 @@ app.use((req, res, next) => {
 let routesInitialized = false;
 async function initializeRoutes() {
   if (!routesInitialized) {
+    // In Vercel, static files are handled by the routes configuration
+    // Only set up static serving for API routes
+    
+    // Then register API routes
     await registerRoutes(app);
     
-    // Serve static files for production
-    const distPath = path.resolve(process.cwd(), "dist");
-    
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-      
-      // Catch-all handler for SPA routing
-      app.get('*', (_req, res) => {
-        res.sendFile(path.resolve(distPath, "index.html"));
-      });
-    }
+    // Remove catch-all since Vercel routes handle static files
     
     routesInitialized = true;
   }
