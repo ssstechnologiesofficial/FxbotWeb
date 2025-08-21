@@ -47,14 +47,21 @@ export default function Navigation() {
             <button onClick={() => scrollToSection('contact')} className="nav-link text-secondary transition-colors">Contact</button>
           </div>
           
-          {/* Desktop Auth Buttons */}
+          {/* Desktop Action Buttons */}
           <div className="auth-buttons" style={{ display: 'flex', gap: '1rem' }}>
-            <Link href="/login" className="btn btn-secondary">
-              Login
-            </Link>
-            <Link href="/register" className="btn btn-primary">
-              Register
-            </Link>
+            <button 
+              onClick={() => scrollToSection('packages')}
+              className="btn btn-primary gradient-gold font-semibold"
+            >
+              Start Investing
+            </button>
+            <button 
+              onClick={() => scrollToSection('packages')}
+              className="btn btn-secondary font-semibold view-plans-btn"
+              style={{ borderColor: 'var(--primary-gold)', color: 'var(--primary-gold)' }}
+            >
+              View Plans
+            </button>
           </div>
           
           {/* Mobile Menu Button */}
@@ -86,6 +93,19 @@ export default function Navigation() {
                 <Link href="/register" className="btn btn-primary w-full">
                   Register
                 </Link>
+                <button 
+                  onClick={() => scrollToSection('packages')}
+                  className="btn btn-primary btn-lg gradient-gold font-semibold"
+                >
+                  Start Investing
+                </button>
+                <button 
+                  onClick={() => scrollToSection('packages')}
+                  className="btn btn-secondary btn-lg font-semibold view-plans-btn"
+                  style={{ borderColor: 'var(--primary-gold)', color: 'var(--primary-gold)' }}
+                >
+                  View Plans
+                </button>
               </div>
             </div>
           </div>

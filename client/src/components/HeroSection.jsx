@@ -1,4 +1,5 @@
 import ROICalculator from './ROICalculator';
+import { Link } from 'wouter';
 
 export default function HeroSection() {
   const scrollToPackages = () => {
@@ -35,19 +36,12 @@ export default function HeroSection() {
               Choose a Forex Package with <span className="text-gold font-semibold">FXBOT</span> That Works While You Sleep — With Full Transparency & Weekly Profits.
             </p>
             <div className="hero-buttons">
-              <button 
-                onClick={scrollToPackages}
-                className="btn btn-primary btn-lg gradient-gold font-semibold"
-              >
-                Start Investing
-              </button>
-              <button 
-                onClick={scrollToPackages}
-                className="btn btn-secondary btn-lg font-semibold view-plans-btn"
-                style={{ borderColor: 'var(--primary-gold)', color: 'var(--primary-gold)' }}
-              >
-                View Plans
-              </button>
+              <Link href="/login" className="btn btn-secondary btn-lg">
+                Login
+              </Link>
+              <Link href="/register" className="btn btn-primary btn-lg">
+                Register
+              </Link>
             </div>
           </div>
           
