@@ -1,0 +1,11 @@
+node_modules
+.git
+.env
+*.log
+server/
+client/src/
+client/public/
+attached_assets/
+start.js
+vite.config.js
+package-lock.json
