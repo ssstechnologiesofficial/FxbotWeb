@@ -7,12 +7,13 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 let plugins = [react()];
 
+// Skip Replit plugins in production to avoid build issues
 if (!isProduction) {
   try {
     const runtimeErrorOverlay = require("@replit/vite-plugin-runtime-error-modal");
     plugins.push(runtimeErrorOverlay.default());
   } catch {
-    // Ignore if plugin not available in production
+    // Ignore if plugin not available
   }
 }
 
@@ -21,7 +22,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(process.cwd(), "client", "src"),
-      "@shared": path.resolve(process.cwd(), "shared"),
       "@assets": path.resolve(process.cwd(), "attached_assets"),
     },
   },
