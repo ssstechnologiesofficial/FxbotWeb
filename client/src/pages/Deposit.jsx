@@ -3,7 +3,7 @@ import { Copy, Upload, CheckCircle, DollarSign, Wallet, QrCode } from 'lucide-re
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { ObjectUploader } from '../components/ObjectUploader';
-import qrCodeImage from '@assets/QR_1755789504506.jpeg';
+const qrCodeImage = '/QR_1755789504506.jpeg';
 
 export default function Deposit() {
   const [user, setUser] = useState(null);
