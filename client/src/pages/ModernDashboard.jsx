@@ -30,10 +30,12 @@ function ModernDashboard() {
   });
 
   // Fetch investment summary
-  const { data: investmentSummary } = useQuery({
+  const { data: investmentSummary, refetch: refetchInvestment } = useQuery({
     queryKey: ['/api/user/investment-summary'],
     retry: false,
-    enabled: !!userData
+    enabled: !!userData,
+    staleTime: 0, // Always fetch fresh data
+    cacheTime: 0 // Don't cache data
   });
 
   useEffect(() => {
@@ -178,6 +180,21 @@ function ModernDashboard() {
           <p style={{ color: '#6b7280', margin: 0 }}>
             Track your FXBOT investments and referral earnings
           </p>
+          <button 
+            onClick={() => refetchInvestment()} 
+            style={{
+              marginTop: '0.5rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              cursor: 'pointer',
+              fontSize: '0.875rem'
+            }}
+          >
+            Refresh Data
+          </button>
         </div>
 
         {/* Stats Cards */}
