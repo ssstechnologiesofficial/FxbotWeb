@@ -114,7 +114,11 @@ const userSchema = new mongoose.Schema({
   dasTask1CompletedAt: { type: Date, default: null },
   dasTask2CompletedAt: { type: Date, default: null },
   dasTask3CompletedAt: { type: Date, default: null },
+  dasTask1Expired: { type: Boolean, default: false },
+  dasTask2Expired: { type: Boolean, default: false },
+  dasTask3Expired: { type: Boolean, default: false },
   dasMonthlyEarnings: { type: Number, default: 0 },
+  dasIncome: { type: Number, default: 0 }, // Total DAS income earned from completed tasks
   
   // Investment tracking fields
   totalInvestmentAmount: { type: Number, default: 0 },

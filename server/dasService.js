@@ -170,7 +170,7 @@ export class DasService {
     }
   }
 
-  // Update task completion
+  // Update task completion with time-based expiry and wallet crediting
   static async updateTaskCompletion(userId, taskNumber) {
     try {
       const tasks = this.getDasTasks();
@@ -180,6 +180,33 @@ export class DasService {
         return false;
       }
 
+      const user = await User.findById(userId);
+      if (!user || !user.isEnrolledInDas) {
+        return false;
+      }
+
+      // Check if task is already completed
+      const completedField = `dasTask${taskNumber}Completed`;
+      if (user[completedField]) {
+        return false; // Already completed
+      }
+
+      // Check if task has expired based on enrollment date
+      const enrollmentDate = new Date(user.dasEnrollmentDate);
+      const currentDate = new Date();
+      const daysSinceEnrollment = Math.floor((currentDate - enrollmentDate) / (1000 * 60 * 60 * 24));
+      
+      if (daysSinceEnrollment > task.requiredDays) {
+        // Task has expired - mark as expired if not already done
+        const expiredField = `dasTask${taskNumber}Expired`;
+        if (!user[expiredField]) {
+          const updateFields = { [expiredField]: true };
+          await User.findByIdAndUpdate(userId, updateFields);
+        }
+        return false;
+      }
+
+      // Check if requirements are met
       const actualStats = await this.getUserActualStats(userId);
       const isReferralComplete = actualStats.referralCount >= task.requiredReferrals;
       const isVolumeComplete = actualStats.totalVolume >= task.requiredVolume;
@@ -188,22 +215,27 @@ export class DasService {
         const updateFields = {};
         const now = new Date();
         
-        if (taskNumber === 1) {
-          updateFields.dasTask1Completed = true;
-          updateFields.dasTask1CompletedAt = now;
-        } else if (taskNumber === 2) {
-          updateFields.dasTask2Completed = true;
-          updateFields.dasTask2CompletedAt = now;
-        } else if (taskNumber === 3) {
-          updateFields.dasTask3Completed = true;
-          updateFields.dasTask3CompletedAt = now;
-        }
+        // Mark task as completed
+        updateFields[`dasTask${taskNumber}Completed`] = true;
+        updateFields[`dasTask${taskNumber}CompletedAt`] = now;
 
-        // Update monthly earnings
-        const currentUser = await User.findById(userId);
-        updateFields.dasMonthlyEarnings = (currentUser.dasMonthlyEarnings || 0) + task.monthlyReward;
+        // Credit DAS income to wallet balance immediately
+        updateFields.dasIncome = (user.dasIncome || 0) + task.monthlyReward;
+        updateFields.walletBalance = (user.walletBalance || 0) + task.monthlyReward;
 
         await User.findByIdAndUpdate(userId, updateFields);
+
+        // Create DAS income transaction
+        const { InvestmentService } = await import('./investmentService.js');
+        await InvestmentService.logTransaction(
+          userId,
+          'das_income',
+          task.monthlyReward,
+          `DAS Task ${taskNumber} Completed - ${task.requiredReferrals} referrals & $${task.requiredVolume} volume in ${task.requiredDays} days`,
+          'completed'
+        );
+
+        console.log(`DAS Task ${taskNumber} completed for user ${userId} - $${task.monthlyReward} credited`);
         return true;
       }
 
@@ -241,16 +273,41 @@ export class DasService {
     }
   }
 
-  // Check and update all task completions for a user
+  // Check and update all task completions for a user (auto-completion)
   static async checkAndUpdateAllTasks(userId) {
     try {
+      const user = await User.findById(userId);
+      if (!user || !user.isEnrolledInDas) {
+        return false;
+      }
+
       const tasks = this.getDasTasks();
+      let tasksUpdated = 0;
       
       for (const task of tasks) {
-        await this.updateTaskCompletion(userId, task.taskNumber);
+        const completedField = `dasTask${task.taskNumber}Completed`;
+        const expiredField = `dasTask${task.taskNumber}Expired`;
+        
+        // Skip if already completed or expired
+        if (user[completedField] || user[expiredField]) {
+          continue;
+        }
+
+        // Check if task should be auto-completed
+        const wasCompleted = await this.updateTaskCompletion(userId, task.taskNumber);
+        if (wasCompleted) {
+          tasksUpdated++;
+        }
       }
+      
+      if (tasksUpdated > 0) {
+        console.log(`Auto-completed ${tasksUpdated} DAS tasks for user ${userId}`);
+      }
+      
+      return true;
     } catch (error) {
-      console.error('Error checking task completions:', error);
+      console.error('Error checking and updating all tasks:', error);
+      return false;
     }
   }
 }

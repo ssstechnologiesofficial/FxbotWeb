@@ -115,11 +115,14 @@ export class InvestmentService {
           }
         }, { session });
 
+        // Get the referrer's details for better transaction description
+        const referrer = await User.findById(userId).session(session);
+        
         await this.logTransaction(
           reward.userId,
           'smartline_income',
           reward.amount,
-          `Level ${reward.level} SmartLine commission (${(reward.rate * 100).toFixed(2)}%)`,
+          `Level ${reward.level} SmartLine Income (${(reward.rate * 100).toFixed(2)}%) from ${referrer.firstName} ${referrer.lastName} - Deposit: $${investmentAmount}`,
           'completed',
           null,
           userId,
@@ -222,7 +225,8 @@ export class InvestmentService {
         directIncome: user.directIncome || 0,
         fsIncome: user.fsIncome || 0,
         smartLineIncome: user.smartLineIncome || 0,
-        walletBalance: totalWalletBalance,
+        dasIncome: user.dasIncome || 0, // Actual DAS income earned from completed tasks
+        walletBalance: user.walletBalance || 0, // Use direct wallet balance instead of calculated
         dailyFsIncome: user.dailyFsIncome || 0,
         dasMonthlyEarnings: user.dasMonthlyEarnings || 0
       };
@@ -237,6 +241,7 @@ export class InvestmentService {
         directIncome: 0,
         fsIncome: 0,
         smartLineIncome: 0,
+        dasIncome: 0,
         walletBalance: 0,
         dailyFsIncome: 0,
         dasMonthlyEarnings: 0

@@ -8,7 +8,8 @@ import {
   TrendingUp, 
   Users,
   Copy,
-  ChevronRight
+  ChevronRight,
+  Award
 } from 'lucide-react';
 
 function ModernDashboard() {
@@ -126,7 +127,21 @@ function ModernDashboard() {
       value: `$${(investmentSummary?.directIncome || 0).toFixed(2)}`,
       icon: TrendingUp,
       color: 'from-red-500 to-red-600',
-      bgColor: 'rgba(139, 92, 246, 0.1)'
+      bgColor: 'rgba(239, 68, 68, 0.1)'
+    },
+    {
+      title: 'SmartLine Income',
+      value: `$${(investmentSummary?.smartLineIncome || 0).toFixed(2)}`,
+      icon: Wallet,
+      color: 'from-cyan-500 to-cyan-600',
+      bgColor: 'rgba(6, 182, 212, 0.1)'
+    },
+    {
+      title: 'DAS Income',
+      value: `$${(investmentSummary?.dasIncome || 0).toFixed(2)}`,
+      icon: Award,
+      color: 'from-pink-500 to-pink-600',
+      bgColor: 'rgba(236, 72, 153, 0.1)'
     },
     {
       title: 'Wallet Balance',
