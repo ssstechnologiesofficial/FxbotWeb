@@ -1,6 +1,7 @@
 import express from "express";
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
+import { SchedulerService } from "./scheduler.js";
 
 const app = express();
 app.use(express.json());
@@ -69,6 +70,8 @@ app.use((req, res, next) => {
       reusePort: true,
     }, () => {
       log(`serving on port ${port}`);
+      // Start the scheduler service
+      SchedulerService.start();
     });
   }
 })();

@@ -5,6 +5,7 @@ import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
 import { DasService } from "./dasService.js";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 import { InvestmentService } from "./investmentService.js";
+import { SchedulerService } from "./scheduler.js";
 
 // User registration validation schema
 const userRegistrationSchema = z.object({
@@ -946,6 +947,21 @@ export async function registerRoutes(app) {
       res.status(500).json({ error: "Failed to process withdrawal action" });
     }
   });
+
+  // Manual FS Income distribution trigger for admin
+  app.post("/api/admin/trigger-fs-income", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const result = await SchedulerService.triggerManual();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to trigger FS Income distribution",
+        details: error.message 
+      });
+    }
+  });
+
 
   // Email testing endpoint for admin
   app.post("/api/admin/test-email", authenticateToken, requireAdmin, async (req, res) => {
