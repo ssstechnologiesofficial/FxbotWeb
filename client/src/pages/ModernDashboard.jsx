@@ -29,15 +29,27 @@ function ModernDashboard() {
     enabled: !!userData
   });
 
-  // Fetch investment summary with force refresh
+  // Fetch investment summary with aggressive cache busting
   const { data: investmentSummary, refetch: refetchInvestment } = useQuery({
-    queryKey: ['/api/user/investment-summary', Math.random()], // Random key to force refresh
+    queryKey: ['/api/user/investment-summary', Date.now(), Math.random()], // Multiple cache busters
     retry: false,
     enabled: !!userData,
-    staleTime: 0, // Always fetch fresh data
-    cacheTime: 0, // Don't cache data
+    staleTime: 0,
+    cacheTime: 0,
     refetchOnMount: true,
-    refetchOnWindowFocus: true
+    refetchOnWindowFocus: true,
+    queryFn: async () => {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/user/investment-summary?_=${Date.now()}&r=${Math.random()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    }
   });
 
   useEffect(() => {
@@ -182,21 +194,42 @@ function ModernDashboard() {
           <p style={{ color: '#6b7280', margin: 0 }}>
             Track your FXBOT investments and referral earnings
           </p>
-          <button 
-            onClick={() => refetchInvestment()} 
-            style={{
-              marginTop: '0.5rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.375rem',
-              cursor: 'pointer',
-              fontSize: '0.875rem'
-            }}
-          >
-            Refresh Data
-          </button>
+          <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <button 
+              onClick={() => {
+                refetchInvestment();
+                window.location.reload();
+              }} 
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#dc2626',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.375rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              Hard Refresh
+            </button>
+            <button 
+              onClick={() => refetchInvestment()} 
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.375rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              Soft Refresh
+            </button>
+            <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+              Cache: {Math.random().toString(36).substr(2, 9)}
+            </span>
+          </div>
         </div>
 
         {/* Stats Cards */}

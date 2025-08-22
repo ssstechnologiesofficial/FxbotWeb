@@ -288,6 +288,15 @@ export async function registerRoutes(app) {
   // User investment summary endpoint
   app.get("/api/user/investment-summary", authenticateToken, async (req, res) => {
     try {
+      // Add aggressive no-cache headers
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'ETag': false,
+        'Last-Modified': new Date().toUTCString()
+      });
+      
       const summary = await InvestmentService.getUserInvestmentSummary(req.userId);
       res.json(summary);
     } catch (error) {
@@ -1101,6 +1110,15 @@ export async function registerRoutes(app) {
       if (req.userId !== userId && req.user?.role !== 'admin') {
         return res.status(403).json({ error: "Access denied" });
       }
+      
+      // Add aggressive no-cache headers
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'ETag': false,
+        'Last-Modified': new Date().toUTCString()
+      });
       
       const countdownData = await DasService.getDasCountdown(userId);
       res.json(countdownData);

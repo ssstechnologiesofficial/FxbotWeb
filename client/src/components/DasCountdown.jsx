@@ -30,11 +30,13 @@ export default function DasCountdown({ userId }) {
   const fetchCountdownData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/das/countdown/${userId}?t=${Date.now()}`, { // Add timestamp to bust cache
+      const response = await fetch(`/api/das/countdown/${userId}?t=${Date.now()}&r=${Math.random()}&bust=${Date.now()}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache' // Force no cache
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
       
