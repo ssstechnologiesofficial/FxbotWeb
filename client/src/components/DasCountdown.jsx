@@ -29,6 +29,7 @@ export default function DasCountdown({ userId }) {
 
   const fetchCountdownData = async () => {
     try {
+      console.log('🔥 FETCHING FRESH DAS DATA - NEW CODE EXECUTING');
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/das/countdown/${userId}?t=${Date.now()}&r=${Math.random()}&bust=${Date.now()}`, {
         headers: {
@@ -42,6 +43,7 @@ export default function DasCountdown({ userId }) {
       
       if (response.ok) {
         const data = await response.json();
+        console.log('📊 FRESH DAS DATA:', data);
         setCountdownData(data);
       } else {
         console.error('Failed to fetch countdown data');

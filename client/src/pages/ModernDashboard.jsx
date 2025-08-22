@@ -39,6 +39,7 @@ function ModernDashboard() {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     queryFn: async () => {
+      console.log('🔥 FETCHING FRESH INVESTMENT DATA - NEW CODE EXECUTING');
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/user/investment-summary?_=${Date.now()}&r=${Math.random()}`, {
         headers: {
@@ -48,7 +49,9 @@ function ModernDashboard() {
         }
       });
       if (!response.ok) throw new Error('Network response was not ok');
-      return response.json();
+      const data = await response.json();
+      console.log('📊 FRESH INVESTMENT DATA:', data);
+      return data;
     }
   });
 
@@ -189,7 +192,7 @@ function ModernDashboard() {
             color: '#111827', 
             margin: '0 0 0.5rem 0' 
           }}>
-            Welcome back, {user?.firstName}!
+            Welcome back, {user?.firstName}! 🔄 [NEW CODE v{Date.now().toString().slice(-6)}]
           </h1>
           <p style={{ color: '#6b7280', margin: 0 }}>
             Track your FXBOT investments and referral earnings
