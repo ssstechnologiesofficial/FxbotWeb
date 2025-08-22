@@ -29,76 +29,43 @@ export default function DasCountdown({ userId }) {
 
   const fetchCountdownData = async () => {
     try {
-      console.log('🔥 FETCHING FRESH DAS DATA - NEW CODE EXECUTING');
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/das/countdown/${userId}?t=${Date.now()}&r=${Math.random()}&bust=${Date.now()}`, {
+      const response = await fetch(`/api/das/countdown/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          'Content-Type': 'application/json'
         }
       });
       
       if (response.ok) {
         const data = await response.json();
-        console.log('📊 FRESH DAS DATA:', data);
         setCountdownData(data);
       } else {
         console.error('Failed to fetch countdown data');
         setCountdownData({ isEnrolled: false });
       }
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching countdown data:', error);
       setCountdownData({ isEnrolled: false });
+    } finally {
       setLoading(false);
-    }
-  };
-
-  const handleEnrollment = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/das/enroll', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId })
-      });
-
-      if (response.ok) {
-        // Refresh countdown data after enrollment
-        fetchCountdownData();
-      } else {
-        console.error('Failed to enroll in DAS program');
-      }
-    } catch (error) {
-      console.error('Error enrolling in DAS:', error);
     }
   };
 
   const updateTimeLeft = () => {
-    if (!countdownData) return;
+    if (!countdownData?.isEnrolled || !countdownData.startDate) return;
 
     const now = new Date().getTime();
-    const endDate = new Date(countdownData.startDate);
-    endDate.setDate(endDate.getDate() + 90);
-    
-    const distance = endDate.getTime() - now;
+    const startDate = new Date(countdownData.startDate).getTime();
+    const endDate = startDate + (90 * 24 * 60 * 60 * 1000); // 90 days from start
+    const timeRemaining = Math.max(0, endDate - now);
 
-    if (distance > 0) {
-      setTimeLeft({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000)
-      });
-    } else {
-      setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-    }
+    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+    setTimeLeft({ days, hours, minutes, seconds });
   };
 
   const getTaskStatus = (task, daysRemaining) => {
@@ -108,120 +75,59 @@ export default function DasCountdown({ userId }) {
   };
 
   const getStatusBadge = (status) => {
-    const labels = {
-      completed: '✓ Completed',
-      'in-progress': '⏳ In Progress',
-      expired: '⚠ Expired'
+    const baseStyle = {
+      padding: '0.25rem 0.75rem',
+      borderRadius: '9999px',
+      fontSize: '0.75rem',
+      fontWeight: '500'
     };
-    
-    return (
-      <span style={{
-        padding: '0.25rem 0.75rem',
-        borderRadius: '9999px',
-        fontSize: '0.75rem',
-        fontWeight: '600',
-        border: '1px solid',
-        backgroundColor: status === 'completed' ? '#dcfce7' : status === 'in-progress' ? '#dbeafe' : '#fee2e2',
-        color: status === 'completed' ? '#166534' : status === 'in-progress' ? '#1e40af' : '#991b1b',
-        borderColor: status === 'completed' ? '#bbf7d0' : status === 'in-progress' ? '#bfdbfe' : '#fecaca'
-      }}>
-        {labels[status]}
-      </span>
-    );
-  };
 
-  const TaskCard = ({ task, isActive, daysRemaining }) => {
-    const referralProgress = (task.current.referrals / task.requirements.referrals) * 100;
-    const volumeProgress = (task.current.volume / task.requirements.volume) * 100;
-    const status = getTaskStatus(task, daysRemaining);
-    
-    return (
-      <div style={{
-        padding: '1.5rem',
-        borderRadius: '0.75rem',
-        border: '2px solid',
-        borderColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#e5e7eb',
-        backgroundColor: status === 'completed' ? '#f0fdf4' : status === 'expired' ? '#fef2f2' : '#ffffff',
-        transition: 'all 0.3s ease'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>
-            Task {task.taskNumber}
-          </h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <DollarSign style={{ width: '1rem', height: '1rem', color: '#f59e0b' }} />
-            <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#f59e0b' }}>
-              ${task.monthlyReward}/month
-            </span>
-          </div>
-          {getStatusBadge(status)}
-        </div>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Referrals</span>
-            <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
-              {task.current.referrals || 0}/{task.requirements.referrals}
-            </span>
-          </div>
-          <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>
-            <div 
-              style={{ 
-                backgroundColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#f59e0b',
-                height: '0.5rem', 
-                borderRadius: '9999px', 
-                transition: 'all 0.3s ease',
-                width: `${Math.min(referralProgress, 100)}%`
-              }}
-            />
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Volume</span>
-            <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
-              ${(task.current.volume || 0).toLocaleString()}/${(task.requirements.volume/1000)}k
-            </span>
-          </div>
-          <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>
-            <div 
-              style={{ 
-                backgroundColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#f59e0b',
-                height: '0.5rem', 
-                borderRadius: '9999px', 
-                transition: 'all 0.3s ease',
-                width: `${Math.min(volumeProgress, 100)}%`
-              }}
-            />
-          </div>
-        </div>
-        
-        {task.isCompleted && (
-          <div style={{ 
-            marginTop: '1rem', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '0.5rem', 
-            color: '#22c55e' 
-          }}>
-            <Target style={{ width: '1rem', height: '1rem' }} />
-            <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Completed!</span>
-          </div>
-        )}
-      </div>
-    );
+    if (status === 'completed') {
+      return (
+        <span style={{
+          ...baseStyle,
+          backgroundColor: '#dcfce7',
+          color: '#166534'
+        }}>
+          Completed
+        </span>
+      );
+    } else if (status === 'expired') {
+      return (
+        <span style={{
+          ...baseStyle,
+          backgroundColor: '#fee2e2',
+          color: '#991b1b'
+        }}>
+          Expired
+        </span>
+      );
+    } else {
+      return (
+        <span style={{
+          ...baseStyle,
+          backgroundColor: '#fef3c7',
+          color: '#92400e'
+        }}>
+          In Progress
+        </span>
+      );
+    }
   };
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
         <div style={{
           width: '2rem',
           height: '2rem',
           border: '2px solid #e5e7eb',
-          borderTop: '2px solid #f59e0b',
+          borderTop: '2px solid #3b82f6',
           borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
+          animation: 'spin 1s linear infinite',
+          margin: '0 auto'
         }}></div>
+        <p style={{ marginTop: '1rem', color: '#6b7280' }}>Loading DAS countdown...</p>
       </div>
     );
   }
@@ -229,153 +135,174 @@ export default function DasCountdown({ userId }) {
   if (!countdownData?.isEnrolled) {
     return (
       <div style={{
-        textAlign: 'center',
         padding: '2rem',
-        backgroundColor: '#1f2937',
+        textAlign: 'center',
+        backgroundColor: '#f9fafb',
         borderRadius: '0.75rem',
-        border: '1px solid #374151',
-        color: 'white'
+        border: '1px solid #e5e7eb'
       }}>
-        <Target style={{ margin: '0 auto 1rem auto', color: '#f59e0b', width: '3rem', height: '3rem' }} />
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: 'white' }}>
-          Join DAS Income Program
-        </h2>
-        <p style={{ color: '#9ca3af', marginBottom: '1.5rem' }}>
-          Enroll in our Direct Achievement System to start earning monthly rewards
+        <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', margin: '0 0 0.5rem 0' }}>
+          DAS Program Not Active
+        </h3>
+        <p style={{ color: '#6b7280', margin: 0 }}>
+          Enroll in the DAS program to start earning monthly rewards.
         </p>
-        <button 
-          style={{
-            backgroundColor: '#f59e0b',
-            color: 'white',
-            fontWeight: '600',
-            padding: '0.75rem 2rem',
-            borderRadius: '0.5rem',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onClick={handleEnrollment}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#d97706';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#f59e0b';
-          }}
-        >
-          Enroll Now
-        </button>
       </div>
     );
   }
 
+  const daysRemaining = Math.max(0, timeLeft.days);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        <Clock style={{ width: '1.5rem', height: '1.5rem', color: '#f59e0b' }} />
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>
+          DAS Program Countdown
+        </h2>
+      </div>
+
       {/* Countdown Timer */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(234, 179, 8, 0.1))',
-        borderRadius: '0.75rem',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: '1rem',
+        marginBottom: '2rem',
         padding: '1.5rem',
-        border: '1px solid rgba(245, 158, 11, 0.3)'
+        backgroundColor: '#fef3c7',
+        borderRadius: '0.75rem',
+        border: '1px solid #fcd34d'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-          <Clock style={{ width: '1.5rem', height: '1.5rem', color: '#f59e0b' }} />
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>
-            DAS Program Countdown
-          </h2>
-        </div>
-        
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(4, 1fr)', 
-          gap: '1rem',
-          marginBottom: '1rem'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>{timeLeft.days}</div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Days</div>
+        {[
+          { label: 'Days', value: timeLeft.days },
+          { label: 'Hours', value: timeLeft.hours },
+          { label: 'Minutes', value: timeLeft.minutes },
+          { label: 'Seconds', value: timeLeft.seconds }
+        ].map((item, index) => (
+          <div key={index} style={{ textAlign: 'center' }}>
+            <div style={{
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              color: '#92400e',
+              lineHeight: 1
+            }}>
+              {item.value.toString().padStart(2, '0')}
+            </div>
+            <div style={{
+              fontSize: '0.875rem',
+              color: '#92400e',
+              marginTop: '0.25rem'
+            }}>
+              {item.label}
+            </div>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>{timeLeft.hours}</div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Hours</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>{timeLeft.minutes}</div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Minutes</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>{timeLeft.seconds}</div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Seconds</div>
-          </div>
-        </div>
-
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          fontSize: '0.875rem', 
-          color: '#6b7280' 
-        }}>
-          <span>Program started: {new Date(countdownData.startDate).toLocaleDateString()}</span>
-          <span>{countdownData.daysRemaining} days remaining</span>
-        </div>
+        ))}
       </div>
 
-      {/* Task Progress */}
-      <div>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#111827' }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '2rem',
+        padding: '1rem',
+        backgroundColor: '#f3f4f6',
+        borderRadius: '0.5rem'
+      }}>
+        <span style={{ fontSize: '0.875rem', color: '#374151' }}>
+          Program started: {new Date(countdownData.startDate).toLocaleDateString()}
+        </span>
+        <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
+          {daysRemaining} days remaining
+        </span>
+      </div>
+
+      {/* Achievement Tasks */}
+      <div style={{ marginTop: '2rem' }}>
+        <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', marginBottom: '1rem' }}>
           Achievement Tasks
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {countdownData.progress?.map((task, index) => {
-            const isActive = countdownData.daysElapsed >= (index * 30) && 
-                           countdownData.daysElapsed < ((index + 1) * 30) && 
-                           !task.isCompleted;
+            const referralProgress = (task.current.referrals / task.requirements.referrals) * 100;
+            const volumeProgress = (task.current.volume / task.requirements.volume) * 100;
+            const status = getTaskStatus(task, daysRemaining);
             
             return (
-              <TaskCard 
-                key={task.taskNumber} 
-                task={task} 
-                isActive={isActive}
-                daysRemaining={countdownData.daysRemaining}
-              />
+              <div key={index} style={{
+                padding: '1.5rem',
+                borderRadius: '0.75rem',
+                border: '2px solid',
+                borderColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#e5e7eb',
+                backgroundColor: status === 'completed' ? '#f0fdf4' : status === 'expired' ? '#fef2f2' : '#ffffff',
+                transition: 'all 0.3s ease'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>
+                    Task {task.taskNumber}
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <DollarSign style={{ width: '1rem', height: '1rem', color: '#f59e0b' }} />
+                    <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#f59e0b' }}>
+                      ${task.monthlyReward}/month
+                    </span>
+                  </div>
+                  {getStatusBadge(status)}
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Referrals</span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
+                      {task.current.referrals || 0}/{task.requirements.referrals}
+                    </span>
+                  </div>
+                  <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>
+                    <div 
+                      style={{ 
+                        backgroundColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#f59e0b',
+                        height: '0.5rem', 
+                        borderRadius: '9999px', 
+                        transition: 'all 0.3s ease',
+                        width: `${Math.min(referralProgress, 100)}%`
+                      }}
+                    />
+                  </div>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Volume</span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
+                      ${(task.current.volume || 0).toLocaleString()}/${(task.requirements.volume/1000)}k
+                    </span>
+                  </div>
+                  <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>
+                    <div 
+                      style={{ 
+                        backgroundColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#f59e0b',
+                        height: '0.5rem', 
+                        borderRadius: '9999px', 
+                        transition: 'all 0.3s ease',
+                        width: `${Math.min(volumeProgress, 100)}%`
+                      }}
+                    />
+                  </div>
+                </div>
+                
+                {task.isCompleted && (
+                  <div style={{ 
+                    marginTop: '1rem', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem', 
+                    color: '#22c55e' 
+                  }}>
+                    <Target style={{ width: '1rem', height: '1rem' }} />
+                    <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Completed!</span>
+                  </div>
+                )}
+              </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Summary */}
-      <div style={{
-        backgroundColor: '#f8fafc',
-        borderRadius: '0.75rem',
-        padding: '1.5rem',
-        border: '1px solid #e5e7eb'
-      }}>
-        <h4 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem', color: '#111827' }}>
-          Program Summary
-        </h4>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(3, 1fr)', 
-          gap: '1rem',
-          textAlign: 'center'
-        }}>
-          <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>
-              {countdownData.progress?.filter(task => task.isCompleted).length || 0}
-            </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Completed Tasks</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f59e0b' }}>
-              {countdownData.daysElapsed}
-            </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Days Elapsed</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#22c55e' }}>
-              ${countdownData.progress?.reduce((sum, task) => task.isCompleted ? sum + task.monthlyReward : sum, 0) || 0}
-            </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Monthly Earnings</div>
-          </div>
         </div>
       </div>
     </div>

@@ -29,30 +29,13 @@ function ModernDashboard() {
     enabled: !!userData
   });
 
-  // Fetch investment summary with aggressive cache busting
+  // Fetch investment summary
   const { data: investmentSummary, refetch: refetchInvestment } = useQuery({
-    queryKey: ['/api/user/investment-summary', Date.now(), Math.random()], // Multiple cache busters
+    queryKey: ['/api/user/investment-summary'],
     retry: false,
     enabled: !!userData,
     staleTime: 0,
-    cacheTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    queryFn: async () => {
-      console.log('🔥 FETCHING FRESH INVESTMENT DATA - NEW CODE EXECUTING');
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/user/investment-summary?_=${Date.now()}&r=${Math.random()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
-        }
-      });
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      console.log('📊 FRESH INVESTMENT DATA:', data);
-      return data;
-    }
+    cacheTime: 0
   });
 
   useEffect(() => {
@@ -136,7 +119,7 @@ function ModernDashboard() {
     },
     {
       title: 'Credited Interest',
-      value: `6.00% (${investmentSummary?.dailyFsIncome ? `$${investmentSummary.dailyFsIncome.toFixed(2)}` : '$0.00'})`,
+      value: `6.00% ($${investmentSummary?.fsIncome ? investmentSummary.fsIncome.toFixed(2) : '0.00'})`,
       icon: DollarSign,
       color: 'from-pink-500 to-pink-600',
       bgColor: 'rgba(249, 115, 22, 0.1)'
@@ -192,47 +175,11 @@ function ModernDashboard() {
             color: '#111827', 
             margin: '0 0 0.5rem 0' 
           }}>
-            Welcome back, {user?.firstName}! 🔄 [NEW CODE v{Date.now().toString().slice(-6)}]
+            Welcome back, {user?.firstName}!
           </h1>
           <p style={{ color: '#6b7280', margin: 0 }}>
             Track your FXBOT investments and referral earnings
           </p>
-          <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <button 
-              onClick={() => {
-                refetchInvestment();
-                window.location.reload();
-              }} 
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#dc2626',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
-              }}
-            >
-              Hard Refresh
-            </button>
-            <button 
-              onClick={() => refetchInvestment()} 
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
-              }}
-            >
-              Soft Refresh
-            </button>
-            <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
-              Cache: {Math.random().toString(36).substr(2, 9)}
-            </span>
-          </div>
         </div>
 
         {/* Stats Cards */}
