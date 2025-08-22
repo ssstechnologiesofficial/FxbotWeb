@@ -138,29 +138,20 @@ export class InvestmentService {
   // Daily FS Income distribution (called by scheduler at 11:59pm IST)
   static async distributeDailyFSIncome() {
     try {
-      const activeInvestments = await Investment.find({ 
-        status: 'active',
-        packageType: 'fs_income',
-        remainingReturns: { $gt: 0 }
-      }).populate('userId');
+      // Find users with confirmed deposits (totalInvestmentAmount > 0)
+      const usersWithDeposits = await User.find({ 
+        totalInvestmentAmount: { $gt: 0 } 
+      });
 
-      for (const investment of activeInvestments) {
-        const dailyAmount = investment.amount * 0.002727; // 6% monthly / 22 days
+      let creditsGiven = 0;
+
+      for (const user of usersWithDeposits) {
+        // Calculate daily FS Income: 6% monthly = 0.002727% daily
+        const dailyAmount = user.totalInvestmentAmount * 0.002727; // 6% monthly / 22 days
         
-        if (investment.remainingReturns >= dailyAmount) {
-          // Update investment
-          investment.remainingReturns -= dailyAmount;
-          investment.totalReturns += dailyAmount;
-          
-          if (investment.remainingReturns <= 0) {
-            investment.status = 'completed';
-            investment.isActive = false;
-          }
-          
-          await investment.save();
-
+        if (dailyAmount > 0) {
           // Update user's FS income and wallet
-          await User.findByIdAndUpdate(investment.userId._id, {
+          await User.findByIdAndUpdate(user._id, {
             $inc: {
               fsIncome: dailyAmount,
               walletBalance: dailyAmount,
@@ -170,17 +161,18 @@ export class InvestmentService {
 
           // Log FS Income transaction
           await this.logTransaction(
-            investment.userId._id,
+            user._id,
             'fs_income',
             dailyAmount,
-            `Daily FS Income from investment of $${investment.amount}`,
-            'completed',
-            investment._id
+            `Daily FS Income from total deposits of $${user.totalInvestmentAmount}`,
+            'completed'
           );
+
+          creditsGiven++;
         }
       }
 
-      console.log(`Daily FS Income distributed to ${activeInvestments.length} investments`);
+      console.log(`Daily FS Income distributed to ${creditsGiven} users with total deposits`);
 
     } catch (error) {
       console.error('Error distributing daily FS income:', error);

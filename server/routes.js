@@ -465,6 +465,8 @@ export async function registerRoutes(app) {
             $inc: { totalInvestmentAmount: deposit.amount }
           });
           
+          // FS Income is generated automatically from total deposits, no separate investment record needed
+          
           // Create transaction record
           await storage.createTransaction({
             userId: deposit.userId,
