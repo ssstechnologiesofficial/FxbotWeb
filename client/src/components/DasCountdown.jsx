@@ -157,7 +157,7 @@ export default function DasCountdown({ userId }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Referrals</span>
             <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
-              {task.current.referrals}/{task.requirements.referrals}
+              {task.current.referrals || 0}/{task.requirements.referrals}
             </span>
           </div>
           <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>
@@ -175,7 +175,7 @@ export default function DasCountdown({ userId }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Volume</span>
             <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
-              ${task.current.volume.toLocaleString()}/${(task.requirements.volume/1000)}k
+              ${(task.current.volume || 0).toLocaleString()}/${(task.requirements.volume/1000)}k
             </span>
           </div>
           <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>

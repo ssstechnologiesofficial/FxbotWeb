@@ -29,13 +29,15 @@ function ModernDashboard() {
     enabled: !!userData
   });
 
-  // Fetch investment summary
+  // Fetch investment summary with force refresh
   const { data: investmentSummary, refetch: refetchInvestment } = useQuery({
-    queryKey: ['/api/user/investment-summary'],
+    queryKey: ['/api/user/investment-summary', Math.random()], // Random key to force refresh
     retry: false,
     enabled: !!userData,
     staleTime: 0, // Always fetch fresh data
-    cacheTime: 0 // Don't cache data
+    cacheTime: 0, // Don't cache data
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   useEffect(() => {
