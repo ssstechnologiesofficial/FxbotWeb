@@ -153,9 +153,15 @@ export class DasService {
       // Count direct referrals (children)
       const referralCount = user.children.length;
 
-      // Sum total investment volume
-      const investments = await Investment.find({ userId });
-      const totalVolume = investments.reduce((sum, inv) => sum + inv.amount, 0);
+      // Sum total investment volume from referrals (children), not user's own deposits
+      let totalVolume = 0;
+      if (user.children.length > 0) {
+        const childrenInvestments = await Investment.find({ 
+          userId: { $in: user.children },
+          status: 'active' 
+        });
+        totalVolume = childrenInvestments.reduce((sum, inv) => sum + inv.amount, 0);
+      }
 
       return {
         referralCount,
