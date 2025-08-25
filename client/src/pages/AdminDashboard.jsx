@@ -508,6 +508,13 @@ export default function AdminDashboard() {
                             fontWeight: '600',
                             color: '#374151',
                             borderBottom: '1px solid #e5e7eb'
+                          }}>Mobile</th>
+                          <th style={{
+                            padding: '0.75rem',
+                            textAlign: 'left',
+                            fontWeight: '600',
+                            color: '#374151',
+                            borderBottom: '1px solid #e5e7eb'
                           }}>Sponsor ID</th>
                           <th style={{
                             padding: '0.75rem',
@@ -535,7 +542,7 @@ export default function AdminDashboard() {
                       <tbody>
                         {users.length === 0 ? (
                           <tr>
-                            <td colSpan="6" style={{
+                            <td colSpan="7" style={{
                               padding: '2rem',
                               textAlign: 'center',
                               color: '#6b7280'
@@ -561,6 +568,12 @@ export default function AdminDashboard() {
                                 borderBottom: '1px solid #e5e7eb'
                               }}>
                                 {userData.email || 'N/A'}
+                              </td>
+                              <td style={{
+                                padding: '0.75rem',
+                                borderBottom: '1px solid #e5e7eb'
+                              }}>
+                                {userData.mobile || 'N/A'}
                               </td>
                               <td style={{
                                 padding: '0.75rem',
