@@ -719,8 +719,19 @@ export async function registerRoutes(app) {
   app.get("/api/admin/users", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const users = await storage.getUsers();
+      console.log('🔍 Admin users API - returning users:', users.length, 'users');
+      console.log('🔍 First user sample:', users[0] ? {
+        firstName: users[0].firstName,
+        lastName: users[0].lastName,
+        email: users[0].email,
+        mobile: users[0].mobile,
+        ownSponsorId: users[0].ownSponsorId,
+        referralCount: users[0].referralCount,
+        isEnrolledInDas: users[0].isEnrolledInDas
+      } : 'No users found');
       res.json(users);
     } catch (error) {
+      console.error('❌ Admin users API error:', error);
       res.status(500).json({ error: "Failed to get users" });
     }
   });

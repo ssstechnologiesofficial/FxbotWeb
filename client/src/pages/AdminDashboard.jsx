@@ -73,6 +73,8 @@ export default function AdminDashboard() {
           })
         ]);
 
+        console.log('🔍 Raw usersResponse.data:', usersResponse.data);
+        console.log('🔍 First user data:', usersResponse.data[0]);
         setUsers(usersResponse.data);
         setDeposits(depositsResponse.data);
         setWithdrawals(withdrawalsResponse.data);
