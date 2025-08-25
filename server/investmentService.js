@@ -42,21 +42,9 @@ export class InvestmentService {
         await this.logTransaction(userId, 'deposit', amount, 
           `Investment deposit - ${packageType}`, 'completed', investment._id, null, null, session);
 
-        // Process Direct Income (DRI) - 6% to parent immediately
-        try {
-          await this.processDRIIncome(userId, amount, session);
-        } catch (driError) {
-          console.error('❌ DRI processing failed in transaction, will retry separately:', driError);
-          // Don't fail the entire transaction for DRI issues
-        }
-
-        // Distribute SmartLine Income (5-tier commissions)
-        try {
-          await this.processSmartLineIncome(userId, amount, session);
-        } catch (smartlineError) {
-          console.error('❌ SmartLine processing failed in transaction:', smartlineError);
-          // Don't fail the entire transaction for SmartLine issues
-        }
+        // SKIP income processing within transaction to avoid MongoDB session issues
+        console.log(`⏭️ Skipping income processing within transaction due to MongoDB session issues`);
+        console.log(`⏭️ Will process DRI and SmartLine income after transaction completes`);
 
         // Update DAS progress if user is enrolled
         const user = await User.findById(userId).session(session);
@@ -82,9 +70,9 @@ export class InvestmentService {
         console.log(`🔄 Running post-transaction income processing for user ${userId}, amount $${amount}`);
         try {
           console.log(`🔄 Starting DRI processing outside transaction...`);
-          await this.processDRIIncome(userId, amount);
+          await this.processDRIIncome(userId, amount, null); // Explicitly no session
           console.log(`🔄 Starting SmartLine processing outside transaction...`);
-          await this.processSmartLineIncome(userId, amount);
+          await this.processSmartLineIncome(userId, amount, null); // Explicitly no session
           console.log(`✅ Post-transaction income processing completed successfully`);
         } catch (postTransactionError) {
           console.error('❌ Post-transaction income processing failed:', postTransactionError);
