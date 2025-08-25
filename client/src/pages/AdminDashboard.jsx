@@ -75,6 +75,12 @@ export default function AdminDashboard() {
 
         console.log('🔍 Raw usersResponse.data:', usersResponse.data);
         console.log('🔍 First user data:', usersResponse.data[0]);
+        console.log('🔍 Field check:', {
+          firstName: usersResponse.data[0]?.firstName,
+          lastName: usersResponse.data[0]?.lastName,
+          email: usersResponse.data[0]?.email,
+          mobile: usersResponse.data[0]?.mobile
+        });
         setUsers(usersResponse.data);
         setDeposits(depositsResponse.data);
         setWithdrawals(withdrawalsResponse.data);
@@ -561,9 +567,12 @@ export default function AdminDashboard() {
                                 padding: '0.75rem',
                                 borderBottom: '1px solid #e5e7eb'
                               }}>
-                                {userData.firstName && userData.lastName 
-                                  ? `${userData.firstName} ${userData.lastName}` 
-                                  : userData.email || 'N/A'}
+                                {(() => {
+                                  const firstName = userData.firstName || '';
+                                  const lastName = userData.lastName || '';
+                                  const fullName = firstName && lastName ? `${firstName} ${lastName}` : '';
+                                  return fullName || userData.email || 'N/A';
+                                })()}
                               </td>
                               <td style={{
                                 padding: '0.75rem',
