@@ -726,41 +726,45 @@ export async function registerRoutes(app) {
     }
   });
 
-  // Debug endpoint to find user children
-  app.get("/api/admin/user/:email/children", authenticateToken, requireAdmin, async (req, res) => {
+  // Debug endpoint to find users with DRI income
+  app.get("/api/admin/dri-earners", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const { User } = await import('./database.js');
-      const email = req.params.email;
       
-      // Find the parent user
-      const parentUser = await User.findOne({ email: email.toLowerCase() });
-      if (!parentUser) {
-        return res.status(404).json({ error: "User not found" });
-      }
+      // Find users with DRI income > 0
+      const driEarners = await User.find({ directIncome: { $gt: 0 } })
+        .select('firstName lastName email ownSponsorId directIncome walletBalance totalInvestmentAmount')
+        .sort({ directIncome: -1 })
+        .limit(10);
       
-      // Find all children (users who have this user as parent)
-      const children = await User.find({ parent: parentUser._id })
-        .select('firstName lastName email ownSponsorId totalInvestmentAmount createdAt')
-        .sort({ createdAt: -1 });
+      // For each DRI earner, find their children who made investments
+      const earnerDetails = await Promise.all(driEarners.map(async (earner) => {
+        const children = await User.find({ parent: earner._id })
+          .select('firstName lastName email totalInvestmentAmount')
+          .sort({ totalInvestmentAmount: -1 });
+        
+        return {
+          name: `${earner.firstName} ${earner.lastName}`,
+          email: earner.email,
+          sponsorId: earner.ownSponsorId,
+          directIncome: earner.directIncome,
+          walletBalance: earner.walletBalance,
+          totalInvestment: earner.totalInvestmentAmount || 0,
+          children: children.map(child => ({
+            name: `${child.firstName} ${child.lastName}`,
+            email: child.email,
+            investment: child.totalInvestmentAmount || 0
+          }))
+        };
+      }));
       
       res.json({
-        parent: {
-          name: `${parentUser.firstName} ${parentUser.lastName}`,
-          email: parentUser.email,
-          sponsorId: parentUser.ownSponsorId,
-          directIncome: parentUser.directIncome || 0
-        },
-        children: children.map(child => ({
-          name: `${child.firstName} ${child.lastName}`,
-          email: child.email,
-          sponsorId: child.ownSponsorId,
-          totalInvestment: child.totalInvestmentAmount || 0,
-          joinedAt: child.createdAt
-        }))
+        count: driEarners.length,
+        earners: earnerDetails
       });
     } catch (error) {
-      console.error('Error finding user children:', error);
-      res.status(500).json({ error: "Failed to find user children" });
+      console.error('Error finding DRI earners:', error);
+      res.status(500).json({ error: "Failed to find DRI earners" });
     }
   });
 
