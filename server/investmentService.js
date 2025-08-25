@@ -69,9 +69,20 @@ export class InvestmentService {
   static async processDRIIncome(userId, investmentAmount, session = null) {
     try {
       const user = await User.findById(userId).populate('parent').session(session);
-      if (!user || !user.parent) return;
+      
+      if (!user) {
+        console.log(`🔍 DRI Debug - User not found: ${userId}`);
+        return;
+      }
+      
+      if (!user.parent) {
+        console.log(`🔍 DRI Debug - No parent found for user: ${userId} (${user.firstName} ${user.lastName})`);
+        return;
+      }
 
       const driAmount = investmentAmount * 0.06; // 6%
+      
+      console.log(`🔍 DRI Debug - Processing: $${driAmount} from ${user.firstName} ${user.lastName} (${userId}) to parent ${user.parent._id}`);
       
       // Add to parent's wallet balance and direct income
       await User.findByIdAndUpdate(user.parent._id, {
@@ -94,10 +105,10 @@ export class InvestmentService {
         session
       );
 
-      console.log(`DRI Income processed: $${driAmount} to parent ${user.parent._id}`);
+      console.log(`✅ DRI Income processed: $${driAmount} to parent ${user.parent._id}`);
 
     } catch (error) {
-      console.error('Error processing DRI income:', error);
+      console.error('❌ Error processing DRI income:', error);
     }
   }
 

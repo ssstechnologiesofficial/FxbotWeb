@@ -704,7 +704,7 @@ export default function AdminDashboard() {
                               borderBottom: '1px solid #e5e7eb'
                             }}>
                               <div>
-                                <div style={{ fontWeight: '600' }}>
+                                <div style={{ fontWeight: '600',color: '#000000' }}>
                                   {userData.firstName} {userData.lastName}
                                 </div>
                                 <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>
@@ -908,7 +908,7 @@ export default function AdminDashboard() {
                             backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb'
                           }}>
                             <td style={{
-                              padding: '0.75rem',
+                              padding: '0.75rem',color: '#000000',
                               borderBottom: '1px solid #e5e7eb'
                             }}>
                               {deposit.userId?.firstName} {deposit.userId?.lastName}
@@ -926,7 +926,7 @@ export default function AdminDashboard() {
                               ${deposit.amount}
                             </td>
                             <td style={{
-                              padding: '0.75rem',
+                              padding: '0.75rem',color: '#000000',
                               borderBottom: '1px solid #e5e7eb'
                             }}>
                               {deposit.paymentMethod}
@@ -1144,7 +1144,7 @@ export default function AdminDashboard() {
                                 borderBottom: '1px solid #e5e7eb'
                               }}>
                                 <div>
-                                  <div style={{ fontWeight: '600' }}>
+                                  <div style={{ fontWeight: '600',color: '#000000' }}>
                                     {withdrawal.user?.name || 'Unknown User'}
                                   </div>
                                   <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>
@@ -1184,7 +1184,7 @@ export default function AdminDashboard() {
                                 borderBottom: '1px solid #e5e7eb'
                               }}>
                                 <div>
-                                  <div style={{ fontWeight: '500' }}>
+                                  <div style={{ fontWeight: '500',color: '#000000' }}>
                                     {withdrawal.method}
                                   </div>
                                   <div style={{ 
@@ -1393,6 +1393,7 @@ export default function AdminDashboard() {
                           onChange={(e) => setSearchTerm(e.target.value)}
                           style={{
                             width: '100%',
+                            color: '#000000',
                             padding: '0.75rem 0.75rem 0.75rem 2.5rem',
                             border: '1px solid #d1d5db',
                             borderRadius: '0.5rem',
