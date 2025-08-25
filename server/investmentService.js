@@ -7,62 +7,113 @@ export class InvestmentService {
   
   // Process a new investment (from confirmed deposit)
   static async processInvestment(userId, amount, packageType = 'fs_income') {
-    try {
-      const session = await mongoose.startSession();
-      session.startTransaction();
+    let session = null;
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+      try {
+        session = await mongoose.startSession();
+        session.startTransaction();
 
-      // Create investment record
-      const unlockDate = new Date();
-      unlockDate.setMonth(unlockDate.getMonth() + 17); // Lock for 17 months
-      
-      const investment = new Investment({
-        userId,
-        amount,
-        packageType,
-        unlockDate,
-        remainingReturns: amount * 2 // 2x return over 17 months
-      });
-      
-      await investment.save({ session });
+        // Create investment record
+        const unlockDate = new Date();
+        unlockDate.setMonth(unlockDate.getMonth() + 17); // Lock for 17 months
+        
+        const investment = new Investment({
+          userId,
+          amount,
+          packageType,
+          unlockDate,
+          remainingReturns: amount * 2 // 2x return over 17 months
+        });
+        
+        await investment.save({ session });
 
-      // Update user's total investment amount
-      await User.findByIdAndUpdate(userId, {
-        $inc: { 
-          totalInvestmentAmount: amount,
-          totalInvestmentVolume: amount // For DAS tracking
+        // Update user's total investment amount
+        await User.findByIdAndUpdate(userId, {
+          $inc: { 
+            totalInvestmentAmount: amount,
+            totalInvestmentVolume: amount // For DAS tracking
+          }
+        }, { session });
+
+        // Log the deposit transaction
+        await this.logTransaction(userId, 'deposit', amount, 
+          `Investment deposit - ${packageType}`, 'completed', investment._id, null, null, session);
+
+        // Process Direct Income (DRI) - 6% to parent immediately
+        try {
+          await this.processDRIIncome(userId, amount, session);
+        } catch (driError) {
+          console.error('❌ DRI processing failed in transaction, will retry separately:', driError);
+          // Don't fail the entire transaction for DRI issues
         }
-      }, { session });
 
-      // Log the deposit transaction
-      await this.logTransaction(userId, 'deposit', amount, 
-        `Investment deposit - ${packageType}`, 'completed', investment._id, null, null, session);
+        // Distribute SmartLine Income (5-tier commissions)
+        try {
+          await this.processSmartLineIncome(userId, amount, session);
+        } catch (smartlineError) {
+          console.error('❌ SmartLine processing failed in transaction:', smartlineError);
+          // Don't fail the entire transaction for SmartLine issues
+        }
 
-      // Process Direct Income (DRI) - 6% to parent immediately
-      await this.processDRIIncome(userId, amount, session);
+        // Update DAS progress if user is enrolled
+        const user = await User.findById(userId).session(session);
+        if (user.isEnrolledInDas) {
+          await DasService.addInvestment(userId, amount);
+        }
 
-      // Distribute SmartLine Income (5-tier commissions)
-      await this.processSmartLineIncome(userId, amount, session);
-
-      // Update DAS progress if user is enrolled
-      const user = await User.findById(userId).session(session);
-      if (user.isEnrolledInDas) {
-        await DasService.addInvestment(userId, amount);
-      }
-
-      await session.commitTransaction();
-      session.endSession();
-
-      console.log(`Investment processed successfully: ${amount} for user ${userId}`);
-      return true;
-
-    } catch (error) {
-      console.error('Error processing investment:', error);
-      if (session) {
-        await session.abortTransaction();
+        await session.commitTransaction();
         session.endSession();
+
+        console.log(`Investment processed successfully: ${amount} for user ${userId}`);
+        
+        // Get user details for logging
+        const userData = await User.findById(userId).select('firstName lastName email');
+        console.log(`Investment processed: $${amount} for user`, {
+          _id: userData._id,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email
+        });
+        
+        // Process DRI and SmartLine separately if they failed in transaction
+        try {
+          await this.processDRIIncome(userId, amount);
+          await this.processSmartLineIncome(userId, amount);
+        } catch (postTransactionError) {
+          console.error('❌ Post-transaction income processing failed:', postTransactionError);
+        }
+        
+        return true;
+
+      } catch (error) {
+        console.error('Error during investment processing:', error);
+        
+        if (session) {
+          try {
+            await session.abortTransaction();
+            session.endSession();
+          } catch (abortError) {
+            console.error('Error aborting transaction:', abortError);
+          }
+          session = null;
+        }
+        
+        // Check if it's a transient transaction error that we can retry
+        if (error.errorLabels && error.errorLabels.includes('TransientTransactionError') && retryCount < maxRetries - 1) {
+          retryCount++;
+          console.log(`Retrying transaction attempt ${retryCount + 1}/${maxRetries}`);
+          await new Promise(resolve => setTimeout(resolve, 100 * retryCount)); // Exponential backoff
+          continue;
+        }
+        
+        return false;
       }
-      return false;
     }
+    
+    return false;
   }
 
   // Process Direct Income (DRI) - 6% to parent wallet
