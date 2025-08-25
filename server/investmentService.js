@@ -79,9 +79,13 @@ export class InvestmentService {
         });
         
         // Process DRI and SmartLine separately if they failed in transaction
+        console.log(`🔄 Running post-transaction income processing for user ${userId}, amount $${amount}`);
         try {
+          console.log(`🔄 Starting DRI processing outside transaction...`);
           await this.processDRIIncome(userId, amount);
+          console.log(`🔄 Starting SmartLine processing outside transaction...`);
           await this.processSmartLineIncome(userId, amount);
+          console.log(`✅ Post-transaction income processing completed successfully`);
         } catch (postTransactionError) {
           console.error('❌ Post-transaction income processing failed:', postTransactionError);
         }
@@ -119,7 +123,14 @@ export class InvestmentService {
   // Process Direct Income (DRI) - 6% to parent wallet
   static async processDRIIncome(userId, investmentAmount, session = null) {
     try {
-      const user = await User.findById(userId).populate('parent').session(session);
+      console.log(`🔍 DRI Processing started for user ${userId}, amount $${investmentAmount}, session: ${!!session}`);
+      
+      let user;
+      if (session) {
+        user = await User.findById(userId).populate('parent').session(session);
+      } else {
+        user = await User.findById(userId).populate('parent');
+      }
       
       if (!user) {
         console.log(`🔍 DRI Debug - User not found: ${userId}`);

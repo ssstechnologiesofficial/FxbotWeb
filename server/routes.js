@@ -321,6 +321,52 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Debug endpoint to check user relationships and income
+  app.get("/api/debug/user-info/:email", authenticateToken, async (req, res) => {
+    try {
+      const { User } = await import('./database.js');
+      const email = req.params.email;
+      
+      const user = await User.findOne({ email }).populate('parent').lean();
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      // Get parent info if exists
+      let parentInfo = null;
+      if (user.parent) {
+        parentInfo = {
+          _id: user.parent._id,
+          email: user.parent.email,
+          firstName: user.parent.firstName,
+          lastName: user.parent.lastName,
+          ownSponsorId: user.parent.ownSponsorId,
+          directIncome: user.parent.directIncome || 0,
+          smartLineIncome: user.parent.smartLineIncome || 0
+        };
+      }
+      
+      res.json({
+        user: {
+          _id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          sponsorId: user.sponsorId,
+          ownSponsorId: user.ownSponsorId,
+          directIncome: user.directIncome || 0,
+          smartLineIncome: user.smartLineIncome || 0,
+          walletBalance: user.walletBalance || 0,
+          totalEarnings: user.totalEarnings || 0
+        },
+        parent: parentInfo
+      });
+    } catch (error) {
+      console.error("Debug user info error:", error);
+      res.status(500).json({ error: "Failed to get user info" });
+    }
+  });
+
   // Simulate investment for testing rewards (remove in production)
   app.post("/api/user/simulate-investment", authenticateToken, async (req, res) => {
     try {
