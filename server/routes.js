@@ -321,6 +321,58 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Debug endpoint to check user income breakdown (open for testing)
+  app.get("/api/debug/income-breakdown/:email", async (req, res) => {
+    try {
+      const { User, Transaction } = await import('./database.js');
+      const email = req.params.email;
+      
+      const user = await User.findOne({ email }).lean();
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      // Get all transactions for this user
+      const transactions = await Transaction.find({ userId: user._id })
+        .sort({ createdAt: -1 })
+        .lean();
+      
+      // Calculate totals by transaction type
+      const breakdown = {
+        directIncome: user.directIncome || 0,
+        smartLineIncome: user.smartLineIncome || 0,
+        fsIncome: user.fsIncome || 0,
+        dasIncome: user.dasIncome || 0,
+        walletBalance: user.walletBalance || 0,
+        totalEarnings: user.totalEarnings || 0,
+        transactionSummary: {},
+        recentTransactions: transactions.slice(0, 10)
+      };
+      
+      // Group transactions by type
+      transactions.forEach(tx => {
+        const type = tx.type;
+        if (!breakdown.transactionSummary[type]) {
+          breakdown.transactionSummary[type] = { count: 0, total: 0 };
+        }
+        breakdown.transactionSummary[type].count++;
+        breakdown.transactionSummary[type].total += tx.amount;
+      });
+      
+      res.json({
+        user: {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName
+        },
+        breakdown
+      });
+    } catch (error) {
+      console.error("Debug income breakdown error:", error);
+      res.status(500).json({ error: "Failed to get income breakdown" });
+    }
+  });
+
   // Debug endpoint to check user relationships and income
   app.get("/api/debug/user-info/:email", authenticateToken, async (req, res) => {
     try {
