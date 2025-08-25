@@ -45,7 +45,10 @@ class ReferralService {
   async distributeRewards(investorId, investmentAmount) {
     try {
       const investor = await User.findById(investorId).populate('parent');
-      if (!investor || !investor.parent) return;
+      if (!investor || !investor.parent) {
+        console.log(`🔍 Referral Debug - No parent found for user ${investorId}`);
+        return []; // Return empty array instead of undefined
+      }
 
       let currentParent = investor.parent;
       let level = 1;
@@ -156,4 +159,6 @@ class ReferralService {
   }
 }
 
-export const referralService = new ReferralService();
+const referralService = new ReferralService();
+export { referralService };
+export default ReferralService;

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { User, Investment, Transaction } from './database.js';
-import { referralService } from './referralService.js';
 import { DasService } from './dasService.js';
+import { referralService } from './referralService.js';
 
 export class InvestmentService {
   
@@ -116,6 +116,14 @@ export class InvestmentService {
   static async processSmartLineIncome(userId, investmentAmount, session = null) {
     try {
       const rewards = await referralService.distributeRewards(userId, investmentAmount);
+      
+      // Check if rewards is valid array
+      if (!rewards || !Array.isArray(rewards)) {
+        console.log(`🔍 SmartLine Debug - No rewards returned for user ${userId}, amount ${investmentAmount}`);
+        return;
+      }
+      
+      console.log(`🔍 SmartLine Debug - Processing ${rewards.length} rewards for user ${userId}`);
       
       // Log SmartLine transactions for each level
       for (const reward of rewards) {
