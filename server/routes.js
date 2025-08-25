@@ -726,6 +726,44 @@ export async function registerRoutes(app) {
     }
   });
 
+  // Debug endpoint to find user children
+  app.get("/api/admin/user/:email/children", authenticateToken, requireAdmin, async (req, res) => {
+    try {
+      const { User } = await import('./database.js');
+      const email = req.params.email;
+      
+      // Find the parent user
+      const parentUser = await User.findOne({ email: email.toLowerCase() });
+      if (!parentUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      // Find all children (users who have this user as parent)
+      const children = await User.find({ parent: parentUser._id })
+        .select('firstName lastName email ownSponsorId totalInvestmentAmount createdAt')
+        .sort({ createdAt: -1 });
+      
+      res.json({
+        parent: {
+          name: `${parentUser.firstName} ${parentUser.lastName}`,
+          email: parentUser.email,
+          sponsorId: parentUser.ownSponsorId,
+          directIncome: parentUser.directIncome || 0
+        },
+        children: children.map(child => ({
+          name: `${child.firstName} ${child.lastName}`,
+          email: child.email,
+          sponsorId: child.ownSponsorId,
+          totalInvestment: child.totalInvestmentAmount || 0,
+          joinedAt: child.createdAt
+        }))
+      });
+    } catch (error) {
+      console.error('Error finding user children:', error);
+      res.status(500).json({ error: "Failed to find user children" });
+    }
+  });
+
   app.get("/api/admin/deposits", authenticateToken, requireAdmin, async (req, res) => {
     try {
       const deposits = await storage.getAllDeposits();
