@@ -147,12 +147,24 @@ export class InvestmentService {
       console.log(`🔍 DRI Debug - Processing: $${driAmount} from ${user.firstName} ${user.lastName} (${userId}) to parent ${user.parent._id}`);
       
       // Add to parent's wallet balance and direct income
-      await User.findByIdAndUpdate(user.parent._id, {
-        $inc: {
-          directIncome: driAmount,
-          walletBalance: driAmount
-        }
-      }, { session });
+      if (session) {
+        await User.findByIdAndUpdate(user.parent._id, {
+          $inc: {
+            directIncome: driAmount,
+            walletBalance: driAmount
+          }
+        }, { session });
+      } else {
+        // Update without session for reliability
+        await User.findByIdAndUpdate(user.parent._id, {
+          $inc: {
+            directIncome: driAmount,
+            walletBalance: driAmount
+          }
+        });
+      }
+      
+      console.log(`💰 DRI Income credited: $${driAmount} added to parent ${user.parent._id} (directIncome field)`);
 
       // Log DRI transaction for parent
       console.log(`💰 Creating DRI transaction: $${driAmount} for parent ${user.parent._id}`);
@@ -213,12 +225,24 @@ export class InvestmentService {
       
       // Log SmartLine transactions for each level
       for (const reward of rewards) {
-        await User.findByIdAndUpdate(reward.userId, {
-          $inc: {
-            smartLineIncome: reward.amount,
-            walletBalance: reward.amount
-          }
-        }, { session });
+        if (session) {
+          await User.findByIdAndUpdate(reward.userId, {
+            $inc: {
+              smartLineIncome: reward.amount,
+              walletBalance: reward.amount
+            }
+          }, { session });
+        } else {
+          // Update without session for reliability
+          await User.findByIdAndUpdate(reward.userId, {
+            $inc: {
+              smartLineIncome: reward.amount,
+              walletBalance: reward.amount
+            }
+          });
+        }
+        
+        console.log(`💰 SmartLine Income credited: $${reward.amount} added to user ${reward.userId} (smartLineIncome field)`);
 
         // Get the referrer's details for better transaction description
         let referrer;
