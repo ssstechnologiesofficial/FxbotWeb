@@ -144,17 +144,41 @@ export class InvestmentService {
       }, { session });
 
       // Log DRI transaction for parent
-      await this.logTransaction(
-        user.parent._id, 
-        'dri_income', 
-        driAmount, 
-        `Direct Income from ${user.firstName} ${user.lastName} investment`,
-        'completed',
-        null,
-        userId,
-        null,
-        session
-      );
+      console.log(`💰 Creating DRI transaction: $${driAmount} for parent ${user.parent._id}`);
+      
+      try {
+        await this.logTransaction(
+          user.parent._id, 
+          'dri_income', 
+          driAmount, 
+          `Direct Income from ${user.firstName} ${user.lastName} investment`,
+          'completed',
+          null,
+          userId,
+          null,
+          session
+        );
+        console.log(`✅ DRI transaction logged successfully for parent ${user.parent._id}`);
+      } catch (txnError) {
+        console.error(`❌ Failed to log DRI transaction:`, txnError);
+        // Try again without session
+        try {
+          await this.logTransaction(
+            user.parent._id, 
+            'dri_income', 
+            driAmount, 
+            `Direct Income from ${user.firstName} ${user.lastName} investment`,
+            'completed',
+            null,
+            userId,
+            null,
+            null
+          );
+          console.log(`✅ DRI transaction logged successfully (without session) for parent ${user.parent._id}`);
+        } catch (retryError) {
+          console.error(`❌ Failed to log DRI transaction even without session:`, retryError);
+        }
+      }
 
       console.log(`✅ DRI Income processed: $${driAmount} to parent ${user.parent._id}`);
 
@@ -186,19 +210,48 @@ export class InvestmentService {
         }, { session });
 
         // Get the referrer's details for better transaction description
-        const referrer = await User.findById(userId).session(session);
+        let referrer;
+        if (session) {
+          referrer = await User.findById(userId).session(session);
+        } else {
+          referrer = await User.findById(userId);
+        }
         
-        await this.logTransaction(
-          reward.userId,
-          'smartline_income',
-          reward.amount,
-          `Level ${reward.level} SmartLine Income (${(reward.rate * 100).toFixed(2)}%) from ${referrer.firstName} ${referrer.lastName} - Deposit: $${investmentAmount}`,
-          'completed',
-          null,
-          userId,
-          reward.level,
-          session
-        );
+        console.log(`💰 Creating SmartLine transaction: $${reward.amount} for user ${reward.userId}, Level ${reward.level}`);
+        
+        try {
+          await this.logTransaction(
+            reward.userId,
+            'smartline_income',
+            reward.amount,
+            `Level ${reward.level} SmartLine Income (${(reward.rate * 100).toFixed(2)}%) from ${referrer.firstName} ${referrer.lastName} - Deposit: $${investmentAmount}`,
+            'completed',
+            null,
+            userId,
+            reward.level,
+            session
+          );
+          console.log(`✅ SmartLine transaction logged successfully for user ${reward.userId}`);
+        } catch (txnError) {
+          console.error(`❌ Failed to log SmartLine transaction for user ${reward.userId}:`, txnError);
+          // Try again without session
+          try {
+            await this.logTransaction(
+              reward.userId,
+              'smartline_income',
+              reward.amount,
+              `Level ${reward.level} SmartLine Income (${(reward.rate * 100).toFixed(2)}%) from ${referrer.firstName} ${referrer.lastName} - Deposit: $${investmentAmount}`,
+              'completed',
+              null,
+              userId,
+              reward.level,
+              null
+            );
+            console.log(`✅ SmartLine transaction logged successfully (without session) for user ${reward.userId}`);
+          } catch (retryError) {
+            console.error(`❌ Failed to log SmartLine transaction even without session:`, retryError);
+          }
+        }
       }
 
       console.log(`SmartLine Income distributed for investment: ${investmentAmount}`);
