@@ -18,12 +18,18 @@ export default function Profile() {
 
         // Use optimized combined endpoint for real-time referral data
         const dashboardResponse = await axios.get('/api/dashboard/data', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache'
+          }
         });
-        setUser({
-          ...dashboardResponse.data.user,
-          referralCount: dashboardResponse.data.referrals.referralCount // Real-time count
-        });
+        
+        if (dashboardResponse.data && dashboardResponse.data.user) {
+          setUser({
+            ...dashboardResponse.data.user,
+            referralCount: dashboardResponse.data.referrals?.referralCount || 0 // Real-time count with fallback
+          });
+        }
       } catch (error) {
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
@@ -72,12 +78,18 @@ export default function Profile() {
 
         // Refresh user data with real-time referral count
         const dashboardResponse = await axios.get('/api/dashboard/data', { 
-          headers: { Authorization: `Bearer ${token}` } 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache'
+          } 
         });
-        setUser({
-          ...dashboardResponse.data.user,
-          referralCount: dashboardResponse.data.referrals.referralCount
-        });
+        
+        if (dashboardResponse.data && dashboardResponse.data.user) {
+          setUser({
+            ...dashboardResponse.data.user,
+            referralCount: dashboardResponse.data.referrals?.referralCount || 0
+          });
+        }
         
         alert('KYC document submitted successfully! It will be reviewed within 24 hours.');
       } catch (error) {

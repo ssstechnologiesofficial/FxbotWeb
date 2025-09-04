@@ -105,7 +105,8 @@ class MongoStorage {
   }
 
   async getUserById(id) {
-    return await User.findById(id).select('-password').lean();
+    const user = await User.findById(id).select('-password');
+    return user ? user.toObject() : null; // Convert to plain object without .lean() issues
   }
 
   async updateUser(userId, updates) {
@@ -123,8 +124,8 @@ class MongoStorage {
   }
 
   async getUserReferrals(userId) {
-    const user = await User.findById(userId).populate('children', 'firstName lastName email createdAt').lean();
-    return user ? user.children : [];
+    const user = await User.findById(userId).populate('children', 'firstName lastName email createdAt');
+    return user && user.children ? user.children : [];
   }
 
   // Deposit methods

@@ -18,11 +18,16 @@ export default function ReferralTree() {
 
         // Use optimized combined endpoint for real-time referral data
         const dashboardResponse = await axios.get('/api/dashboard/data', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache'
+          }
         });
 
-        setUser(dashboardResponse.data.user);
-        setReferralData(dashboardResponse.data.referrals); // Real-time referral data
+        if (dashboardResponse.data) {
+          setUser(dashboardResponse.data.user);
+          setReferralData(dashboardResponse.data.referrals); // Real-time referral data
+        }
       } catch (error) {
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
