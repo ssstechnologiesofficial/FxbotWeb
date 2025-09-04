@@ -1,4 +1,3 @@
-import AffiliateCalculator from './AffiliateCalculator';
 
 export default function InvestmentPackages() {
   const packages = [
@@ -172,8 +171,6 @@ export default function InvestmentPackages() {
           </div>
         </div>
 
-        {/* Affiliate Income Calculator */}
-        <AffiliateCalculator />
       </div>
     </section>
   );

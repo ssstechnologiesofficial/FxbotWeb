@@ -1,4 +1,3 @@
-import ROICalculator from './ROICalculator';
 import { Link } from 'wouter';
 
 export default function HeroSection() {
@@ -45,9 +44,6 @@ export default function HeroSection() {
             </div>
           </div>
           
-          <div className="flex justify-center animate-slideIn">
-            <ROICalculator />
-          </div>
         </div>
       </div>
     </section>
