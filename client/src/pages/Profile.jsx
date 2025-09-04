@@ -16,10 +16,14 @@ export default function Profile() {
           return;
         }
 
-        const userResponse = await axios.get('/api/auth/me', {
+        // Use optimized combined endpoint for real-time referral data
+        const dashboardResponse = await axios.get('/api/dashboard/data', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setUser(userResponse.data);
+        setUser({
+          ...dashboardResponse.data.user,
+          referralCount: dashboardResponse.data.referrals.referralCount // Real-time count
+        });
       } catch (error) {
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
@@ -66,11 +70,14 @@ export default function Profile() {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        // Refresh user data
-        const userResponse = await axios.get('/api/auth/me', { 
+        // Refresh user data with real-time referral count
+        const dashboardResponse = await axios.get('/api/dashboard/data', { 
           headers: { Authorization: `Bearer ${token}` } 
         });
-        setUser(userResponse.data);
+        setUser({
+          ...dashboardResponse.data.user,
+          referralCount: dashboardResponse.data.referrals.referralCount
+        });
         
         alert('KYC document submitted successfully! It will be reviewed within 24 hours.');
       } catch (error) {

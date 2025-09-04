@@ -16,13 +16,13 @@ export default function ReferralTree() {
           return;
         }
 
-        const [userResponse, referralResponse] = await Promise.all([
-          axios.get('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('/api/user/referrals', { headers: { Authorization: `Bearer ${token}` } })
-        ]);
+        // Use optimized combined endpoint for real-time referral data
+        const dashboardResponse = await axios.get('/api/dashboard/data', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
-        setUser(userResponse.data);
-        setReferralData(referralResponse.data);
+        setUser(dashboardResponse.data.user);
+        setReferralData(dashboardResponse.data.referrals); // Real-time referral data
       } catch (error) {
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
