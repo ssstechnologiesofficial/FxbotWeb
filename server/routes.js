@@ -321,6 +321,7 @@ export async function registerRoutes(app) {
     }
   });
 
+
   // Debug endpoint to check user income breakdown (open for testing)
   app.get("/api/debug/income-breakdown/:email", async (req, res) => {
     try {
