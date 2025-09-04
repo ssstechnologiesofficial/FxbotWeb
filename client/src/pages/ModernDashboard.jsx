@@ -16,26 +16,26 @@ function ModernDashboard() {
   const [user, setUser] = useState(null);
   const [referralData, setReferralData] = useState(null);
 
-  // Fetch user data
-  const { data: userData, isLoading: userLoading, error: userError } = useQuery({
+  // Single combined API call for all dashboard data - major performance improvement!
+  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError, refetch: refetchDashboard } = useQuery({
+    queryKey: ['/api/dashboard/data'],
+    retry: false,
+    staleTime: 0, // Always fetch fresh data for accurate referral counts
+    cacheTime: 0,
+    refetchOnWindowFocus: true
+  });
+
+  // Extract data from combined response
+  const userData = dashboardData?.user;
+  const referrals = dashboardData?.referrals;
+  const investmentSummary = dashboardData?.investmentSummary;
+
+  // Legacy fallback queries (kept for other components that might still use them)
+  const { data: legacyUserData, isLoading: userLoading, error: userError } = useQuery({
     queryKey: ['/api/auth/me'],
     retry: false,
-  });
-
-  // Fetch referral data
-  const { data: referrals, isLoading: referralsLoading, error: referralsError } = useQuery({
-    queryKey: ['/api/user/referrals'],
-    retry: false,
-    enabled: !!userData
-  });
-
-  // Fetch investment summary
-  const { data: investmentSummary, refetch: refetchInvestment } = useQuery({
-    queryKey: ['/api/user/investment-summary'],
-    retry: false,
-    enabled: !!userData,
-    staleTime: 0,
-    cacheTime: 0
+    enabled: false, // Disabled since we get user data from dashboard endpoint
+    staleTime: 30000,
   });
 
   useEffect(() => {
@@ -62,15 +62,15 @@ function ModernDashboard() {
   };
 
   // Handle authentication errors
-  if (userError) {
-    if (userError.message.includes('401')) {
+  if (dashboardError || userError) {
+    if (dashboardError?.message.includes('401') || userError?.message.includes('401')) {
       window.location.href = '/login';
       return null;
     }
   }
 
   // Show loading state
-  if (userLoading || (!user && !userError)) {
+  if (dashboardLoading || (!user && !dashboardError && !userError)) {
     return (
       <div style={{ 
         display: 'flex', 

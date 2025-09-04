@@ -243,24 +243,78 @@ export async function registerRoutes(app) {
     }
   });
 
-  // Get user referral information
-  app.get("/api/user/referrals", authenticateToken, async (req, res) => {
+  // Combined dashboard data endpoint for better performance
+  app.get("/api/dashboard/data", authenticateToken, async (req, res) => {
     try {
-      const user = await storage.getUserById(req.userId);
+      // Add aggressive no-cache headers for real-time data
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+
+      // Parallel execution of all dashboard data
+      const [user, children, investmentSummary, referralStatsPromise] = await Promise.all([
+        storage.getUserById(req.userId),
+        storage.getUserReferrals(req.userId),
+        InvestmentService.getUserInvestmentSummary(req.userId),
+        import('./referralService.js').then(({ referralService }) => referralService.getReferralStats(req.userId))
+      ]);
+
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // Get children (referred users)
-      const children = await storage.getUserReferrals(req.userId);
+      const referralStats = await referralStatsPromise;
       
-      // Get detailed referral statistics
-      const { referralService } = await import('./referralService.js');
-      const referralStats = await referralService.getReferralStats(req.userId);
+      // Return all dashboard data in one response
+      res.json({
+        user,
+        referrals: {
+          ownSponsorId: user.ownSponsorId,
+          referralCount: children.length, // Real-time count from database
+          children: children.map(child => ({
+            id: child._id,
+            name: `${child.firstName} ${child.lastName}`,
+            email: child.email,
+            registeredAt: child.createdAt
+          })),
+          stats: referralStats
+        },
+        investmentSummary
+      });
+    } catch (error) {
+      console.error('Dashboard data API error:', error);
+      res.status(500).json({ error: "Failed to get dashboard data" });
+    }
+  });
+
+  // Get user referral information
+  app.get("/api/user/referrals", authenticateToken, async (req, res) => {
+    try {
+      // Add aggressive no-cache headers for real-time data
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+
+      // Parallel execution for better performance
+      const [user, children, referralStatsPromise] = await Promise.all([
+        storage.getUserById(req.userId),
+        storage.getUserReferrals(req.userId),
+        import('./referralService.js').then(({ referralService }) => referralService.getReferralStats(req.userId))
+      ]);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const referralStats = await referralStatsPromise;
       
       res.json({
         ownSponsorId: user.ownSponsorId,
-        referralCount: user.referralCount || 0,
+        referralCount: children.length, // Use actual children count from database
         children: children.map(child => ({
           id: child._id,
           name: `${child.firstName} ${child.lastName}`,
@@ -270,6 +324,7 @@ export async function registerRoutes(app) {
         stats: referralStats
       });
     } catch (error) {
+      console.error('Referrals API error:', error);
       res.status(500).json({ error: "Failed to get referral information" });
     }
   });
