@@ -263,11 +263,8 @@ function ModernDashboard() {
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: '1fr 400px', 
-          gap: '2rem',
-          '@media (max-width: 1024px)': {
-            gridTemplateColumns: '1fr'
-          }
-        }}>
+          gap: '2rem'
+        }} className="dashboard-grid">
           {/* Referral Program Card */}
           <div style={{
             backgroundColor: 'white',
