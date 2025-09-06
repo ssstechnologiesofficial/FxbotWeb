@@ -30,11 +30,11 @@ export class InvestmentService {
         
         await investment.save({ session });
 
-        // Update user's total investment amount
+        // Update user's total investment volume (for DAS tracking only)
+        // Note: totalInvestmentAmount is updated in routes.js during deposit approval
         await User.findByIdAndUpdate(userId, {
           $inc: { 
-            totalInvestmentAmount: amount,
-            totalInvestmentVolume: amount // For DAS tracking
+            totalInvestmentVolume: amount // For DAS tracking only
           }
         }, { session });
 
