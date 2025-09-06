@@ -129,13 +129,13 @@ class ReferralService {
   }
 
   // Get referral tree for a user (limited depth for performance)
-  async getReferralTree(userId, maxDepth = 3) {
+  async getReferralTree(userId, maxDepth = 5) {
     try {
       const buildTree = async (parentId, currentDepth) => {
         if (currentDepth > maxDepth) return [];
         
         const children = await User.find({ parent: parentId })
-          .select('firstName lastName email ownSponsorId createdAt level1Count level2Count level3Count level4Count level5Count')
+          .select('firstName lastName email mobile ownSponsorId createdAt level1Count level2Count level3Count level4Count level5Count')
           .lean();
 
         const tree = [];

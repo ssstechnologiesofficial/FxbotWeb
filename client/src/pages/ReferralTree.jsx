@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 export default function ReferralTree() {
   const [user, setUser] = useState(null);
   const [referralData, setReferralData] = useState(null);
+  const [referralTree, setReferralTree] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,16 +18,28 @@ export default function ReferralTree() {
         }
 
         // Use optimized combined endpoint for real-time referral data
-        const dashboardResponse = await axios.get('/api/dashboard/data', {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Cache-Control': 'no-cache'
-          }
-        });
+        const [dashboardResponse, treeResponse] = await Promise.all([
+          axios.get('/api/dashboard/data', {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache'
+            }
+          }),
+          axios.get('/api/user/referral-tree', {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache'
+            }
+          })
+        ]);
 
         if (dashboardResponse.data) {
           setUser(dashboardResponse.data.user);
           setReferralData(dashboardResponse.data.referrals); // Real-time referral data
+        }
+
+        if (treeResponse.data) {
+          setReferralTree(treeResponse.data); // Detailed tree data
         }
       } catch (error) {
         if (error.response?.status === 401) {
@@ -46,6 +59,58 @@ export default function ReferralTree() {
     localStorage.removeItem('user');
     window.location.href = '/';
   };
+
+  // Helper function to organize tree data by levels
+  const organizeTreeByLevels = (tree) => {
+    const levels = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    
+    const traverse = (nodes, currentLevel) => {
+      if (currentLevel > 5) return;
+      
+      nodes.forEach(node => {
+        if (levels[currentLevel]) {
+          levels[currentLevel].push({
+            ...node,
+            level: currentLevel
+          });
+        }
+        
+        if (node.children && node.children.length > 0) {
+          traverse(node.children, currentLevel + 1);
+        }
+      });
+    };
+    
+    if (tree && tree.length > 0) {
+      traverse(tree, 1);
+    }
+    
+    return levels;
+  };
+
+  // Helper function to render user card with details
+  const renderUserCard = (user, level) => (
+    <div key={`${user._id}-${level}`} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg">
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center">
+          <span className="text-white font-semibold text-xs">
+            {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+          </span>
+        </div>
+        <div>
+          <h4 className="font-medium text-slate-900 text-sm">{user.firstName} {user.lastName}</h4>
+          <p className="text-xs text-slate-600">{user.email}</p>
+          <p className="text-xs text-slate-500">Mobile: {user.mobile || 'N/A'}</p>
+        </div>
+      </div>
+      <div className="text-right">
+        <p className="text-xs font-medium text-slate-700">ID: {user.ownSponsorId}</p>
+        <p className="text-xs text-slate-500">
+          Joined: {new Date(user.createdAt).toLocaleDateString()}
+        </p>
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -145,7 +210,7 @@ export default function ReferralTree() {
               </div>
             </div>
 
-            {/* 5-Level Commission Structure */}
+            {/* 5-Level Commission Structure with Detailed Users */}
             <div className="bg-white rounded-lg p-6 shadow-sm border border-slate-200">
               <div className="flex items-center mb-6">
                 <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
@@ -156,7 +221,8 @@ export default function ReferralTree() {
                 <h2 className="text-xl font-semibold text-slate-800 ml-3">5-Level Commission Structure</h2>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {/* Level Summary Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
                 {[1, 2, 3, 4, 5].map(level => {
                   const count = referralData?.[`level${level}Count`] || 0;
                   const earnings = referralData?.[`level${level}Earnings`] || 0;
@@ -178,6 +244,47 @@ export default function ReferralTree() {
                   );
                 })}
               </div>
+
+              {/* Detailed User Listings by Level */}
+              {(() => {
+                const levelData = organizeTreeByLevels(referralTree);
+                
+                return [1, 2, 3, 4, 5].map(level => {
+                  const users = levelData[level] || [];
+                  const commission = level === 1 ? '1.5%' : level === 2 ? '1.0%' : level === 3 ? '0.75%' : level === 4 ? '0.5%' : '0.25%';
+                  
+                  if (users.length === 0) return null;
+                  
+                  return (
+                    <div key={`level-detail-${level}`} className="mb-6 last:mb-0">
+                      <div className="flex items-center mb-4">
+                        <div className="w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-semibold text-white">{level}</span>
+                        </div>
+                        <h3 className="text-lg font-semibold text-slate-800 ml-3">
+                          Level {level} - {commission} Commission ({users.length} {users.length === 1 ? 'user' : 'users'})
+                        </h3>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {users.map(user => renderUserCard(user, level))}
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+              
+              {!referralTree || referralTree.length === 0 && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 11-6 0 3 3 0 0 1 6 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-slate-900 mb-2">No Referral Network Yet</h3>
+                  <p className="text-slate-600">Start building your network by sharing your sponsor ID!</p>
+                </div>
+              )}
             </div>
 
             {/* Direct Referrals List */}
