@@ -109,6 +109,11 @@ class MongoStorage {
     return user ? user.toObject() : null; // Convert to plain object without .lean() issues
   }
 
+  async getUserWithParent(id) {
+    const user = await User.findById(id).select('-password').populate('parent', 'ownSponsorId firstName lastName');
+    return user ? user.toObject() : null;
+  }
+
   async updateUser(userId, updates) {
     return await User.findByIdAndUpdate(userId, { ...updates, updatedAt: new Date() }, { new: true });
   }

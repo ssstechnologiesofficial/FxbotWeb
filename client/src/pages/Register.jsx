@@ -1,11 +1,17 @@
-import { useState } from 'react';
-import { Link } from 'wouter';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'wouter';
 import axios from 'axios';
 import '../styles/login.css';
 
 export default function Register() {
+  const [location] = useLocation();
+  
+  // Extract sponsor ID from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const sponsorFromUrl = urlParams.get('sponsor') || '';
+  
   const [formData, setFormData] = useState({
-    sponsorId: '',
+    sponsorId: sponsorFromUrl, // Pre-fill sponsor ID from URL
     firstName: '',
     lastName: '',
     mobile: '',

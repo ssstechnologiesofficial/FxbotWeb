@@ -56,9 +56,11 @@ function ModernDashboard() {
     window.location.href = '/login';
   };
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    alert('Sponsor ID copied to clipboard!');
+  const copyToClipboard = (sponsorId) => {
+    // Generate shareable link with sponsor ID pre-filled
+    const shareableLink = `${window.location.origin}/register?sponsor=${sponsorId}`;
+    navigator.clipboard.writeText(shareableLink);
+    alert('Referral link copied to clipboard! Share this link to earn commissions.');
   };
 
   // Handle authentication errors
@@ -339,7 +341,7 @@ function ModernDashboard() {
                     fontSize: '0.75rem',
                     margin: 0
                   }}>
-                    Share this ID to earn commissions
+                    Share this link to earn commissions
                   </p>
                 </div>
                 <button
@@ -365,7 +367,7 @@ function ModernDashboard() {
                   }}
                 >
                   <Copy style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
-                  Copy ID
+                  Copy Link
                 </button>
               </div>
             </div>

@@ -143,7 +143,7 @@ export default function Profile() {
                   <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
                     Active User
                   </div>
-                  <p className="text-sm text-slate-500 mt-2">ID: {user?.ownSponsorId}</p>
+                  <p className="text-sm text-slate-500 mt-2">ID: {user?.parent?.ownSponsorId || 'Direct signup'}</p>
                 </div>
               </div>
             </div>

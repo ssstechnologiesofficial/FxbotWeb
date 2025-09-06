@@ -255,7 +255,7 @@ export async function registerRoutes(app) {
 
       // Parallel execution of all dashboard data
       const [user, children, investmentSummary, referralStatsPromise] = await Promise.all([
-        storage.getUserById(req.userId),
+        storage.getUserWithParent(req.userId), // Get user with parent data
         storage.getUserReferrals(req.userId),
         InvestmentService.getUserInvestmentSummary(req.userId),
         import('./referralService.js').then(({ referralService }) => referralService.getReferralStats(req.userId))
