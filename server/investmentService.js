@@ -284,9 +284,20 @@ export class InvestmentService {
     }
   }
 
-  // Daily FS Income distribution (called by scheduler at 11:59pm IST)
+  // Daily FS Income distribution (called by scheduler at 11:59pm IST on weekdays only)
   static async distributeDailyFSIncome() {
     try {
+      // Check if today is a weekday (Monday = 1, Friday = 5)
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        console.log(`⏭️ Skipping FS Income distribution - Today is ${today.toLocaleDateString('en-US', { weekday: 'long' })} (weekend)`);
+        return;
+      }
+
+      console.log(`💰 Processing FS Income distribution for ${today.toLocaleDateString('en-US', { weekday: 'long' })} ${today.toLocaleDateString()}`);
+
       // Find active investments (each deposit is a separate investment)
       const activeInvestments = await Investment.find({ 
         status: 'active',
@@ -297,8 +308,8 @@ export class InvestmentService {
       let creditsGiven = 0;
 
       for (const investment of activeInvestments) {
-        // Calculate daily FS Income: 10% monthly ÷ 30 days = 0.333% daily
-        const dailyAmount = (investment.amount * 0.10) / 30; // 10% monthly ÷ 30 days
+        // Calculate daily FS Income: 6% monthly ÷ 22 weekdays = 0.002727% daily
+        const dailyAmount = investment.amount * 0.002727; // 6% monthly ÷ 22 weekdays
         
         if (investment.remainingReturns >= dailyAmount) {
           // Update investment remaining returns
