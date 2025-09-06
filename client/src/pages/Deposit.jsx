@@ -86,9 +86,7 @@ export default function Deposit() {
 
   const handleAmountChange = (event) => {
     const value = parseInt(event.target.value);
-    if (value >= 250 && value % 250 === 0) {
-      setDepositAmount(value);
-    }
+    setDepositAmount(value);
   };
 
   const handleSubmit = async (event) => {
@@ -138,10 +136,10 @@ export default function Deposit() {
 
   const generateAmountOptions = () => {
     const options = [];
-    for (let i = 250; i <= 100000; i += 100000) {
+    for (let i = 250; i <= 100000; i += 250) {
       options.push(
         <option key={i} value={i}>
-          ${i}
+          ${i.toLocaleString()}
         </option>
       );
     }
