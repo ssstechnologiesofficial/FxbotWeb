@@ -3,7 +3,7 @@ import { Copy, Upload, CheckCircle, DollarSign, Wallet, QrCode } from 'lucide-re
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { ObjectUploader } from '../components/ObjectUploader';
-const qrCodeImage = '/QR_1755789504506.jpeg';
+import qrCodeImage from '@assets/QR_1755789504506.jpeg';
 
 export default function Deposit() {
   const [user, setUser] = useState(null);
@@ -12,6 +12,8 @@ export default function Deposit() {
   const [uploadedScreenshotUrl, setUploadedScreenshotUrl] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [qrImageLoaded, setQrImageLoaded] = useState(false);
+  const [qrImageError, setQrImageError] = useState(false);
 
   const walletAddress = "TDdjYG9Jhz1G68AzgZqWFL75iEbsRD1FSH";
   const walletType = "TRC";
@@ -491,8 +493,48 @@ export default function Deposit() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minHeight: '200px'
+              minHeight: '240px',
+              position: 'relative'
             }}>
+              {!qrImageLoaded && !qrImageError && (
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  color: '#6b7280'
+                }}>
+                  <div style={{
+                    width: '2rem',
+                    height: '2rem',
+                    border: '2px solid #e5e7eb',
+                    borderTop: '2px solid #3b82f6',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  <span style={{ fontSize: '0.875rem' }}>Loading QR Code...</span>
+                </div>
+              )}
+              
+              {qrImageError && (
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  color: '#ef4444',
+                  textAlign: 'center'
+                }}>
+                  <QrCode style={{ width: '3rem', height: '3rem' }} />
+                  <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
+                    QR Code temporarily unavailable
+                  </span>
+                  <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                    Please use the wallet address above
+                  </span>
+                </div>
+              )}
+
               <img 
                 src={qrCodeImage} 
                 alt="USDT TRC-20 Wallet QR Code" 
@@ -501,7 +543,17 @@ export default function Deposit() {
                   maxHeight: '200px', 
                   width: 'auto', 
                   height: 'auto',
-                  borderRadius: '0.5rem'
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  display: qrImageLoaded ? 'block' : 'none'
+                }}
+                onLoad={() => {
+                  setQrImageLoaded(true);
+                  setQrImageError(false);
+                }}
+                onError={() => {
+                  setQrImageLoaded(false);
+                  setQrImageError(true);
                 }}
                 data-testid="img-qr-code"
               />
