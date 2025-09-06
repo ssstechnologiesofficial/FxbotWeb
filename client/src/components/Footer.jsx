@@ -38,8 +38,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 footer-grid">
           <div className="footer-main">
             <div className="flex items-center mb-6">
-              <img src="/logo.png" alt="FXBOT Logo" style={{ height: '2rem', width: 'auto', marginRight: '0.75rem' }} />
-              <span className="text-2xl font-bold text-gold">FXBOT</span>
+              <img src="/logo.png" alt="FXBOT Logo" style={{ height: '12rem', width: 'auto', marginRight: '0.75rem' }} />
             </div>
             <p className="text-secondary mb-6" style={{ lineHeight: '1.6' }}>
               Professional Forex investment solutions provider dedicated to delivering consistent returns through advanced market analytics and experienced fund management.
@@ -104,7 +103,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-600 mt-12 pt-8 text-center">
           <p className="text-gray-400">
-            © 2024 FXBOT. All rights reserved. | Registered in St. Vincent & the Grenadines (HE-543752)
+            © 2025 FXBOT. All rights reserved. | Registered in St. Vincent & the Grenadines (HE-543752)
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Risk Warning: Trading Forex involves substantial risk and may not be suitable for all investors.

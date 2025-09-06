@@ -138,7 +138,7 @@ export default function Deposit() {
 
   const generateAmountOptions = () => {
     const options = [];
-    for (let i = 250; i <= 2500; i += 250) {
+    for (let i = 250; i <= 100000; i += 100000) {
       options.push(
         <option key={i} value={i}>
           ${i}

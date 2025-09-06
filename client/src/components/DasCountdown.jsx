@@ -52,6 +52,39 @@ export default function DasCountdown({ userId }) {
     }
   };
 
+  const handleEnrollment = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch('/api/das/enroll', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('DAS enrollment successful:', data.message);
+        
+        // Refresh countdown data to show enrolled state
+        await fetchCountdownData();
+      } else {
+        const errorData = await response.json();
+        console.error('DAS enrollment failed:', errorData.error);
+        alert('Failed to enroll in DAS program. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error enrolling in DAS:', error);
+      alert('Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const updateTimeLeft = () => {
     if (!countdownData?.isEnrolled || !countdownData.startDate) return;
 
@@ -144,9 +177,38 @@ export default function DasCountdown({ userId }) {
         <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', margin: '0 0 0.5rem 0' }}>
           DAS Program Not Active
         </h3>
-        <p style={{ color: '#6b7280', margin: 0 }}>
+        <p style={{ color: '#6b7280', margin: '0 0 1.5rem 0' }}>
           Enroll in the DAS program to start earning monthly rewards.
         </p>
+        <button
+          onClick={handleEnrollment}
+          disabled={loading}
+          style={{
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.5rem',
+            padding: '0.75rem 1.5rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.6 : 1,
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) {
+              e.target.style.backgroundColor = '#2563eb';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!loading) {
+              e.target.style.backgroundColor = '#3b82f6';
+            }
+          }}
+          data-testid="button-enroll-das"
+        >
+          {loading ? 'Enrolling...' : 'Enroll Now'}
+        </button>
       </div>
     );
   }

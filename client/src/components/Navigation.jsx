@@ -33,8 +33,7 @@ export default function Navigation() {
       <div className="container">
         <div className="flex items-center justify-between" style={{ height: '4rem' }}>
           <div className="flex items-center">
-            <img src="/logo.png" alt="FXBOT Logo" style={{ height: '2.5rem', width: 'auto' }} />
-            <span className="text-xl font-bold text-gold" style={{ marginLeft: '0.75rem' }}>FXBOT</span>
+            <img src="/logo.png" alt="FXBOT Logo" style={{ height: '6rem', width: 'auto' }} />
           </div>
           
           {/* Desktop Navigation */}
