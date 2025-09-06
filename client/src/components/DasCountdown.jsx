@@ -1,6 +1,32 @@
 import { useState, useEffect } from 'react';
 import { Clock, Target, DollarSign, Users, TrendingUp } from 'lucide-react';
 
+// Add CSS animation styles
+const pulseKeyframes = `
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    }
+  }
+`;
+
+// Insert CSS into document head if not already present
+if (typeof document !== 'undefined' && !document.querySelector('#das-pulse-animation')) {
+  const style = document.createElement('style');
+  style.id = 'das-pulse-animation';
+  style.textContent = pulseKeyframes;
+  document.head.appendChild(style);
+}
+
 export default function DasCountdown({ userId }) {
   const [countdownData, setCountdownData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +101,7 @@ export default function DasCountdown({ userId }) {
       } else {
         const errorData = await response.json();
         console.error('DAS enrollment failed:', errorData.error);
-        alert('Failed to enroll in DAS program. Please try again.');
+        alert(errorData.error || 'Failed to enroll in DAS program. Please try again.');
       }
     } catch (error) {
       console.error('Error enrolling in DAS:', error);
@@ -103,7 +129,13 @@ export default function DasCountdown({ userId }) {
 
   const getTaskStatus = (task, daysRemaining) => {
     if (task.isCompleted) return 'completed';
-    if (daysRemaining <= 0) return 'expired';
+    
+    // Check if task has expired based on its specific deadline
+    const taskDeadlines = { 1: 30, 2: 60, 3: 90 };
+    const taskDeadline = taskDeadlines[task.taskNumber];
+    const daysElapsed = 90 - daysRemaining; // Days since enrollment
+    
+    if (daysElapsed > taskDeadline) return 'expired';
     return 'in-progress';
   };
 
@@ -146,6 +178,58 @@ export default function DasCountdown({ userId }) {
         </span>
       );
     }
+  };
+
+  // Achievement Badge Component
+  const getAchievementBadge = (taskNumber, isCompleted) => {
+    if (!isCompleted) return null;
+    
+    const badgeConfigs = {
+      1: { 
+        icon: '🏆', 
+        title: 'Bronze Achiever',
+        gradient: 'linear-gradient(135deg, #CD7F32, #E6B077)',
+        shadowColor: 'rgba(205, 127, 50, 0.3)'
+      },
+      2: { 
+        icon: '⭐', 
+        title: 'Silver Achiever',
+        gradient: 'linear-gradient(135deg, #C0C0C0, #E8E8E8)',
+        shadowColor: 'rgba(192, 192, 192, 0.4)'
+      },
+      3: { 
+        icon: '👑', 
+        title: 'Gold Achiever',
+        gradient: 'linear-gradient(135deg, #FFD700, #FFF700)',
+        shadowColor: 'rgba(255, 215, 0, 0.4)'
+      }
+    };
+
+    const config = badgeConfigs[taskNumber];
+    
+    return (
+      <div style={{
+        position: 'absolute',
+        top: '-8px',
+        right: '-8px',
+        width: '48px',
+        height: '48px',
+        background: config.gradient,
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: `0 4px 12px ${config.shadowColor}`,
+        border: '2px solid white',
+        fontSize: '18px',
+        animation: 'pulse 2s infinite',
+        zIndex: 10
+      }}
+      title={`${config.title} - Task ${taskNumber} Completed!`}
+      >
+        {config.icon}
+      </div>
+    );
   };
 
   if (loading) {
@@ -292,16 +376,27 @@ export default function DasCountdown({ userId }) {
             
             return (
               <div key={index} style={{
+                position: 'relative',
                 padding: '1.5rem',
                 borderRadius: '0.75rem',
                 border: '2px solid',
                 borderColor: status === 'completed' ? '#22c55e' : status === 'expired' ? '#ef4444' : '#e5e7eb',
-                backgroundColor: status === 'completed' ? '#f0fdf4' : status === 'expired' ? '#fef2f2' : '#ffffff',
-                transition: 'all 0.3s ease'
+                backgroundColor: status === 'completed' ? '#f0fdf4' : status === 'expired' ? '#f5f5f5' : '#ffffff',
+                transition: 'all 0.3s ease',
+                opacity: status === 'expired' ? 0.5 : 1,
+                filter: status === 'expired' ? 'grayscale(50%)' : 'none'
               }}>
+                {/* Achievement Badge */}
+                {getAchievementBadge(task.taskNumber, task.isCompleted)}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>
-                    Task {task.taskNumber}
+                  <h3 style={{ 
+                    fontSize: '1.125rem', 
+                    fontWeight: 'bold', 
+                    color: status === 'expired' ? '#9ca3af' : '#111827', 
+                    margin: 0,
+                    textDecoration: status === 'expired' ? 'line-through' : 'none'
+                  }}>
+                    Task {task.taskNumber} {status === 'expired' && '(EXPIRED)'}
                   </h3>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <DollarSign style={{ width: '1rem', height: '1rem', color: '#f59e0b' }} />

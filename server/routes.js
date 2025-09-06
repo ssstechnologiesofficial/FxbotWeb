@@ -1288,10 +1288,10 @@ export async function registerRoutes(app) {
       const { userId } = req.body;
       const result = await DasService.enrollUserInDas(userId);
       
-      if (result) {
-        res.json({ success: true, message: "Successfully enrolled in DAS program" });
+      if (result.success) {
+        res.json({ success: true, message: result.message });
       } else {
-        res.status(400).json({ error: "Failed to enroll in DAS program" });
+        res.status(400).json({ error: result.error });
       }
     } catch (error) {
       console.error("DAS enrollment error:", error);

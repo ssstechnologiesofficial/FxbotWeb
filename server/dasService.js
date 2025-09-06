@@ -31,6 +31,28 @@ export class DasService {
   // Enroll user in DAS program
   static async enrollUserInDas(userId) {
     try {
+      // Validate user has made an investment before enrollment
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Check if user has any approved investments
+      const { Investment } = await import('./database.js');
+      const userInvestments = await Investment.find({ 
+        userId: userId, 
+        status: 'active' 
+      });
+
+      if (userInvestments.length === 0) {
+        throw new Error('Investment required: You must make an investment before enrolling in the DAS program');
+      }
+
+      // Check if user already enrolled
+      if (user.isEnrolledInDas) {
+        return { success: false, error: 'User already enrolled in DAS program' };
+      }
+
       const now = new Date();
       
       const result = await User.findByIdAndUpdate(userId, {
@@ -41,12 +63,12 @@ export class DasService {
 
       if (result) {
         console.log(`User ${userId} enrolled in DAS program successfully`);
-        return true;
+        return { success: true, message: 'Successfully enrolled in DAS program' };
       }
-      return false;
+      return { success: false, error: 'Failed to update user enrollment status' };
     } catch (error) {
       console.error('Error enrolling user in DAS:', error);
-      return false;
+      return { success: false, error: error.message || 'Failed to enroll in DAS program' };
     }
   }
 
