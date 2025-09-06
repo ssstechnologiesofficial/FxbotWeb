@@ -297,8 +297,8 @@ export class InvestmentService {
       let creditsGiven = 0;
 
       for (const investment of activeInvestments) {
-        // Calculate daily FS Income: 6% monthly = 0.002727% daily
-        const dailyAmount = investment.amount * 0.002727; // 6% monthly / 22 days
+        // Calculate daily FS Income: 10% monthly ÷ 30 days = 0.333% daily
+        const dailyAmount = (investment.amount * 0.10) / 30; // 10% monthly ÷ 30 days
         
         if (investment.remainingReturns >= dailyAmount) {
           // Update investment remaining returns
