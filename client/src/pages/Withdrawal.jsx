@@ -267,7 +267,8 @@ export default function Withdrawal() {
                       padding: '0.75rem',
                       border: errors.amount ? '1px solid #ef4444' : '1px solid #d1d5db',
                       borderRadius: '0.375rem',
-                      fontSize: '1rem'
+                      fontSize: '1rem',
+                      color: '#000000'
                     }}
                     placeholder="Enter amount to withdraw"
                   />
@@ -298,12 +299,14 @@ export default function Withdrawal() {
                       padding: '0.75rem',
                       border: '1px solid #d1d5db',
                       borderRadius: '0.375rem',
-                      fontSize: '1rem'
+                      fontSize: '1rem',
+                      color:'#000000'
+                      
                     }}
                   >
                     <option value="USDT TRC-20">USDT TRC-20</option>
-                    <option value="USDT ERC-20">USDT ERC-20</option>
-                    <option value="Bitcoin">Bitcoin</option>
+                    {/*<option value="USDT ERC-20">USDT ERC-20</option>
+                    <option value="Bitcoin">Bitcoin</option>*/}
                   </select>
                 </div>
 
@@ -321,12 +324,13 @@ export default function Withdrawal() {
                       padding: '0.75rem',
                       border: errors.walletAddress ? '1px solid #ef4444' : '1px solid #d1d5db',
                       borderRadius: '0.375rem',
-                      fontSize: '1rem'
+                      fontSize: '1rem',
+                      color:'#000000'
                     }}
                     placeholder="Enter your wallet address"
                   />
                   {errors.walletAddress && (
-                    <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                    <p style={{ color: '#000000', fontSize: '0.875rem', marginTop: '0.25rem' }}>
                       {errors.walletAddress}
                     </p>
                   )}
