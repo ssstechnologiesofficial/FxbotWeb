@@ -445,12 +445,13 @@ export default function Withdrawal() {
                       borderRadius: '0.375rem',
                       fontSize: '1.125rem',
                       textAlign: 'center',
+                      color: '#374151',
                       letterSpacing: '0.25rem'
                     }}
                     placeholder="000000"
                   />
                   {errors.otp && (
-                    <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+                    <p style={{ color: '#374151', fontSize: '0.875rem', marginTop: '0.25rem' }}>
                       {errors.otp}
                     </p>
                   )}
