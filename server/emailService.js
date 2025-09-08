@@ -12,6 +12,24 @@ class EmailService {
     this.fromEmail = 'noreply@fxbot.co.in'; // Default sender email
   }
 
+  // Get the correct base URL for the current environment
+  getBaseUrl() {
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    
+    if (isDevelopment) {
+      // Use Replit domain in development
+      const replitDomain = process.env.REPLIT_DEV_DOMAIN || process.env.REPLIT_DOMAINS;
+      if (replitDomain) {
+        return `https://${replitDomain}`;
+      }
+      // Fallback to localhost if no Replit domain
+      return 'http://localhost:5000';
+    }
+    
+    // Production URL
+    return 'https://fxbot.co.in';
+  }
+
   async sendWelcomeEmail(userEmail, userData) {
     try {
       const msg = {
@@ -35,7 +53,8 @@ class EmailService {
 
   async sendPasswordResetEmail(userEmail, resetToken, userName) {
     try {
-      const resetLink = `https://fxbot.co.in/reset-password?token=${resetToken}`;
+      const baseUrl = this.getBaseUrl();
+      const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
       
       const msg = {
         to: userEmail,
@@ -57,6 +76,7 @@ class EmailService {
   }
 
   generateWelcomeEmailTemplate(userData) {
+    const baseUrl = this.getBaseUrl();
     return `
     <!DOCTYPE html>
     <html>
@@ -132,7 +152,7 @@ class EmailService {
           </div>
           
           <p>Ready to start your investment journey?</p>
-          <a href="https://fxbot.co.in/login" class="button">Access Your Dashboard</a>
+          <a href="${baseUrl}/login" class="button">Access Your Dashboard</a>
           
           <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
             <strong>Important:</strong> Keep your login credentials secure and never share them with anyone. 
@@ -203,7 +223,7 @@ class EmailService {
               <li>If you didn't request this password reset, please ignore this email</li>
               <li>Your current password will remain unchanged until you create a new one</li>
               <li>Never share your password or reset links with anyone</li>
-              <li>Always log in from our official website: fxbot.co.in</li>
+              <li>Always log in from our official website: ${resetLink.split('/reset-password')[0]}</li>
             </ul>
           </div>
           
@@ -229,32 +249,6 @@ class EmailService {
     `;
   }
 
-  async sendPasswordResetEmail(toEmail, resetToken, userName) {
-    try {
-      // Create the reset link - use current domain for development
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://fxbot.co.in' 
-        : `http://localhost:5000`;
-      const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
-      
-      const msg = {
-        to: toEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Security Team'
-        },
-        subject: 'Reset Your FXBOT Password',
-        html: this.generatePasswordResetEmailTemplate(resetLink, userName)
-      };
-
-      const result = await sgMail.send(msg);
-      console.log('Password reset email sent successfully to:', toEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
-    } catch (error) {
-      console.error('Error sending password reset email:', error);
-      return { success: false, error: error.message };
-    }
-  }
 
   async sendTestEmail(toEmail) {
     try {
