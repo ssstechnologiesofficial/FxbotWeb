@@ -1,13 +1,13 @@
 # MongoDB Recovery Notes
 
-## Confirmed project configuration
+## Previously observed project configuration
 
 - The application reads its MongoDB connection from the managed `MONGODB_URI` secret.
-- The currently configured Atlas hostname is `cluster0.txs7xtj.mongodb.net`.
-- The configured MongoDB database-access username is `fxbotuser`.
+- An earlier inspection found the Atlas hostname `cluster0.txs7xtj.mongodb.net`.
+- That inspection found the configured MongoDB database-access username was `fxbotuser`.
 - No database name is specified in the connection string.
 
-The application cannot currently resolve the Atlas SRV record for this hostname. This means the configured cluster address is no longer available. It is not an authentication or application-code failure.
+That hostname was not resolvable during the earlier inspection. The current managed secret must be checked again after Atlas access is recovered; the latest read-only verification is recorded below.
 
 ## Recover the original Atlas account
 
@@ -31,3 +31,15 @@ The application cannot currently resolve the Atlas SRV record for this hostname.
 Do not create a replacement database and point the application at it yet. First determine whether a backup, export, former cluster owner, or Atlas support recovery path exists. A new empty database would make the application start, but would not recover customer, wallet, or transaction data.
 
 Only after written approval should a new database be created and a migration/recovery plan executed.
+
+## Read-only recovery verification — 2026-08-24
+
+- The managed `MONGODB_URI` currently identifies the Atlas hostname `cluster0.vddni2d.mongodb.net`. The URI was inspected without exposing credentials; no database name is specified.
+- A read-only connection attempt failed before authentication or database inspection. The current environment could not resolve the Atlas hostname, so the project identity and cluster contents could not be confirmed.
+- The five required collection checks were attempted but no counts were available: `users`, `investments`, `transactions`, `deposits`, and `withdrawals`.
+- Repository and Git-history review found no approved Atlas backup, export, MongoDB dump, or original records. The only relevant material is this recovery documentation and the application schemas in `server/database.js`.
+- No restore, migration, replacement database, or financial-data write was performed. Financial operations must remain paused.
+
+### Recovery decision
+
+The original Atlas project and an approved source containing the original records remain unidentified. Recovery is therefore blocked pending Atlas account/project confirmation or an approved backup/export, together with written approval for any restore or migration.
