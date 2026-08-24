@@ -3,11 +3,6 @@ import bcrypt from 'bcryptjs';
 
 // MongoDB Storage implementation
 class MongoStorage {
-  constructor() {
-    // Initialize database connection
-    connectDB();
-  }
-
   // Contact form submissions
   async createContact(contactData) {
     const contact = new Contact(contactData);

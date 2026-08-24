@@ -7,10 +7,11 @@
     "dev": "node start.js",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node start.js"
+    "start": "node start.js",
+    "verify:mongodb": "node scripts/verify-mongodb-connection.mjs"
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.17.0",
+    "@google-cloud/storage": "^7.19.0",
     "@neondatabase/serverless": "^1.0.1",
     "@replit/vite-plugin-cartographer": "^0.2.8",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
