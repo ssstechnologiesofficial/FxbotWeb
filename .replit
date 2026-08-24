@@ -43,3 +43,6 @@ localPort = 5173
 
 [agent]
 expertMode = true
+
+[objectStorage]
+defaultBucketID = "replit-objstore-9dfea31d-7e47-4e23-a7b4-64751bfe183e"
