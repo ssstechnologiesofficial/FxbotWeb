@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-// Simple JavaScript start script
-process.env.NODE_ENV = 'development'; // Force development mode
+// Default to development locally while preserving an explicitly configured
+// production environment for deployments.
+process.env.NODE_ENV ||= 'development';
 
 // Start the server
 import('./server/index.js');

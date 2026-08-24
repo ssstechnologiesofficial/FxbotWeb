@@ -15,6 +15,22 @@ class EmailService {
   // Get the correct base URL for the current environment
   getBaseUrl() {
     const isDevelopment = process.env.NODE_ENV !== 'production';
+    const configuredBaseUrl = process.env.APP_BASE_URL?.trim();
+
+    if (configuredBaseUrl) {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(configuredBaseUrl);
+      } catch {
+        throw new Error('APP_BASE_URL must be a valid absolute URL');
+      }
+
+      if (!isDevelopment && parsedUrl.protocol !== 'https:') {
+        throw new Error('APP_BASE_URL must use HTTPS in production');
+      }
+
+      return parsedUrl.origin;
+    }
     
     if (isDevelopment) {
       // Use Replit domain in development
@@ -26,8 +42,7 @@ class EmailService {
       return 'http://localhost:5000';
     }
     
-    // Production URL
-    return 'https://fxbot.co.in';
+    throw new Error('APP_BASE_URL must be set before sending transactional email in production');
   }
 
   async sendWelcomeEmail(userEmail, userData) {
