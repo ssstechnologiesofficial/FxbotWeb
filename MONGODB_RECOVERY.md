@@ -84,3 +84,13 @@ Only after written approval should a new database be created and a migration/rec
 ### Recovery decision
 
 The current Atlas connection is technically healthy, but it points to an empty database and is not yet verified as the original data source. Recovery is therefore blocked pending confirmation of the original Atlas project/database or an approved backup/export, together with written approval for any restore or migration.
+
+## Isolated synthetic test database
+
+Because the original customer data source is unavailable, an isolated `fxbot_test` database may be used for development-only testing. This is **not** a recovery, restore, or migration of customer data:
+
+- `npm run seed:mongodb-test -- --confirm` connects to the existing Atlas cluster but explicitly selects `fxbot_test`.
+- The seed contains only synthetic records using reserved `.invalid` email addresses and test-only wallet values.
+- The command replaces only records carrying its own seed marker and does not modify the current `test` database.
+- It does not change the managed `MONGODB_URI`, which must remain pointed at the currently verified-but-empty source until the original source is identified.
+- Synthetic data must never be presented as customer history or used to resume financial operations.

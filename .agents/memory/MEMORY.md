@@ -1,0 +1,1 @@
+- [Synthetic data isolation](synthetic-data-isolation.md) — Test records must stay in a separately selected database and never replace an unverified customer-data source.
