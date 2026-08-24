@@ -21,10 +21,22 @@ That hostname was not resolvable during the earlier inspection. The current mana
 
 1. In the original Atlas project, use the cluster's Connect flow to create a fresh Node.js connection string.
 2. Verify Database Access includes `fxbotuser` or create a replacement database user with the minimum required permissions.
-3. Verify Network Access permits the application's outbound connection. Avoid broadly exposing the database when a narrower rule is possible.
+3. Configure the approved Atlas Network Access strategy below.
 4. Replace only the managed `MONGODB_URI` secret in Replit. Do not add the URI to source files, commits, logs, or chat.
 5. Restart the application and confirm it connects before making any data changes.
 6. Run read-only checks for users, investments, transactions, deposits, and withdrawals to confirm the original data is present.
+
+## Atlas Network Access for Replit
+
+Replit does not provide a stable, dedicated outbound IP address. An Atlas rule that allows only the IP address seen during one Replit run can fail after the application restarts.
+
+Choose one of these approved approaches:
+
+1. **Direct Replit access** — allow `0.0.0.0/0` in Atlas Network Access, then protect the database with TLS, a unique strong database password stored only as a managed secret, and a least-privilege database user. This is the practical direct-connect option when no stable egress network is available.
+2. **Static-egress intermediary** — route database traffic through separately managed infrastructure with a fixed outbound IP, then allowlist only that IP in Atlas.
+3. **Private managed database** — move the database only after an approved backup and migration plan, using a service with private or platform-native connectivity.
+
+Never use a single temporary Replit runtime IP as the only Atlas allowlist rule.
 
 ## If the original Atlas account or cluster is unavailable
 
@@ -35,7 +47,7 @@ Only after written approval should a new database be created and a migration/rec
 ## Read-only recovery verification — 2026-08-24
 
 - The managed `MONGODB_URI` currently identifies the Atlas hostname `cluster0.vddni2d.mongodb.net`. The URI was inspected without exposing credentials; no database name is specified.
-- A read-only connection attempt failed before authentication or database inspection. The current environment could not resolve the Atlas hostname, so the project identity and cluster contents could not be confirmed.
+- A read-only connection attempt reached Atlas but was rejected before authentication or database inspection because the Replit runtime address is not in the Atlas Network Access allowlist.
 - The five required collection checks were attempted but no counts were available: `users`, `investments`, `transactions`, `deposits`, and `withdrawals`.
 - Repository and Git-history review found no approved Atlas backup, export, MongoDB dump, or original records. The only relevant material is this recovery documentation and the application schemas in `server/database.js`.
 - No restore, migration, replacement database, or financial-data write was performed. Financial operations must remain paused.
