@@ -47,11 +47,12 @@ Only after written approval should a new database be created and a migration/rec
 ## Read-only recovery verification — 2026-08-24
 
 - The managed `MONGODB_URI` currently identifies the Atlas hostname `cluster0.vddni2d.mongodb.net`. The URI was inspected without exposing credentials; no database name is specified.
-- A read-only connection attempt reached Atlas but was rejected before authentication or database inspection because the Replit runtime address is not in the Atlas Network Access allowlist.
-- The five required collection checks were attempted but no counts were available: `users`, `investments`, `transactions`, `deposits`, and `withdrawals`.
+- After the Atlas Network Access rule was confirmed active, the application reconnected successfully after a runtime restart.
+- The connection resolves to the default `test` database. The five required collections exist but contain zero records: `users`, `investments`, `transactions`, `deposits`, and `withdrawals`.
+- A read-only database listing found only `test`, `admin`, and `local`; no separate populated application database was visible through the current connection.
 - Repository and Git-history review found no approved Atlas backup, export, MongoDB dump, or original records. The only relevant material is this recovery documentation and the application schemas in `server/database.js`.
-- No restore, migration, replacement database, or financial-data write was performed. Financial operations must remain paused.
+- No restore, migration, replacement database, or financial-data write was performed. Financial operations must remain paused until the original records are located.
 
 ### Recovery decision
 
-The original Atlas project and an approved source containing the original records remain unidentified. Recovery is therefore blocked pending Atlas account/project confirmation or an approved backup/export, together with written approval for any restore or migration.
+The current Atlas connection is technically healthy, but it points to an empty database and is not yet verified as the original data source. Recovery is therefore blocked pending confirmation of the original Atlas project/database or an approved backup/export, together with written approval for any restore or migration.
