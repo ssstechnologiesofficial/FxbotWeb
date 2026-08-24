@@ -217,11 +217,15 @@ export async function registerRoutes(app) {
 
       const token = generateToken(user._id);
       const { password: _, ...userWithoutPassword } = user.toObject();
+      const userResponse = {
+        ...userWithoutPassword,
+        isAdmin: user.role === 'admin'
+      };
       
       res.json({ 
         success: true, 
         token, 
-        user: userWithoutPassword,
+        user: userResponse,
         message: "Login successful" 
       });
     } catch (error) {
@@ -237,7 +241,10 @@ export async function registerRoutes(app) {
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      res.json(user);
+      res.json({
+        ...user,
+        isAdmin: user.role === 'admin'
+      });
     } catch (error) {
       res.status(500).json({ error: "Failed to get user data" });
     }
