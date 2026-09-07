@@ -21,11 +21,7 @@ export default function ContactSection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    trackEvent('contact_form_submitted', {
-      subject: formData.subject
-    });
+    trackEvent('contact_form_submitted');
     alert('Thank you for your message! We will get back to you soon.');
     setFormData({
       firstName: '',

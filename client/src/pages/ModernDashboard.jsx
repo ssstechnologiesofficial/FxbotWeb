@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import ModernSidebar from '../components/ModernSidebar';
 import DasCountdown from '../components/DasCountdown';
+import { trackEvent } from '../lib/analytics';
 import { 
   DollarSign, 
   Wallet, 
@@ -60,6 +61,7 @@ function ModernDashboard() {
     // Generate shareable link with sponsor ID pre-filled
     const shareableLink = `${window.location.origin}/register?sponsor=${sponsorId}`;
     navigator.clipboard.writeText(shareableLink);
+    trackEvent('referral_link_copied');
     alert('Referral link copied to clipboard! Share this link to earn commissions.');
   };
 

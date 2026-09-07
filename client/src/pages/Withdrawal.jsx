@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ModernSidebar from '../components/ModernSidebar';
 import { CheckCircle, AlertCircle, Lock, ArrowLeft, DollarSign, Shield, Mail } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 export default function Withdrawal() {
   const [user, setUser] = useState(null);
@@ -92,6 +93,7 @@ export default function Withdrawal() {
       });
       
       if (response.data.success) {
+        trackEvent('withdrawal_requested');
         setWithdrawalId(response.data.withdrawalId);
         setWithdrawalDetails(response.data.withdrawalDetails);
         setMessage(response.data.message);
@@ -125,6 +127,7 @@ export default function Withdrawal() {
       });
       
       if (response.data.success) {
+        trackEvent('withdrawal_verified');
         setMessage(response.data.message);
         setStep(3);
       }
