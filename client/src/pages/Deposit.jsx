@@ -4,6 +4,7 @@ import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { ObjectUploader } from '../components/ObjectUploader';
 import qrCodeImage from '@assets/QR_1755789504506.jpeg';
+import { trackEvent } from '../lib/analytics';
 
 export default function Deposit() {
   const [user, setUser] = useState(null);
@@ -82,6 +83,7 @@ export default function Deposit() {
 
   const handleUploadComplete = (result) => {
     if (result.successful && result.successful.length > 0) {
+      trackEvent('deposit_screenshot_uploaded');
       setUploadedScreenshotUrl(result.successful[0].uploadURL);
     }
   };
@@ -120,6 +122,7 @@ export default function Deposit() {
       const data = await response.json();
 
       if (response.ok) {
+        trackEvent('deposit_submitted');
         alert('Deposit request submitted successfully! Our admin will review and confirm your transaction within 24 hours.');
         setUploadedScreenshotUrl(null);
         setDepositAmount(250);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { ObjectUploader } from '../components/ObjectUploader';
+import { trackEvent } from '../lib/analytics';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -75,6 +76,7 @@ export default function Profile() {
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        trackEvent('kyc_submitted');
 
         // Refresh user data with real-time referral count
         const dashboardResponse = await axios.get('/api/dashboard/data', { 

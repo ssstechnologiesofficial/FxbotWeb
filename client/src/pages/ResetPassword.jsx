@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
+import { trackEvent } from '../lib/analytics';
 
 function ResetPassword() {
   const [location] = useLocation();
@@ -62,6 +63,7 @@ function ResetPassword() {
       const data = await response.json();
 
       if (response.ok) {
+        trackEvent('password_reset_completed');
         setMessage(data.message);
         setIsReset(true);
       } else {

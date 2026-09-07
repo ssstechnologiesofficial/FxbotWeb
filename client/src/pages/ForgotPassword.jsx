@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
+import { trackEvent } from '../lib/analytics';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -32,6 +33,7 @@ function ForgotPassword() {
       const data = await response.json();
 
       if (response.ok) {
+        trackEvent('password_reset_requested');
         setMessage(data.message);
         setIsSubmitted(true);
       } else {

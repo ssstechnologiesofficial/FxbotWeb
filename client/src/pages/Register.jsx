@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import axios from 'axios';
 import '../styles/login.css';
+import { trackEvent } from '../lib/analytics';
 
 export default function Register() {
   const [location] = useLocation();
@@ -100,6 +101,9 @@ export default function Register() {
       const response = await axios.post('/api/auth/register', submitData);
       
       if (response.data.success) {
+        trackEvent('registration_success', {
+          has_sponsor: Boolean(formData.sponsorId.trim())
+        });
         setSuccess('Account created successfully! Redirecting to login...');
         // Redirect to login page after 2 seconds
         setTimeout(() => {

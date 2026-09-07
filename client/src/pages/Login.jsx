@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'wouter';
 import axios from 'axios';
 import '../styles/login.css';
+import { trackEvent } from '../lib/analytics';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -31,6 +32,9 @@ export default function Login() {
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        trackEvent('login_success', {
+          role: response.data.user.isAdmin ? 'admin' : 'user'
+        });
         
         if (response.data.user.isAdmin) {
           window.location.href = '/admin';
@@ -39,6 +43,9 @@ export default function Login() {
         }
       }
     } catch (error) {
+      trackEvent('login_failed', {
+        reason: 'invalid_credentials'
+      });
       setError(error.response?.data?.error || 'Login failed. Please try again.');
     } finally {
       setLoading(false);

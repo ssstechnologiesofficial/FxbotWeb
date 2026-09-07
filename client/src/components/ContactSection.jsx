@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Mail, Phone, Clock, MapPin } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -22,6 +23,9 @@ export default function ContactSection() {
     e.preventDefault();
     // Handle form submission here
     console.log('Form submitted:', formData);
+    trackEvent('contact_form_submitted', {
+      subject: formData.subject
+    });
     alert('Thank you for your message! We will get back to you soon.');
     setFormData({
       firstName: '',
