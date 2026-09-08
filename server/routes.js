@@ -151,7 +151,7 @@ export async function registerRoutes(app) {
       // Send welcome email
       try {
         const { emailService } = await import('./emailService.js');
-        await emailService.sendWelcomeEmail(newUser.email, {
+        const welcomeEmail = await emailService.sendWelcomeEmail(newUser.email, {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           email: newUser.email,
@@ -159,9 +159,11 @@ export async function registerRoutes(app) {
           ownSponsorId: newUser.ownSponsorId,
           sponsorId: sponsorId
         });
-        console.log('Welcome email sent to:', newUser.email);
+        if (!welcomeEmail.success) {
+          console.error('Welcome email flow was not accepted');
+        }
       } catch (emailError) {
-        console.error('Failed to send welcome email:', emailError);
+        console.error('Welcome email flow failed');
         // Don't fail registration if email fails
       }
       
@@ -549,7 +551,7 @@ export async function registerRoutes(app) {
         const { emailService } = await import('./emailService.js');
         await emailService.sendDepositNotificationEmail(deposit, user);
       } catch (emailError) {
-        console.error('Error sending admin notification:', emailError);
+        console.error('Deposit notification email flow failed');
         // Continue even if email fails
       }
       
@@ -653,7 +655,7 @@ export async function registerRoutes(app) {
             `${user.firstName} ${user.lastName}`
           );
         } catch (emailError) {
-          console.error('Error sending approval email:', emailError);
+          console.error('Deposit approval email flow failed');
         }
       } else {
         // Send rejection email
@@ -666,7 +668,7 @@ export async function registerRoutes(app) {
             `${user.firstName} ${user.lastName}`
           );
         } catch (emailError) {
-          console.error('Error sending rejection email:', emailError);
+          console.error('Deposit rejection email flow failed');
         }
       }
 
@@ -1228,14 +1230,16 @@ export async function registerRoutes(app) {
       // Send password reset email
       try {
         const { emailService } = await import('./emailService.js');
-        await emailService.sendPasswordResetEmail(
+        const passwordResetEmail = await emailService.sendPasswordResetEmail(
           user.email, 
           resetToken, 
           `${user.firstName} ${user.lastName}`
         );
-        console.log('Password reset email sent to:', user.email);
+        if (!passwordResetEmail.success) {
+          console.error('Password reset email flow was not accepted');
+        }
       } catch (emailError) {
-        console.error('Failed to send password reset email:', emailError);
+        console.error('Password reset email flow failed');
         // Don't fail the request if email fails
       }
 

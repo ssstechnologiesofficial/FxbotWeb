@@ -1,15 +1,63 @@
 import sgMail from '@sendgrid/mail';
 
-// Initialize SendGrid
-if (!process.env.SENDGRID_API_KEY) {
-  console.warn('SENDGRID_API_KEY not found in environment variables');
-} else {
+const SENDGRID_CONFIG = Object.freeze({
+  fromEmail: process.env.EMAIL_FROM?.trim() || 'noreply@fxbot.in',
+  supportEmail: process.env.SUPPORT_EMAIL?.trim() || 'support@fxbot.in',
+  replyToEmail: process.env.EMAIL_REPLY_TO?.trim() || process.env.SUPPORT_EMAIL?.trim() || 'support@fxbot.in',
+  adminEmail: process.env.ADMIN_EMAIL?.trim() || 'support@fxbot.in',
+  fromName: 'FXBOT Team'
+});
+
+if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+} else {
+  console.warn('Transactional email is unavailable: SendGrid credentials are not configured');
 }
 
 class EmailService {
   constructor() {
-    this.fromEmail = 'noreply@fxbot.co.in'; // Default sender email
+    this.fromEmail = SENDGRID_CONFIG.fromEmail;
+    this.supportEmail = SENDGRID_CONFIG.supportEmail;
+    this.replyToEmail = SENDGRID_CONFIG.replyToEmail;
+    this.adminEmail = SENDGRID_CONFIG.adminEmail;
+  }
+
+  createMessage(message, fromName = SENDGRID_CONFIG.fromName) {
+    return {
+      ...message,
+      from: {
+        email: this.fromEmail,
+        name: fromName
+      },
+      replyTo: {
+        email: this.replyToEmail,
+        name: 'FXBOT Support'
+      }
+    };
+  }
+
+  async deliver(message, emailType) {
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('Transactional email is not configured');
+    }
+
+    try {
+      const [response] = await sgMail.send(message);
+      console.info('Transactional email accepted', {
+        type: emailType,
+        messageId: response?.headers?.['x-message-id'] || 'unavailable'
+      });
+      return {
+        success: true,
+        messageId: response?.headers?.['x-message-id']
+      };
+    } catch (error) {
+      console.error('Transactional email delivery failed', {
+        type: emailType,
+        statusCode: error?.code || error?.response?.statusCode || 'unknown'
+      });
+      return { success: false, error: 'Email delivery failed' };
+    }
   }
 
   // Get the correct base URL for the current environment
@@ -47,22 +95,16 @@ class EmailService {
 
   async sendWelcomeEmail(userEmail, userData) {
     try {
-      const msg = {
+      const msg = this.createMessage({
         to: userEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Team'
-        },
         subject: 'Welcome to FXBOT - Your Forex Investment Journey Begins!',
         html: this.generateWelcomeEmailTemplate(userData)
-      };
+      });
 
-      const result = await sgMail.send(msg);
-      console.log('Welcome email sent successfully to:', userEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'welcome');
     } catch (error) {
-      console.error('Error sending welcome email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'welcome' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 
@@ -71,22 +113,16 @@ class EmailService {
       const baseUrl = this.getBaseUrl();
       const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
       
-      const msg = {
+      const msg = this.createMessage({
         to: userEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Team'
-        },
         subject: 'Reset Your FXBOT Password',
         html: this.generatePasswordResetEmailTemplate(resetLink, userName)
-      };
+      });
 
-      const result = await sgMail.send(msg);
-      console.log('Password reset email sent successfully to:', userEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'password_reset');
     } catch (error) {
-      console.error('Error sending password reset email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'password_reset' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 
@@ -177,7 +213,7 @@ class EmailService {
         <div class="footer">
           <p>&copy; 2025 FXBOT. All rights reserved.</p>
           <p>Professional Forex Investment Platform</p>
-          <p>Need help? Contact us at support@fxbot.co.in</p>
+          <p>Need help? Contact us at ${this.supportEmail}</p>
         </div>
       </div>
     </body>
@@ -248,7 +284,7 @@ class EmailService {
           <p class="link-text">${resetLink}</p>
           
           <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
-            If you're having trouble or didn't request this reset, please contact our support team at support@fxbot.co.in
+             If you're having trouble or didn't request this reset, please contact our support team at ${this.supportEmail}
           </p>
         </div>
         
@@ -266,12 +302,8 @@ class EmailService {
 
   async sendTestEmail(toEmail) {
     try {
-      const msg = {
+      const msg = this.createMessage({
         to: toEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Team'
-        },
         subject: 'FXBOT Email Service Test',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -282,82 +314,60 @@ class EmailService {
             <p style="color: #666; font-size: 12px;">FXBOT - Professional Forex Investment Platform</p>
           </div>
         `
-      };
+      });
 
-      const result = await sgMail.send(msg);
-      console.log('Test email sent successfully to:', toEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'test');
     } catch (error) {
-      console.error('Error sending test email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'test' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 
   // Deposit notification email to admin
   async sendDepositNotificationEmail(depositData, userData) {
     try {
-      const adminEmail = 'vijay@fxbot.co.in'; // Admin email
-      
-      const msg = {
-        to: adminEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT System'
-        },
+      const msg = this.createMessage({
+        to: this.adminEmail,
         subject: `New Deposit Request - $${depositData.amount} from ${userData.firstName} ${userData.lastName}`,
         html: this.generateDepositNotificationTemplate(depositData, userData)
-      };
+      }, 'FXBOT System');
 
-      const result = await sgMail.send(msg);
-      console.log('Deposit notification email sent successfully to admin:', adminEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'deposit_notification');
     } catch (error) {
-      console.error('Error sending deposit notification email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'deposit_notification' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 
   // Deposit approval email to user
   async sendDepositApprovalEmail(userEmail, depositData, userName) {
     try {
-      const msg = {
+      const msg = this.createMessage({
         to: userEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Team'
-        },
         subject: 'Deposit Approved - Investment Activated - FXBOT',
         html: this.generateDepositApprovalTemplate(depositData, userName)
-      };
+      });
 
-      const result = await sgMail.send(msg);
-      console.log('Deposit approval email sent successfully to:', userEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'deposit_approval');
     } catch (error) {
-      console.error('Error sending deposit approval email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'deposit_approval' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 
   // Deposit rejection email to user
   async sendDepositRejectionEmail(userEmail, depositData, userName) {
     try {
-      const msg = {
+      const msg = this.createMessage({
         to: userEmail,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Team'
-        },
         subject: 'Deposit Request Rejected - FXBOT',
         html: this.generateDepositRejectionTemplate(depositData, userName)
-      };
+      });
 
-      const result = await sgMail.send(msg);
-      console.log('Deposit rejection email sent successfully to:', userEmail);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'deposit_rejection');
     } catch (error) {
-      console.error('Error sending deposit rejection email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'deposit_rejection' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 
@@ -510,7 +520,7 @@ class EmailService {
 
           <div style="text-align: center; margin: 30px 0;">
             <p style="color: #6b7280; font-size: 14px;">
-              Contact support: support@fxbot.co.in
+               Contact support: ${this.supportEmail}
             </p>
           </div>
         </div>
@@ -530,22 +540,16 @@ class EmailService {
   // Generic email sending method
   async sendEmail(to, subject, htmlContent) {
     try {
-      const msg = {
+      const msg = this.createMessage({
         to: to,
-        from: {
-          email: this.fromEmail,
-          name: 'FXBOT Team'
-        },
         subject: subject,
         html: htmlContent
-      };
+      });
 
-      const result = await sgMail.send(msg);
-      console.log('Email sent successfully to:', to);
-      return { success: true, messageId: result[0].headers['x-message-id'] };
+      return await this.deliver(msg, 'generic_transactional');
     } catch (error) {
-      console.error('Error sending email:', error);
-      return { success: false, error: error.message };
+      console.error('Transactional email preparation failed', { type: 'generic_transactional' });
+      return { success: false, error: 'Email delivery failed' };
     }
   }
 }
