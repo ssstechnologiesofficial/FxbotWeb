@@ -748,37 +748,18 @@ export async function registerRoutes(app) {
       await otpRecord.save();
 
       // Send OTP via email
-      const emailSent = await emailService.sendEmail(user.email, 'FXBOT - Withdrawal Verification OTP',
-        `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #1f2937; text-align: center;">Withdrawal Verification</h2>
-            <p>Dear ${user.firstName} ${user.lastName},</p>
-            <p>You have requested a withdrawal of <strong>$${amount.toFixed(2)}</strong> from your FXBOT account.</p>
-            
-            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="color: #374151; margin-top: 0;">Withdrawal Details:</h3>
-              <p><strong>Requested Amount:</strong> $${amount.toFixed(2)}</p>
-              <p><strong>Service Charge (5%):</strong> $${serviceCharge.toFixed(2)}</p>
-              <p><strong>Net Amount:</strong> $${netAmount.toFixed(2)}</p>
-              <p><strong>Method:</strong> ${method}</p>
-              <p><strong>Wallet Address:</strong> ${walletAddress}</p>
-            </div>
-            
-            <div style="background: #dbeafe; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
-              <h3 style="color: #1e40af; margin-top: 0;">Your OTP Code</h3>
-              <div style="font-size: 32px; font-weight: bold; color: #1e40af; letter-spacing: 4px;">${otp}</div>
-              <p style="color: #374151; margin-bottom: 0;">This OTP is valid for 10 minutes only.</p>
-            </div>
-            
-            <p style="color: #6b7280; font-size: 14px;">
-              If you did not request this withdrawal, please contact our support team immediately.
-            </p>
-            
-            <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center; color: #6b7280; font-size: 12px;">
-              <p>FXBOT - Professional Forex Investment Platform</p>
-            </div>
-          </div>
-        `);
+      const emailSent = await emailService.sendWithdrawalOtpEmail(
+        user.email,
+        {
+          requestedAmount: amount,
+          serviceCharge,
+          amount: netAmount,
+          method,
+          walletAddress
+        },
+        `${user.firstName} ${user.lastName}`,
+        otp
+      );
 
       if (!emailSent.success) {
         // Clean up if email failed

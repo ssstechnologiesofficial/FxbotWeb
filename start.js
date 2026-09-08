@@ -4,5 +4,5 @@
 // production environment for deployments.
 process.env.NODE_ENV ||= 'development';
 
-// Start the server
-import('./server/index.js');
+const { validateAndStartApplication } = await import('./server/startup.js');
+await validateAndStartApplication();

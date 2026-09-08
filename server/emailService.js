@@ -1,6 +1,6 @@
 import sgMail from '@sendgrid/mail';
 
-const SENDGRID_CONFIG = Object.freeze({
+const getEmailConfig = () => Object.freeze({
   fromEmail: process.env.EMAIL_FROM?.trim() || 'noreply@fxbot.in',
   supportEmail: process.env.SUPPORT_EMAIL?.trim() || 'support@fxbot.in',
   replyToEmail: process.env.EMAIL_REPLY_TO?.trim() || process.env.SUPPORT_EMAIL?.trim() || 'support@fxbot.in',
@@ -15,14 +15,16 @@ if (process.env.SENDGRID_API_KEY) {
 }
 
 class EmailService {
-  constructor() {
-    this.fromEmail = SENDGRID_CONFIG.fromEmail;
-    this.supportEmail = SENDGRID_CONFIG.supportEmail;
-    this.replyToEmail = SENDGRID_CONFIG.replyToEmail;
-    this.adminEmail = SENDGRID_CONFIG.adminEmail;
+  constructor({ mailer = sgMail } = {}) {
+    const config = getEmailConfig();
+    this.mailer = mailer;
+    this.fromEmail = config.fromEmail;
+    this.supportEmail = config.supportEmail;
+    this.replyToEmail = config.replyToEmail;
+    this.adminEmail = config.adminEmail;
   }
 
-  createMessage(message, fromName = SENDGRID_CONFIG.fromName) {
+  createMessage(message, fromName = getEmailConfig().fromName) {
     return {
       ...message,
       from: {
@@ -37,12 +39,10 @@ class EmailService {
   }
 
   async deliver(message, emailType) {
-    if (!process.env.SENDGRID_API_KEY) {
-      throw new Error('Transactional email is not configured');
-    }
+    this.validateConfiguration();
 
     try {
-      const [response] = await sgMail.send(message);
+      const [response] = await this.mailer.send(message);
       console.info('Transactional email accepted', {
         type: emailType,
         messageId: response?.headers?.['x-message-id'] || 'unavailable'
@@ -58,6 +58,18 @@ class EmailService {
       });
       return { success: false, error: 'Email delivery failed' };
     }
+  }
+
+  validateConfiguration() {
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('Transactional email is not configured');
+    }
+
+    if (process.env.NODE_ENV === 'production' && !process.env.EMAIL_FROM?.trim()) {
+      throw new Error('EMAIL_FROM must be explicitly configured in production');
+    }
+
+    this.getBaseUrl();
   }
 
   // Get the correct base URL for the current environment
@@ -369,6 +381,49 @@ class EmailService {
       console.error('Transactional email preparation failed', { type: 'deposit_rejection' });
       return { success: false, error: 'Email delivery failed' };
     }
+  }
+
+  async sendWithdrawalOtpEmail(userEmail, withdrawalData, userName, otp) {
+    try {
+      const msg = this.createMessage({
+        to: userEmail,
+        subject: 'FXBOT - Withdrawal Verification OTP',
+        html: this.generateWithdrawalOtpTemplate(withdrawalData, userName, otp)
+      });
+
+      return await this.deliver(msg, 'withdrawal_otp');
+    } catch {
+      console.error('Transactional email preparation failed', { type: 'withdrawal_otp' });
+      return { success: false, error: 'Email delivery failed' };
+    }
+  }
+
+  generateWithdrawalOtpTemplate(withdrawalData, userName, otp) {
+    const { requestedAmount, serviceCharge, amount, method, walletAddress } = withdrawalData;
+    return `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1f2937; text-align: center;">Withdrawal Verification</h2>
+        <p>Dear ${userName},</p>
+        <p>You have requested a withdrawal of <strong>$${requestedAmount.toFixed(2)}</strong> from your FXBOT account.</p>
+        <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #374151; margin-top: 0;">Withdrawal Details:</h3>
+          <p><strong>Requested Amount:</strong> $${requestedAmount.toFixed(2)}</p>
+          <p><strong>Service Charge (5%):</strong> $${serviceCharge.toFixed(2)}</p>
+          <p><strong>Net Amount:</strong> $${amount.toFixed(2)}</p>
+          <p><strong>Method:</strong> ${method}</p>
+          <p><strong>Wallet Address:</strong> ${walletAddress}</p>
+        </div>
+        <div style="background: #dbeafe; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+          <h3 style="color: #1e40af; margin-top: 0;">Your OTP Code</h3>
+          <div style="font-size: 32px; font-weight: bold; color: #1e40af; letter-spacing: 4px;">${otp}</div>
+          <p style="color: #374151; margin-bottom: 0;">This OTP is valid for 10 minutes only.</p>
+        </div>
+        <p style="color: #6b7280; font-size: 14px;">If you did not request this withdrawal, please contact our support team immediately.</p>
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center; color: #6b7280; font-size: 12px;">
+          <p>FXBOT - Professional Forex Investment Platform</p>
+        </div>
+      </div>
+    `;
   }
 
   generateDepositNotificationTemplate(depositData, userData) {
