@@ -1,34 +1,34 @@
-import { useState } from 'react';
-import { Mail, Phone, Clock, MapPin } from 'lucide-react';
-import { trackEvent } from '../lib/analytics';
+import { useState } from "react";
+import { Mail, Phone, Clock, MapPin } from "lucide-react";
+import { trackEvent } from "../lib/analytics";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    subject: 'General Inquiry',
-    message: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "General Inquiry",
+    message: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    trackEvent('contact_form_submitted');
-    alert('Thank you for your message! We will get back to you soon.');
+    trackEvent("contact_form_submitted");
+    alert("Thank you for your message! We will get back to you soon.");
     setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      subject: 'General Inquiry',
-      message: ''
+      firstName: "",
+      lastName: "",
+      email: "",
+      subject: "General Inquiry",
+      message: "",
     });
   };
 
@@ -36,51 +36,75 @@ export default function ContactSection() {
     {
       icon: Mail,
       title: "Email",
-      details: "support@fxbot.co.in"
+      details: "support@fxbot.in",
     },
     //{
-     // icon: Phone,
-     // title: "Phone",
-     // details: "+1 (555) 123-4567"
-   // },
+    // icon: Phone,
+    // title: "Phone",
+    // details: "+1 (555) 123-4567"
+    // },
     {
       icon: Clock,
       title: "Business Hours",
-      details: "Mon - Fri: 9:00 AM - 6:00 PM IST"
+      details: "Mon - Fri: 9:00 AM - 6:00 PM IST",
     },
     {
       icon: MapPin,
       title: "Address",
-      details: "Bay View Tower, Business Bay, Dubai, UAE"
-    }
+      details: "1057 Marina Plaza,Al Marsa Street,Dubai Marina,Dubai,UAE",
+    },
   ];
 
   return (
     <section id="contact" className="section bg-secondary">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Contact <span className="text-gold">Us</span></h2>
-          <p className="text-xl text-secondary">Get in touch with our team for any inquiries</p>
+          <h2 className="text-4xl font-bold mb-4">
+            Contact <span className="text-gold">Us</span>
+          </h2>
+          <p className="text-xl text-secondary">
+            Get in touch with our team for any inquiries
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-8 contact-grid">
           <div className="animate-slideIn">
             <h3 className="text-2xl font-bold mb-8">Get In Touch</h3>
-            <div className="contact-info" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div
+              className="contact-info"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
               {contactInfo.map((info, index) => {
                 const IconComponent = info.icon;
                 return (
-                  <div key={index} className="flex items-center" style={{ gap: '1rem' }}>
-                    <div className="contact-icon-wrapper" style={{
-                      width: '3rem',
-                      height: '3rem',
-                      backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                      borderRadius: 'var(--border-radius)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <IconComponent style={{ width: '1.5rem', height: '1.5rem', color: 'var(--primary-gold)' }} />
+                  <div
+                    key={index}
+                    className="flex items-center"
+                    style={{ gap: "1rem" }}
+                  >
+                    <div
+                      className="contact-icon-wrapper"
+                      style={{
+                        width: "3rem",
+                        height: "3rem",
+                        backgroundColor: "rgba(255, 215, 0, 0.1)",
+                        borderRadius: "var(--border-radius)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <IconComponent
+                        style={{
+                          width: "1.5rem",
+                          height: "1.5rem",
+                          color: "var(--primary-gold)",
+                        }}
+                      />
                     </div>
                     <div>
                       <h4 className="font-semibold">{info.title}</h4>
@@ -92,13 +116,24 @@ export default function ContactSection() {
             </div>
           </div>
 
-          <div className="card p-8 animate-fadeIn" style={{ borderColor: 'rgba(255, 215, 0, 0.2)' }}>
-            <form onSubmit={handleSubmit} className="contact-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div
+            className="card p-8 animate-fadeIn"
+            style={{ borderColor: "rgba(255, 215, 0, 0.2)" }}
+          >
+            <form
+              onSubmit={handleSubmit}
+              className="contact-form"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
               <div className="grid grid-cols-1 gap-6 form-row">
                 <div>
                   <label className="form-label">First Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
@@ -108,8 +143,8 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <label className="form-label">Last Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
@@ -120,8 +155,8 @@ export default function ContactSection() {
               </div>
               <div>
                 <label className="form-label">Email</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
@@ -131,7 +166,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <label className="form-label">Subject</label>
-                <select 
+                <select
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
@@ -145,22 +180,23 @@ export default function ContactSection() {
               </div>
               <div>
                 <label className="form-label">Message</label>
-                <textarea 
-                  rows="4" 
+                <textarea
+                  rows="4"
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   required
                   className="form-input"
-                  style={{ resize: 'vertical' }}
+                  style={{ resize: "vertical" }}
                 ></textarea>
               </div>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn w-full font-semibold"
                 style={{
-                  background: 'linear-gradient(135deg, var(--primary-gold), var(--hover-gold))',
-                  color: 'var(--dark-bg)'
+                  background:
+                    "linear-gradient(135deg, var(--primary-gold), var(--hover-gold))",
+                  color: "var(--dark-bg)",
                 }}
               >
                 Send Message
