@@ -242,6 +242,7 @@ function ForgotPassword() {
                 border: '1px solid #d1d5db',
                 borderRadius: '0.5rem',
                 fontSize: '1rem',
+                 color: '#000000',
                 outline: 'none',
                 transition: 'border-color 0.2s ease',
                 boxSizing: 'border-box'
