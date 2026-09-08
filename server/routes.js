@@ -2,7 +2,6 @@ import { createServer } from "http";
 import { z } from "zod";
 import { getStorage } from "./storage.js";
 import { generateToken, authenticateToken, requireAdmin } from "./auth.js";
-import { DasService } from "./dasService.js";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 import { InvestmentService } from "./investmentService.js";
 import { SchedulerService } from "./scheduler.js";
@@ -44,7 +43,7 @@ export async function registerRoutes(app) {
           name: "FS Income (FixSix)",
           type: "fixed",
           return: "6% Monthly until 2x",
-          minimum: 250,
+          minimum: 100,
           duration: "~17 months"
         },
         {
@@ -60,13 +59,6 @@ export async function registerRoutes(app) {
           type: "direct",
           commission: "6%",
           frequency: "Per Investment"
-        },
-        {
-          id: 4,
-          name: "DAS Income",
-          type: "salary",
-          tiers: 3,
-          rewards: "$300 to 2% CTO"
         }
       ];
       res.json(packages);
@@ -405,7 +397,6 @@ export async function registerRoutes(app) {
         directIncome: user.directIncome || 0,
         smartLineIncome: user.smartLineIncome || 0,
         fsIncome: user.fsIncome || 0,
-        dasIncome: user.dasIncome || 0,
         walletBalance: user.walletBalance || 0,
         totalEarnings: user.totalEarnings || 0,
         transactionSummary: {},
@@ -525,8 +516,8 @@ export async function registerRoutes(app) {
       const userId = req.userId;
 
       // Basic validation
-      if (!amount || amount < 250 || amount % 250 !== 0) {
-        return res.status(400).json({ error: "Invalid deposit amount. Minimum $250 in multiples of $250." });
+      if (!amount || amount < 100 || amount % 100 !== 0) {
+        return res.status(400).json({ error: "Invalid deposit amount. Minimum $100 in multiples of $100." });
       }
 
       if (!screenshotUrl) {
@@ -1289,81 +1280,6 @@ export async function registerRoutes(app) {
     }
   });
 
-  // DAS Program API Routes
-  app.post("/api/das/enroll", authenticateToken, async (req, res) => {
-    try {
-      const { userId } = req.body;
-      const result = await DasService.enrollUserInDas(userId);
-      
-      if (result.success) {
-        res.json({ success: true, message: result.message });
-      } else {
-        res.status(400).json({ error: result.error });
-      }
-    } catch (error) {
-      console.error("DAS enrollment error:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  app.get("/api/das/countdown/:userId", authenticateToken, async (req, res) => {
-    try {
-      const { userId } = req.params;
-      
-      // Check if the authenticated user is requesting their own data or is admin
-      if (req.userId !== userId && req.user?.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied" });
-      }
-      
-      // Add aggressive no-cache headers
-      res.set({
-        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'ETag': false,
-        'Last-Modified': new Date().toUTCString()
-      });
-      
-      const countdownData = await DasService.getDasCountdown(userId);
-      res.json(countdownData);
-    } catch (error) {
-      console.error("DAS countdown error:", error);
-      res.status(500).json({ error: "Failed to fetch countdown data" });
-    }
-  });
-
-  app.post("/api/das/complete-task", authenticateToken, async (req, res) => {
-    try {
-      const { userId, taskNumber } = req.body;
-      const result = await DasService.updateTaskCompletion(userId, taskNumber);
-      
-      if (result) {
-        res.json({ success: true, message: `Task ${taskNumber} completed successfully` });
-      } else {
-        res.status(400).json({ error: "Task requirements not met or already completed" });
-      }
-    } catch (error) {
-      console.error("DAS task completion error:", error);
-      res.status(500).json({ error: "Failed to complete task" });
-    }
-  });
-
-  app.post("/api/das/add-investment", authenticateToken, async (req, res) => {
-    try {
-      const { userId, amount, packageType } = req.body;
-      const result = await DasService.addInvestment(userId, amount, packageType);
-      
-      if (result) {
-        res.json({ success: true, message: "Investment added successfully" });
-      } else {
-        res.status(400).json({ error: "Failed to add investment" });
-      }
-    } catch (error) {
-      console.error("DAS investment error:", error);
-      res.status(500).json({ error: "Failed to add investment" });
-    }
-  });
-
   // KYC Document Upload Routes
   app.post('/api/kyc/upload-url', authenticateToken, async (req, res) => {
     try {
@@ -1462,6 +1378,10 @@ export async function registerRoutes(app) {
       console.error('Error rejecting KYC document:', error);
       res.status(500).json({ error: 'Failed to reject KYC document' });
     }
+  });
+
+  app.use('/api', (_req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
   });
 
   return server || app;

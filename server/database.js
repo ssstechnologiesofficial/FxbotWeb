@@ -103,23 +103,6 @@ const userSchema = new mongoose.Schema({
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
   
-  // DAS program fields
-  dasEnrollmentDate: { type: Date, default: null },
-  dasCountdownStartDate: { type: Date, default: null },
-  isEnrolledInDas: { type: Boolean, default: false },
-  totalInvestmentVolume: { type: Number, default: 0 },
-  dasTask1Completed: { type: Boolean, default: false },
-  dasTask2Completed: { type: Boolean, default: false },
-  dasTask3Completed: { type: Boolean, default: false },
-  dasTask1CompletedAt: { type: Date, default: null },
-  dasTask2CompletedAt: { type: Date, default: null },
-  dasTask3CompletedAt: { type: Date, default: null },
-  dasTask1Expired: { type: Boolean, default: false },
-  dasTask2Expired: { type: Boolean, default: false },
-  dasTask3Expired: { type: Boolean, default: false },
-  dasMonthlyEarnings: { type: Number, default: 0 },
-  dasIncome: { type: Number, default: 0 }, // Total DAS income earned from completed tasks
-  
   // Investment tracking fields
   totalInvestmentAmount: { type: Number, default: 0 },
   directIncome: { type: Number, default: 0 }, // 6% from direct referrals
@@ -199,7 +182,7 @@ const investmentSchema = new mongoose.Schema({
   },
   packageType: {
     type: String,
-    enum: ['fs_income', 'smartline', 'dri', 'das'],
+    enum: ['fs_income', 'smartline', 'dri'],
     default: 'fs_income'
   },
   status: {
@@ -242,7 +225,7 @@ const transactionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['deposit', 'fs_income', 'dri_income', 'smartline_income', 'das_income', 'withdrawal'],
+    enum: ['deposit', 'fs_income', 'dri_income', 'smartline_income', 'withdrawal'],
     required: true
   },
   amount: {
@@ -279,7 +262,7 @@ const transactionSchema = new mongoose.Schema({
 // Deposit Schema
 const depositSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  amount: { type: Number, required: true, min: 250 },
+  amount: { type: Number, required: true, min: 100 },
   walletType: { type: String, required: true },
   walletAddress: { type: String, required: true },
   paymentMethod: { type: String, default: 'USDT TRC-20' },

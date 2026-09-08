@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { User, Investment, Transaction } from './database.js';
-import { DasService } from './dasService.js';
 import { referralService } from './referralService.js';
 
 export class InvestmentService {
@@ -30,14 +29,6 @@ export class InvestmentService {
         
         await investment.save({ session });
 
-        // Update user's total investment volume (for DAS tracking only)
-        // Note: totalInvestmentAmount is updated in routes.js during deposit approval
-        await User.findByIdAndUpdate(userId, {
-          $inc: { 
-            totalInvestmentVolume: amount // For DAS tracking only
-          }
-        }, { session });
-
         // Log the deposit transaction
         await this.logTransaction(userId, 'deposit', amount, 
           `Investment deposit - ${packageType}`, 'completed', investment._id, null, null, session);
@@ -45,12 +36,6 @@ export class InvestmentService {
         // SKIP income processing within transaction to avoid MongoDB session issues
         console.log(`⏭️ Skipping income processing within transaction due to MongoDB session issues`);
         console.log(`⏭️ Will process DRI and SmartLine income after transaction completes`);
-
-        // Update DAS progress if user is enrolled
-        const user = await User.findById(userId).session(session);
-        if (user.isEnrolledInDas) {
-          await DasService.addInvestment(userId, amount);
-        }
 
         await session.commitTransaction();
         session.endSession();
@@ -365,15 +350,6 @@ export class InvestmentService {
       const totalReturns = investments.reduce((sum, inv) => sum + inv.totalReturns, 0);
       const pendingReturns = investments.reduce((sum, inv) => sum + inv.remainingReturns, 0);
 
-      // Calculate total wallet balance from all income sources
-      const totalWalletBalance = (user.totalEarnings || 0) + 
-                                (user.directIncome || 0) + 
-                                (user.fsIncome || 0) + 
-                                (user.smartLineIncome || 0) + 
-                                (user.walletBalance || 0) + 
-                                (user.dailyFsIncome || 0) + 
-                                (user.dasMonthlyEarnings || 0);
-
       return {
         totalInvestmentAmount: totalInvested,
         activeInvestments,
@@ -382,10 +358,8 @@ export class InvestmentService {
         directIncome: user.directIncome || 0,
         fsIncome: user.fsIncome || 0,
         smartLineIncome: user.smartLineIncome || 0,
-        dasIncome: user.dasIncome || 0, // Actual DAS income earned from completed tasks
         walletBalance: user.walletBalance || 0, // Use direct wallet balance instead of calculated
-        dailyFsIncome: user.dailyFsIncome || 0,
-        dasMonthlyEarnings: user.dasMonthlyEarnings || 0
+        dailyFsIncome: user.dailyFsIncome || 0
       };
 
     } catch (error) {
@@ -398,10 +372,8 @@ export class InvestmentService {
         directIncome: 0,
         fsIncome: 0,
         smartLineIncome: 0,
-        dasIncome: 0,
         walletBalance: 0,
-        dailyFsIncome: 0,
-        dasMonthlyEarnings: 0
+        dailyFsIncome: 0
       };
     }
   }

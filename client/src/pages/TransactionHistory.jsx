@@ -40,7 +40,6 @@ const TransactionHistory = () => {
       case 'fs_income': return DollarSign;
       case 'dri_income': return TrendingUp;
       case 'smartline_income': return Wallet;
-      case 'das_income': return Receipt;
       default: return Receipt;
     }
   };
@@ -52,7 +51,6 @@ const TransactionHistory = () => {
       case 'fs_income': return '#f59e0b'; // amber
       case 'dri_income': return '#8b5cf6'; // purple
       case 'smartline_income': return '#06b6d4'; // cyan
-      case 'das_income': return '#ec4899'; // pink
       default: return '#6b7280'; // gray
     }
   };
@@ -64,7 +62,6 @@ const TransactionHistory = () => {
       case 'fs_income': return 'FS Income';
       case 'dri_income': return 'DRI Income';
       case 'smartline_income': return 'SmartLine Income';
-      case 'das_income': return 'DAS Income';
       default: return type;
     }
   };
@@ -123,7 +120,7 @@ const TransactionHistory = () => {
         marginBottom: '2rem',
         flexWrap: 'wrap'
       }}>
-        {['all', 'deposit', 'fs_income', 'dri_income', 'smartline_income', 'das_income', 'withdrawal'].map((filterType) => (
+        {['all', 'deposit', 'fs_income', 'dri_income', 'smartline_income', 'withdrawal'].map((filterType) => (
           <button
             key={filterType}
             onClick={() => setFilter(filterType)}

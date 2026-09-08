@@ -9,7 +9,7 @@ import { trackEvent } from '../lib/analytics';
 export default function Deposit() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [depositAmount, setDepositAmount] = useState(250);
+  const [depositAmount, setDepositAmount] = useState(100);
   const [uploadedScreenshotUrl, setUploadedScreenshotUrl] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -125,7 +125,7 @@ export default function Deposit() {
         trackEvent('deposit_submitted');
         alert('Deposit request submitted successfully! Our admin will review and confirm your transaction within 24 hours.');
         setUploadedScreenshotUrl(null);
-        setDepositAmount(250);
+        setDepositAmount(100);
         // Reset the uploader component
         window.location.reload();
       } else {
@@ -141,7 +141,7 @@ export default function Deposit() {
 
   const generateAmountOptions = () => {
     const options = [];
-    for (let i = 250; i <= 100000; i += 250) {
+    for (let i = 100; i <= 100000; i += 100) {
       options.push(
         <option key={i} value={i}>
           ${i.toLocaleString()}
@@ -310,7 +310,7 @@ export default function Deposit() {
                 color: '#6b7280',
                 marginTop: '0.25rem'
               }}>
-                Minimum $250. Deposits must be in multiples of $250
+                Minimum $100. Deposits must be in multiples of $100
               </p>
             </div>
 
@@ -581,7 +581,7 @@ export default function Deposit() {
               <strong>Important:</strong>
               <ul style={{ margin: '0.5rem 0', paddingLeft: '1.25rem' }}>
                 <li>Only send USDT TRC-20 to this address</li>
-                <li>Minimum deposit: $250</li>
+                <li>Minimum deposit: $100</li>
                 <li>Upload payment screenshot for verification</li>
                 <li>Processing time: 1-24 hours</li>
               </ul>

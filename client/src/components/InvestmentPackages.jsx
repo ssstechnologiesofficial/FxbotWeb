@@ -6,7 +6,7 @@ export default function InvestmentPackages() {
       badge: "6% Monthly",
       color: "gold",
       details: {
-        minimum: "$250",
+        minimum: "$100",
         return: "6% Monthly until 2x",
         duration: "~17 months",
         payout: "Monthly"
@@ -40,18 +40,6 @@ export default function InvestmentPackages() {
       example: "$1,000 referral = $60 commission",
       description: "Earn 6% commission on every investment made by your direct referrals. Commission credited for each new investment, no limit on referrals.",
       buttonClass: "btn btn-primary"
-    },
-    {
-      name: "DAS Income",
-      badge: "Monthly Salary",
-      color: "purple-400",
-      tiers: [
-        { name: "Tier 1", amount: "$100/month", requirements: "5 referrals, $10K volume, 30 days" },
-        { name: "Tier 2", amount: "$300/month", requirements: "10 referrals, $20K volume, 60 days" },
-        { name: "Tier 3", amount: "$1000/month", requirements: "15 referrals, $50K volume, 90 days" }
-      ],
-      description: "Monthly salary income based on direct referral performance and business generation. Fixed rewards for committed promoters.",
-      buttonClass: "btn btn-primary"
     }
   ];
 
@@ -73,26 +61,22 @@ export default function InvestmentPackages() {
                 animationDelay: `${index * 0.1}s`,
                 borderColor: pkg.color === 'gold' ? 'rgba(255, 215, 0, 0.2)' : 
                             pkg.color === 'blue-custom' ? 'rgba(59, 130, 246, 0.2)' :
-                            pkg.color === 'green-400' ? 'rgba(34, 197, 94, 0.2)' :
-                            'rgba(168, 85, 247, 0.2)'
+                            'rgba(34, 197, 94, 0.2)'
               }}
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold" style={{
                   color: pkg.color === 'gold' ? 'var(--primary-gold)' : 
                         pkg.color === 'blue-custom' ? '#3b82f6' :
-                        pkg.color === 'green-400' ? '#22c55e' :
-                        '#a855f7'
+                        '#22c55e'
                 }}>{pkg.name}</h3>
                 <span className="px-3 py-1 rounded-full text-sm font-semibold" style={{
                   backgroundColor: pkg.color === 'gold' ? 'rgba(255, 215, 0, 0.1)' : 
                                   pkg.color === 'blue-custom' ? 'rgba(59, 130, 246, 0.1)' :
-                                  pkg.color === 'green-400' ? 'rgba(34, 197, 94, 0.1)' :
-                                  'rgba(168, 85, 247, 0.1)',
+                                  'rgba(34, 197, 94, 0.1)',
                   color: pkg.color === 'gold' ? 'var(--primary-gold)' : 
                         pkg.color === 'blue-custom' ? '#3b82f6' :
-                        pkg.color === 'green-400' ? '#22c55e' :
-                        '#a855f7'
+                        '#22c55e'
                 }}>
                   {pkg.badge}
                 </span>
@@ -119,17 +103,6 @@ export default function InvestmentPackages() {
                   </div>
                 ))}
                 
-                {pkg.tiers && pkg.tiers.map((tier, tierIndex) => (
-                  <div key={tierIndex} className="p-3 rounded" style={{
-                    backgroundColor: pkg.color === 'purple-400' ? 'rgba(168, 85, 247, 0.1)' : 'rgba(255, 255, 255, 0.05)'
-                  }}>
-                    <div className="font-semibold" style={{
-                      color: pkg.color === 'purple-400' ? '#a855f7' : 'var(--primary-gold)'
-                    }}>{tier.name}: {tier.amount}</div>
-                    <div className="text-sm text-secondary">{tier.requirements}</div>
-                  </div>
-                ))}
-                
                 {pkg.example && (
                   <div className="p-3 rounded" style={{
                     backgroundColor: pkg.color === 'green-400' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.05)'
@@ -147,8 +120,7 @@ export default function InvestmentPackages() {
               <button className="btn w-full font-semibold choose-plan-btn" style={{
                 background: pkg.color === 'gold' ? 'linear-gradient(135deg, #ffd700, #ffa000)' :
                            pkg.color === 'blue-custom' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' :
-                           pkg.color === 'green-400' ? 'linear-gradient(135deg, #22c55e, #16a34a)' :
-                           'linear-gradient(135deg, #a855f7, #7c3aed)',
+                           'linear-gradient(135deg, #22c55e, #16a34a)',
                 color: pkg.color === 'gold' ? '#000' : 'white',
                 border: 'none',
                 padding: '0.75rem 1.5rem',
@@ -166,7 +138,7 @@ export default function InvestmentPackages() {
         <div className="card p-6 mb-8" style={{ borderColor: 'rgba(255, 215, 0, 0.2)' }}>
           <h3 className="text-xl font-bold text-gold mb-4">Important Notice</h3>
           <div className="notice-content text-secondary" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <p><strong>Re-Top-Up Rule:</strong> When a user's investment package reaches 2x returns (full payout completed), they must re-top-up their account with a minimum of $250 to continue receiving future ROI payouts and stay eligible for referral rewards.</p>
+            <p><strong>Re-Top-Up Rule:</strong> When a user's investment package reaches 2x returns (full payout completed), they must re-top-up their account with a minimum of $100 to continue receiving future ROI payouts and stay eligible for referral rewards.</p>
             <p><strong>Lock Period:</strong> All packages are locked for a minimum of 6 months to ensure optimal trading strategies.</p>
           </div>
         </div>

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "start": "node start.js",
     "verify:mongodb": "node scripts/verify-mongodb-connection.mjs",
-    "seed:mongodb-test": "node scripts/seed-mongodb-test.mjs"
+    "seed:mongodb-test": "node scripts/seed-mongodb-test.mjs",
+    "cleanup:das": "node scripts/remove-das-data.mjs"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.22.0",

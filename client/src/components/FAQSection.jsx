@@ -23,7 +23,7 @@ export default function FAQSection() {
     },
     {
       question: "What is the re-top-up rule after 2x completion?",
-      answer: "When a user's investment package reaches 2x returns (full payout completed), they must re-top-up their account with a minimum of $250 to continue receiving future ROI payouts and stay eligible for referral rewards and level income."
+      answer: "When a user's investment package reaches 2x returns (full payout completed), they must re-top-up their account with a minimum of $100 to continue receiving future ROI payouts and stay eligible for referral rewards and level income."
     },
     {
       question: "Are packages locked for a minimum period?",

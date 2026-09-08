@@ -529,20 +529,13 @@ export default function AdminDashboard() {
                             fontWeight: '600',
                             color: '#374151',
                             borderBottom: '1px solid #e5e7eb'
-                          }}>DAS Status</th>
-                          <th style={{
-                            padding: '0.75rem',
-                            textAlign: 'left',
-                            fontWeight: '600',
-                            color: '#374151',
-                            borderBottom: '1px solid #e5e7eb'
                           }}>Joined</th>
                         </tr>
                       </thead>
                       <tbody>
                         {users.length === 0 ? (
                           <tr>
-                            <td colSpan="7" style={{
+                            <td colSpan="6" style={{
                               padding: '2rem',
                               textAlign: 'center',
                               color: '#6b7280'
@@ -595,21 +588,6 @@ export default function AdminDashboard() {
                                 color: '#000000'
                               }}>
                                 {userData.referralCount || 0}
-                              </td>
-                              <td style={{
-                                padding: '0.75rem',
-                                borderBottom: '1px solid #e5e7eb'
-                              }}>
-                                <span style={{
-                                  padding: '0.25rem 0.5rem',
-                                  borderRadius: '0.25rem',
-                                  fontSize: '0.75rem',
-                                  fontWeight: '600',
-                                  backgroundColor: userData.isEnrolledInDas ? '#dcfce7' : '#f3f4f6',
-                                  color: userData.isEnrolledInDas ? '#166534' : '#6b7280'
-                                }}>
-                                  {userData.isEnrolledInDas ? 'Enrolled' : 'Not Enrolled'}
-                                </span>
                               </td>
                               <td style={{
                                 padding: '0.75rem',
@@ -1481,19 +1459,6 @@ export default function AdminDashboard() {
                                 {userHistory.ownSponsorId}
                               </p>
                             </div>
-                            <div>
-                              <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>DAS Status</p>
-                              <span style={{
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '0.25rem',
-                                fontSize: '0.75rem',
-                                fontWeight: '600',
-                                backgroundColor: userHistory.isEnrolledInDas ? '#dcfce7' : '#f3f4f6',
-                                color: userHistory.isEnrolledInDas ? '#166534' : '#6b7280'
-                              }}>
-                                {userHistory.isEnrolledInDas ? 'Enrolled' : 'Not Enrolled'}
-                              </span>
-                            </div>
                           </div>
                         </div>
 
@@ -1537,17 +1502,6 @@ export default function AdminDashboard() {
                               ${userHistory.driIncome || 0}
                             </p>
                           </div>
-                          <div style={{
-                            backgroundColor: '#fffbeb',
-                            borderRadius: '0.5rem',
-                            padding: '1rem',
-                            border: '1px solid #fed7aa'
-                          }}>
-                            <h5 style={{ fontSize: '0.875rem', color: '#d97706', margin: '0 0 0.5rem 0' }}>DAS Monthly Earnings</h5>
-                            <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>
-                              ${userHistory.dasMonthlyEarnings || 0}
-                            </p>
-                          </div>
                         </div>
 
                         {/* Investment History */}
@@ -1567,7 +1521,7 @@ export default function AdminDashboard() {
                             textAlign: 'center'
                           }}>
                             <p style={{ color: '#6b7280', margin: 0 }}>
-                              Total Investment Volume: <strong>${userHistory.totalInvestmentVolume || 0}</strong>
+                              Total Investment Amount: <strong>${userHistory.totalInvestmentAmount || 0}</strong>
                             </p>
                             <p style={{ color: '#6b7280', margin: '0.5rem 0 0 0', fontSize: '0.875rem' }}>
                               Detailed investment history will be available once investment tracking is implemented.
@@ -1588,7 +1542,7 @@ export default function AdminDashboard() {
                             Enter a user's email or mobile number to view their complete history
                           </p>
                           <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                            View: Investment History • FS Income • Smart Line Income • DRI Income • DAS Status
+                            View: Investment History • FS Income • Smart Line Income • DRI Income
                           </p>
                         </div>
                       </div>

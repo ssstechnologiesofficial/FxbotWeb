@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import ModernSidebar from '../components/ModernSidebar';
-import DasCountdown from '../components/DasCountdown';
 import { trackEvent } from '../lib/analytics';
 import { 
   DollarSign, 
@@ -9,8 +8,7 @@ import {
   TrendingUp, 
   Users,
   Copy,
-  ChevronRight,
-  Award
+  ChevronRight
 } from 'lucide-react';
 
 function ModernDashboard() {
@@ -143,13 +141,6 @@ function ModernDashboard() {
       bgColor: 'rgba(6, 182, 212, 0.1)'
     },
     {
-      title: 'DAS Income',
-      value: `$${(investmentSummary?.dasIncome || 0).toFixed(2)}`,
-      icon: Award,
-      color: 'from-pink-500 to-pink-600',
-      bgColor: 'rgba(236, 72, 153, 0.1)'
-    },
-    {
       title: 'Wallet Balance',
       value: `$${(investmentSummary?.walletBalance || 0).toFixed(2)}`,
       icon: Wallet,
@@ -249,18 +240,6 @@ function ModernDashboard() {
               </div>
             );
           })}
-        </div>
-
-        {/* DAS Countdown Section */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '0.75rem',
-          padding: '2rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          border: '1px solid rgba(229, 231, 235, 0.5)',
-          marginBottom: '2rem'
-        }}>
-          <DasCountdown userId={user?._id} />
         </div>
 
         {/* Main Content Grid */}
@@ -584,7 +563,7 @@ function ModernDashboard() {
                 color: '#059669',
                 fontWeight: '600'
               }}>
-                Minimum: $250 • Duration: ~17 months
+                Minimum: $100 • Duration: ~17 months
               </div>
             </div>
           </div>

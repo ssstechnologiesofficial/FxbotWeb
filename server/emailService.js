@@ -163,7 +163,6 @@ class EmailService {
             <div class="step">Explore our investment packages</div>
             <div class="step">Make your first deposit to start earning</div>
             <div class="step">Refer friends and earn commission rewards</div>
-            <div class="step">Access the DAS program for enhanced earnings</div>
           </div>
           
           <p>Ready to start your investment journey?</p>
