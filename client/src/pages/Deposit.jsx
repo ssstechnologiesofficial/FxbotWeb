@@ -3,7 +3,7 @@ import { Copy, Upload, CheckCircle, DollarSign, Wallet, QrCode } from 'lucide-re
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { ObjectUploader } from '../components/ObjectUploader';
-import qrCodeImage from '@assets/QR_1755789504506.jpeg';
+import qrCodeImage from '@assets/PHOTO-2026-09-08-14-19-04_1788875523597.jpg';
 import { trackEvent } from '../lib/analytics';
 
 export default function Deposit() {
@@ -16,8 +16,8 @@ export default function Deposit() {
   const [qrImageLoaded, setQrImageLoaded] = useState(false);
   const [qrImageError, setQrImageError] = useState(false);
 
-  const walletAddress = "TDdjYG9Jhz1G68AzgZqWFL75iEbsRD1FSH";
-  const walletType = "TRC";
+  const walletAddress = "0xf1a24Aa8231554c3E1AA28c7f0095A1bA7710e5B";
+  const walletType = "BNB (BEP20)";
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -219,7 +219,7 @@ export default function Deposit() {
                 fontSize: '1rem',
                 marginBottom: '1rem'
               }}>
-                Add funds to your FXBOT trading account using USDT TRC-20
+                Add funds to your FXBOT trading account using BNB (BEP20)
               </p>
               
               {/* Remark */}
@@ -274,7 +274,7 @@ export default function Deposit() {
                 gap: '0.5rem'
               }}>
                 <Wallet style={{ width: '1.25rem', height: '1.25rem', color: '#f59e0b' }} />
-                USDT TRC-20
+                BNB (BEP20)
               </div>
             </div>
 
@@ -540,7 +540,7 @@ export default function Deposit() {
 
               <img 
                 src={qrCodeImage} 
-                alt="USDT TRC-20 Wallet QR Code" 
+                alt="BNB BEP20 Wallet QR Code" 
                 style={{ 
                   maxWidth: '200px', 
                   maxHeight: '200px', 
@@ -567,7 +567,7 @@ export default function Deposit() {
               color: '#6b7280',
               marginBottom: '1rem'
             }}>
-              Scan this QR code to send USDT TRC-20 to our wallet
+              Scan this QR code to send assets on BNB (BEP20) to our wallet
             </p>
 
             <div style={{
@@ -580,7 +580,7 @@ export default function Deposit() {
             }}>
               <strong>Important:</strong>
               <ul style={{ margin: '0.5rem 0', paddingLeft: '1.25rem' }}>
-                <li>Only send USDT TRC-20 to this address</li>
+                <li>Only send assets on BNB (BEP20) to this address</li>
                 <li>Minimum deposit: $100</li>
                 <li>Upload payment screenshot for verification</li>
                 <li>Processing time: 1-24 hours</li>
