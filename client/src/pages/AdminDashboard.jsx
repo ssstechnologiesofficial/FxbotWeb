@@ -907,7 +907,7 @@ export default function AdminDashboard() {
                               padding: '0.75rem',color: '#000000',
                               borderBottom: '1px solid #e5e7eb'
                             }}>
-                              {deposit.paymentMethod}
+                              {deposit.paymentMethod === 'USDT TRC-20' ? 'USDT BEP-20' : deposit.paymentMethod}
                             </td>
                             <td style={{
                               padding: '0.75rem',

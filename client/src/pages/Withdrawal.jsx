@@ -11,7 +11,7 @@ export default function Withdrawal() {
   
   // Form data
   const [amount, setAmount] = useState('');
-  const [method, setMethod] = useState('USDT TRC-20');
+  const [method, setMethod] = useState('USDT BEP-20');
   const [walletAddress, setWalletAddress] = useState('');
   
   // OTP data
@@ -307,7 +307,7 @@ export default function Withdrawal() {
                       
                     }}
                   >
-                    <option value="USDT TRC-20">USDT TRC-20</option>
+                    <option value="USDT BEP-20">USDT BEP-20</option>
                     {/*<option value="USDT ERC-20">USDT ERC-20</option>
                     <option value="Bitcoin">Bitcoin</option>*/}
                   </select>

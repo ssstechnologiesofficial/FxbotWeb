@@ -536,7 +536,7 @@ export async function registerRoutes(app) {
         amount: parseInt(amount),
         walletType,
         walletAddress,
-        paymentMethod: 'USDT TRC-20',
+        paymentMethod: 'USDT BEP-20',
         screenshotUrl,
         screenshotPath,
         status: 'pending'
